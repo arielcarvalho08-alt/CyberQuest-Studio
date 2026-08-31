@@ -1,13 +1,13 @@
 [
-{
-  "id": 1,
-  "tipo": "preencher_lacuna",
-  "titulo": "Fase 01 - Imprimindo Texto",
-  "enunciado": "Acesse o sistema exibindo a mensagem 'Hack' no console.",
-  "codigo_python": "____('Hack')",
-  "resposta_correta": "print",
-  "dica": "Use a função nativa do Python para exibir textos."
-},
+  {
+    "id": 1,
+    "tipo": "preencher_lacuna",
+    "titulo": "Fase 01 - Imprimindo Texto",
+    "enunciado": "Acesse o sistema exibindo a mensagem 'Hack' no console.",
+    "codigo_python": "____('Hack')",
+    "resposta_correta": "print",
+    "dica": "Use a função nativa do Python para exibir textos."
+  },
   {
     "id": 2,
     "tipo": "preencher_lacuna",
@@ -51,7 +51,7 @@
     "enunciado": "Descubra a quantidade de caracteres contidos na variável de token.",
     "codigo_python": "tamanho = ____(token_acesso)",
     "resposta_correta": "len",
-    "dica": "Função nativa em Python usada para retornar o comprimento (número de itens/caracteres) de um objeto."
+    "dica": "Função nativa em Python usada para retornar o comprimento de um objeto."
   },
   {
     "id": 7,
@@ -65,130 +65,127 @@
   {
     "id": 8,
     "tipo": "caca_ao_bug",
-    "titulo": "Fase 01 - Erro de Sintaxe em String",
-    "enunciado": "O código abaixo tenta exibir o status do servidor, mas falha ao executar. Identifique o trecho com erro e forneça a correção exata.",
+    "titulo": "Fase 08 - Erro de Sintaxe em String",
+    "enunciado": "O código abaixo falha ao executar. Identifique a atribuição da variável e forneça a linha corrigida.",
     "codigo_python": "status = 'Servidor Online\"\nprint(status)",
     "resposta_correta": "status = 'Servidor Online'",
     "dica": "Observe a abertura e o fechamento das aspas que delimitam o texto."
   },
   {
-  "id": 9,
-  "tipo": "caca_ao_bug",
-  "titulo": "Fase 02 - Comparação vs Atribuição",
-  "enunciado": "A checagem de permissão do sistema falha ao executar e gera um SyntaxError. Corrija a instrução condicional.",
-  "codigo_python": "permissao = 'admin'\nif permissao = 'admin':\n    print('Acesso total concedido')",
-  "resposta_correta": "if permissao == 'admin':",
-  "dica": "Um único sinal '=' atribui um valor. Para verificar se dois valores são iguais, é necessário outro operador."
+    "id": 9,
+    "tipo": "caca_ao_bug",
+    "titulo": "Fase 09 - Comparação vs Atribuição",
+    "enunciado": "A checagem de permissão gera um SyntaxError. Corrija a instrução condicional inteira.",
+    "codigo_python": "permissao = 'admin'\nif permissao = 'admin':\n    print('Acesso total concedido')",
+    "resposta_correta": "if permissao == 'admin':",
+    "dica": "Um único sinal '=' atribui valor. Para verificar igualdade, use '=='."
   },
   {
     "id": 10,
     "tipo": "caca_ao_bug",
-    "titulo": "Fase 03 - Conversão de Tipo (TypeError)",
-    "enunciado": "O script tenta somar a idade do usuário a um valor numérico para calcular o próximo ano, mas quebra durante a execução.",
+    "titulo": "Fase 10 - Conversão de Tipo (TypeError)",
+    "enunciado": "O script tenta somar a idade a um valor numérico. Digite a linha 'proximo_ano' com a conversão correta.",
     "codigo_python": "idade = '25'\nproximo_ano = idade + 1\nprint(proximo_ano)",
     "resposta_correta": "proximo_ano = int(idade) + 1",
-    "dica": "O Python não soma textos (str) diretamente com números inteiros (int). Converta a variável antes da operação."
+    "dica": "Converta a variável de texto com int() antes de somar."
   },
   {
     "id": 11,
     "tipo": "caca_ao_bug",
-    "titulo": "Fase 04 - Loop Infinito (Lógica)",
-    "enunciado": "O programa deveria fazer uma contagem de 5 até 1 e parar, mas entra em um laço infinito travando a execução. Corrija a lógica do loop.",
+    "titulo": "Fase 11 - Loop Infinito (Lógica)",
+    "enunciado": "O programa entra em laço infinito. Digite a instrução de alteração do contador para decrementar.",
     "codigo_python": "contador = 5\nwhile contador > 0:\n    print(contador)\n    contador += 1",
     "resposta_correta": "contador -= 1",
-    "dica": "Em vez de incrementar o contador a cada passo, ele precisa ser decrementado para alcançar a condição de parada."
+    "dica": "Em vez de incrementar (+=), o contador precisa ser decrementado (-=)."
   },
   {
     "id": 12,
     "tipo": "caca_ao_bug",
-    "titulo": "Fase 05 - Erro Off-by-One em Lista",
-    "enunciado": "Tentaram acessar o último elemento da lista de servidores registrados, mas o código dispara um IndexError. Corrija o acesso ao índice.",
+    "titulo": "Fase 12 - Erro Off-by-One em Lista",
+    "enunciado": "O código dispara um IndexError ao tentar acessar o último item. Digite a linha de acesso ajustada.",
     "codigo_python": "servidores = ['srv1', 'srv2', 'srv3']\nultimo = servidores[len(servidores)]",
     "resposta_correta": "ultimo = servidores[len(servidores) - 1]",
-    "dica": "Os índices em Python começam em 0. O último elemento de uma lista de tamanho N fica na posição N - 1 (ou use o índice -1)."
+    "dica": "Os índices começam em 0. O último elemento fica na posição len() - 1."
   },
   {
     "id": 13,
     "tipo": "caca_ao_bug",
-    "titulo": "Fase 06 - Efeito Colateral com Argumento Padrão Mutável",
-    "enunciado": "Esta função registra logs de acessos. No entanto, chamadas sucessivas acumulam dados antigos inesperadamente entre sessões. Corrija a definição da função.",
+    "titulo": "Fase 13 - Argumento Padrão Mutável",
+    "enunciado": "Argumentos mutáveis acumulam dados. Digite o cabeçalho correto da função 'registrar_acesso'.",
     "codigo_python": "def registrar_acesso(ip, historico=[]):\n    historico.append(ip)\n    return historico",
-    "resposta_correta": "def registrar_acesso(ip, historico=None):\n    if historico is None:\n        historico = []\n    historico.append(ip)\n    return historico",
-    "dica": "Argumentos padrão mutáveis (como listas []) são avaliados apenas uma vez na definição da função. Use `None` como valor padrão."
+    "resposta_correta": "def registrar_acesso(ip, historico=None):",
+    "dica": "Use None como valor padrão para listas em argumentos de função."
   },
   {
     "id": 14,
     "tipo": "caca_ao_bug",
-    "titulo": "Fase 07 - Modificação de Lista Durante a Iteração",
-    "enunciado": "O código tenta remover todos os números pares da lista de portas abertas, mas pula elementos e produz um resultado incorreto. Corrija o algoritmo.",
+    "titulo": "Fase 14 - Modificação de Lista na Iteração",
+    "enunciado": "Remover elementos iterando altera a lista. Digite a list comprehension que filtra apenas os ímpares.",
     "codigo_python": "portas = [21, 22, 80, 443, 8080]\nfor p in portas:\n    if p % 2 == 0:\n        portas.remove(p)",
     "resposta_correta": "portas = [p for p in portas if p % 2 != 0]",
-    "dica": "Remover itens de uma lista enquanto se itera diretamente sobre ela altera os índices internos. Recomenda-se criar uma nova lista filtrada ou iterar sobre uma cópia."
+    "dica": "Monte uma nova lista filtrada: [p for p in portas if p % 2 != 0]."
   },
   {
     "id": 15,
     "tipo": "prever_saida",
-    "titulo": "Fase 01 - F-Strings e Expressões Internas",
-    "enunciado": "Analise o código abaixo e determine qual texto exato será exibido no console quando o programa for executado.",
+    "titulo": "Fase 15 - F-Strings e Expressões Internas",
+    "enunciado": "Analise o código e digite exatamente o texto que será impresso na tela.",
     "codigo_python": "porta = 80\nativo = True\nprint(f\"Porta: {porta + 1} | Status: {not ativo}\")",
     "resposta_correta": "Porta: 81 | Status: False",
-    "dica": "Resolva as operações dentro das chaves {} antes de montar a string final."
+    "dica": "Resolva porta + 1 (81) e not ativo (False) na formatação da string."
   },
   {
     "id": 16,
     "tipo": "prever_saida",
-    "titulo": "Fase 02 - Slicing Avançado e Passos Negativos",
-    "enunciado": "Qual será o resultado impresso após a aplicação do fatiamento (slicing) na string?",
+    "titulo": "Fase 16 - Slicing Avançado e Passos Negativos",
+    "enunciado": "Qual será o texto impresso após a operação de fatiamento (slicing)?",
     "codigo_python": "codigo = \"SEC-9080-SYS\"\nprint(codigo[7:3:-1])",
     "resposta_correta": "0809",
-    "dica": "O passo -1 inverte o sentido do fatiamento: começa no índice 7 (inclusive) e vai até o índice 3 (exclusive)."
+    "dica": "Começa no índice 7 ('0'), anda para trás até o índice 4."
   },
   {
     "id": 17,
     "tipo": "prever_saida",
-    "titulo": "Fase 03 - Avaliação Curto-Circuito (Short-Circuit)",
-    "enunciado": "Qual valor será atribuído à variável 'resultado' e impresso no terminal?",
+    "titulo": "Fase 17 - Avaliação Curto-Circuito (Short-Circuit)",
+    "enunciado": "Qual valor será impresso no terminal ao avaliar a expressão lógica?",
     "codigo_python": "a = []\nb = [1, 2, 3]\nresultado = a or b\nprint(resultado)",
     "resposta_correta": "[1, 2, 3]",
-    "dica": "O operador 'or' em Python retorna o primeiro valor considerado verdadeiro (truthy) ou o último valor se todos forem falsos (falsy)."
+    "dica": "O operador 'or' retorna o primeiro valor considerado verdadeiro (b)."
   },
   {
     "id": 18,
-  "tipo": "prever_saida",
-  "titulo": "Fase 04 - Compreensão de Dicionário com Condição",
-  "enunciado": "Qual será o dicionário resultante após a execução desta compreensão de dicionário?",
-  "codigo_python": "dados = {'a': 1, 'b': 2, 'c': 3, 'd': 4}\nresultado = {k: v * 2 for k, v in dados.items() if v % 2 == 0}\nprint(resultado)",
-  "resposta_correta": "{'b': 4, 'd': 8}",
-  "dica": "Filtre apenas os pares onde o valor 'v' é par e, para esses pares, multiplique o valor por 2."
+    "tipo": "prever_saida",
+    "titulo": "Fase 18 - Compreensão de Dicionário",
+    "enunciado": "Qual será a estrutura do dicionário impresso ao final da execução?",
+    "codigo_python": "dados = {'a': 1, 'b': 2, 'c': 3, 'd': 4}\nresultado = {k: v * 2 for k, v in dados.items() if v % 2 == 0}\nprint(resultado)",
+    "resposta_correta": "{'b': 4, 'd': 8}",
+    "dica": "Filtra apenas valores pares ('b' e 'd') e multiplica os valores por 2."
   },
   {
     "id": 19,
     "tipo": "prever_saida",
-    "titulo": "Fase 05 - Escopo de Variáveis e Enclosing (LEGB)",
-    "enunciado": "Qual número será impresso na tela após a chamada das funções aninhadas?",
+    "titulo": "Fase 19 - Escopo de Variáveis (LEGB)",
+    "enunciado": "Qual valor numérico será retornado e exibido pelo comando print?",
     "codigo_python": "x = 10\ndef externa():\n    x = 20\n    def interna():\n        nonlocal x\n        x += 5\n    interna()\n    return x\n\nprint(externa())",
     "resposta_correta": "25",
-    "dica": "A instrução 'nonlocal' faz com que a função 'interna' altere a variável 'x' do escopo da função 'externa'."
+    "dica": "A instrução nonlocal altera a variável x do escopo de externa() para 25."
   },
   {
     "id": 20,
     "tipo": "prever_saida",
-    "titulo": "Fase 06 - Desempacotamento de Argumentos (*args e **kwargs)",
-    "enunciado": "Determine o valor final exibido pelo comando print.",
+    "titulo": "Fase 20 - Desempacotamento de Argumentos (*args)",
+    "enunciado": "Determine o número exato resultante que será impresso.",
     "codigo_python": "def calcular(base, *valores, multiplicador=2):\n    return (base + sum(valores)) * multiplicador\n\nnums = [3, 4]\nprint(calcular(10, *nums, multiplicador=3))",
     "resposta_correta": "51",
-    "dica": "O prefixo '*' desempacota a lista 'nums', fazendo com que 'base' seja 10 e 'valores' seja a tupla (3, 4)."
+    "dica": "Soma base (10) com valores (3 + 4) = 17, e multiplica por 3 = 51."
   },
   {
     "id": 21,
     "tipo": "prever_saida",
-    "titulo": "Fase 07 - Mutabilidade e Cópia Rasa (Shallow Copy)",
-    "enunciado": "Qual será o conteúdo impresso da lista 'matriz[0]' ao final das modificações?",
+    "titulo": "Fase 21 - Mutabilidade e Cópia Rasa",
+    "enunciado": "Qual será o conteúdo impresso da sublista matriz[0]?",
     "codigo_python": "matriz = [[0] * 2] * 2\nmatriz[0][0] = 99\nprint(matriz[0])",
     "resposta_correta": "[99, 0]",
-    "dica": "Cuidado com o operador '*' em listas aninhadas: ele replica referências para a mesma lista interna, não cópias independentes."
+    "dica": "A sublista 0 contém dois elementos. A alteração no índice [0][0] define 99."
   }
 ]
-
-
-
