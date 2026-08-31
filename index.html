@@ -1,54 +1,57 @@
-html
 <!DOCTYPE html>
-<html lang = "pt-BR">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="widht=device-widht, initial-scale=1.0">
-        <title> Cyber Quest - Terminal Educacional</title>
-        <link rel="stylesheet" href="style.css">
-        <!-- Fonte Monospaced estilo Retro Gamer -->
-         <link href="https://fonts.googleapis.com/ccs2?family=Fira+Code:wght@400;700&display=swap" rel="stylesheet">
-    </head>
-    <body>
-        <!-- Tela Principal do Terminal-->
-         <div class="terminal-container">
-            <!-- Cabeçalho Retro (Landing Page)-->
-            <header class="terminal-header">
-                <pre class="ascii-art">
-                    ██████╗ ██╗   ██╗██████╗ ███████╗██████╗  ██████╗ ██╗   ██╗███████╗███████╗████████╗
-                    ██╔════╝╚██╗ ██╔╝██╔══██╗██╔════╝██╔══██╗██╔═══██╗██║   ██║██╔════╝██╔════╝╚══██╔══╝
-                    ██║      ╚████╔╝ ██████╔╝█████╗  ██████╔╝██║   ██║██║   ██║█████╗  ███████╗   ██║   
-                    ██║       ╚██╔╝  ██╔══██╗██╔══╝  ██╔══██╗██║  ██║║██║   ██║██╔══╝  ╚════██║   ██║   
-                    ╚██████╗   ██║   ██████╔╝███████╗██║  ██║╚██████╔╝╚██████╔╝███████╗███████║   ██║   
-                     ╚═════╝   ╚═╝   ╚═════╝ ╚══════╝╚═╝  ╚═╝ ╚═════██╗╚═════╝ ╚══════╝╚══════╝   ╚═╝   
-                                                                    ╚═╝                                                 
-                </pre>
-                <p class="subtitle">[SISTEMA OPERACIONAL CYBERQUEST v1.0 - PYTHON TRAINING tool]</p>
-                <p class="instructions">Digite <span class="highlight">'iniciar'</span>para comecar a invasao ou<span class="highlight">'ajuda'</span>para instrucoes.</p>
-             </header>
-    
-             <hr class="terminal-divider">
-    
-             <!-- Area de Exibcao do Enigma Atual-->
-              <section id="enigma-container" class="enigma-card-hidden">
-                <h2 id="enigma-titulo" class="enigma-title">Carregando fase... </h2>
-                <p id="enigma-enunciado" class="enigma-text"></p>
-                <!-- Bloco de Código Python Formatado-->
-                 <div class="code-box">
-                    <pre><code id="enigma-codigo" class="python-code"></code></pre>
-                 </div>
-              </section>
-    
-              <!-- Histórico de Comandos / Saída do Terminal-->
-               <div id="terminal-output" class="terminal-logs"></div>
-               <!-- Linha de Entrada (Prompt do Usuário)-->
-                <div class="prompt-line">
-                    <span class="prompt-label">user@cyberquest:~ $</span>
-                    <input type="text" id="terminal-input" class="prompt-input" autofocus autocomplete="off" spellcheck="false">
-                </div>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CyberQuest - Terminal Educacional</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Fonte Monospaced estilo Retro Gamer -->
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Container do Terminal -->
+    <div class="terminal-container">
+        <!-- Cabeçalho Retro -->
+        <header class="terminal-header">
+            <pre class="ascii-art">
+ ██████╗ ██╗   ██╗██████╗ ███████╗██████╗  ██████╗ ██╗   ██╗███████╗███████╗████████╗
+██╔════╝ ╚██╗ ██╔╝██╔══██╗██╔════╝██╔══██╗██╔═══██╗██║   ██║██╔════╝██╔════╝╚══██╔══╝
+██║       ╚████╔╝ ██████╔╝█████╗  ██████╔╝██║   ██║██║   ██║█████╗  ███████╗   ██║   
+██║        ╚██╔╝  ██╔══██╗██╔══╝  ██╔══██╗██║   ██║██║   ██║██╔══╝  ╚════██║   ██║   
+╚██████╗    ██║   ██████╔╝███████╗██║  ██║╚██████╔╝╚██████╔╝███████╗███████║   ██║   
+ ╚═════╝    ╚═╝   ╚═════╝ ╚══════╝╚═╝  ╚═╝ ╚═════██╗╚═════╝ ╚══════╝╚══════╝   ╚═╝   
+                                                ╚═╝                                 
+            </pre>
+            <p class="subtitle">[SISTEMA OPERACIONAL CYBERQUEST v1.0 - PYTHON TRAINING TOOL]</p>
+            <p class="instructions">Digite <span class="highlight">'iniciar'</span> para começar a invasão ou <span class="highlight">'ajuda'</span> para instruções.</p>
+        </header>
 
-         </div>
-         <script src="logic.js"></script>
-         <script src="ui.js"></script>
-    </body>
+        <hr class="terminal-divider">
+
+        <!-- Área de Exibição do Enigma Atual -->
+        <section id="enigma-container" class="enigma-card hidden">
+            <div class="enigma-header">
+                <h2 id="enigma-titulo" class="enigma-title">Carregando fase...</h2>
+                <span id="enigma-tipo" class="badge-tipo">TIPO</span>
+            </div>
+            <p id="enigma-enunciado" class="enigma-text"></p>
+            <!-- Bloco de Código Python Formatado -->
+            <div class="code-box">
+                <pre><code id="enigma-codigo" class="python-code"></code></pre>
+            </div>
+        </section>
+
+        <!-- Histórico de Comandos / Saída do Terminal -->
+        <div id="terminal-output" class="terminal-logs"></div>
+
+        <!-- Linha de Entrada (Prompt do Usuário) -->
+        <div class="prompt-line">
+            <span class="prompt-label">user@cyberquest:~ $</span>
+            <input type="text" id="terminal-input" class="prompt-input" autofocus autocomplete="off" spellcheck="false">
+        </div>
+    </div>
+
+    <script src="ui.js"></script>
+    <script src="logic.js"></script>
+</body>
 </html>

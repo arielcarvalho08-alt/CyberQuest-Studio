@@ -1,5 +1,5 @@
 /**
- * Engine de Logica e Validacao
+ * Engine de Lógica e Validação (Core Engine)
  */
 
 let bancoDeEnigmas = [];
@@ -8,14 +8,14 @@ let jogoIniciado = false;
 
 const inputPrompt = document.getElementById('terminal-input');
 
-// 1. Iniciando a aplicacao
+// 1. Iniciando a aplicação e buscando os enigmas
 async function carregarBancoDeDados() {
     try {
         const resposta = await fetch('enigmas.json');
         if (!resposta.ok) throw new Error("Erro ao buscar JSON");
 
-        bancoDeEnigmas= await resposta.json();
-        console.log("Banco de dados de enigma carregado com sucesso", bancoDeEnigmas);
+        bancoDeEnigmas = await resposta.json();
+        console.log("Banco de dados de enigmas carregado com sucesso!", bancoDeEnigmas);
     } catch (erro) {
         console.error("Falha ao carregar enigmas.json:", erro);
         adicionarLog("[AVISO] Servidor local não detectado. Usando modo de teste.", "info");
@@ -23,18 +23,18 @@ async function carregarBancoDeDados() {
         bancoDeEnigmas = [
             {
                 id: 1,
+                tipo: "preencher_lacuna",
                 titulo: "Fase 01 - Imprimindo Texto",
                 enunciado: "Complete com o comando nativo do Python para exibir textos na tela",
                 codigo_python: "____('Invasao iniciada')",
                 resposta_correta: "print",
-                mensagem_sucesso: "Comando executado! Texto exibido no console."
+                dica: "Use a função nativa do Python para exibir textos."
             }
         ];
     }
 }
-// --------------------------------------------------------------------------------------------------//
 
-// 2. Escuta da tecla ENTER
+// 2. Escuta da tecla ENTER no prompt
 if (inputPrompt) {
     inputPrompt.addEventListener('keydown', function(evento) {
         if (evento.key === 'Enter') {
@@ -42,20 +42,14 @@ if (inputPrompt) {
 
             if (textoDigitado.trim() !== '') {
                 adicionarLog(`user@cyberquest:~ $ ${textoDigitado}`, 'info');
-
                 tratarEntradaDoUsuario(textoDigitado);
-
                 limparPrompt();
             }
         }
     });
 }
-// --------------------------------------------------------------------------------------------------//
 
-/** 3. Comandos do menu e do jogo
-@param {string} entrada
-**/
-
+// 3. Processamento de comandos do menu e do fluxo do jogo
 function tratarEntradaDoUsuario(entrada) {
     const comandoLimpo = entrada.trim().toLowerCase();
 
@@ -63,7 +57,7 @@ function tratarEntradaDoUsuario(entrada) {
         if (comandoLimpo === 'iniciar' || comandoLimpo === '1') {
             jogoIniciado = true;
             indiceEnigmaAtual = 0;
-            adicionarLog("Iniciando sequencia de invasao...", "sucesso");
+            adicionarLog("Iniciando sequência de invasão...", "sucesso");
 
             setTimeout(() => {
                 carregarEnigmaNaTela();
@@ -73,24 +67,20 @@ function tratarEntradaDoUsuario(entrada) {
 
         if (comandoLimpo === 'ajuda' || comandoLimpo === '2') {
             adicionarLog("=== INSTRUÇÕES CYBERQUEST ===", "info");
-            adicionarLog("1. Analise o codigo Python na tela.", "info");
+            adicionarLog("1. Analise o código Python na tela.", "info");
             adicionarLog("2. Digite apenas o trecho que falta ou a resposta correta.", "info");
             adicionarLog("3. Pressione ENTER para enviar.", "info");
             return;
         }
 
-        adicionarLog(`Comando '${comandoLimpo}' nao reconhecido. Digite 'iniciar' para jogar.`, "erro");
-            return;
+        adicionarLog(`Comando '${comandoLimpo}' não reconhecido. Digite 'iniciar' para jogar.`, "erro");
+        return;
     }
 
     validarRespostaDoEnigma(entrada);
 }
-// --------------------------------------------------------------------------------------------------//
 
-/**4. Validacao da resposta
-@param {string} respostaDigitada
-**/
-
+// 4. Validação da resposta e transição de fase
 function validarRespostaDoEnigma(respostaDigitada) {
     const enigmaAtual = bancoDeEnigmas[indiceEnigmaAtual];
     if (!enigmaAtual) return;
@@ -99,7 +89,7 @@ function validarRespostaDoEnigma(respostaDigitada) {
     const gabaritoOficial = enigmaAtual.resposta_correta.trim();
 
     if (respostaSanitizada === gabaritoOficial) {
-        adicionarLog(`[OK]  RESPOSTA CORRRETA! ${enigmaAtual.mensagem_sucesso || ''}` , "sucesso");
+        adicionarLog(`[OK] RESPOSTA CORRETA! Acesso concedido.`, "sucesso");
         inputPrompt.disabled = true;
 
         setTimeout(() => {
@@ -110,24 +100,24 @@ function validarRespostaDoEnigma(respostaDigitada) {
             if (indiceEnigmaAtual < bancoDeEnigmas.length) {
                 carregarEnigmaNaTela();
             } else {
-                adicionarLog("[SISTEMA HACKEADO] Você concluiu todos os enigmas deste modulo!", "sucesso");
+                adicionarLog("[SISTEMA HACKEADO] Você concluiu todos os enigmas deste módulo!", "sucesso");
+                esconderEnigma();
                 jogoIniciado = false;
             }
-        }, 1500);      
+        }, 1500);     
     } else {
-        adicionarLog("[ERRO] Sintaxe ou resposta incorreta. Analise o codigo e tente novamente!", "erro");
+        adicionarLog(`[ERRO] Resposta incorreta. Dica: ${enigmaAtual.dica}`, "erro");
     }
 }
-// --------------------------------------------------------------------------------------------------//
 
-// 5. Carregamento do enigma
-
+// 5. Exibição do enigma atual
 function carregarEnigmaNaTela() {
     const enigma = bancoDeEnigmas[indiceEnigmaAtual];
     if (enigma) {
         renderizarEnigma(enigma);
-        adicionarLog(`--> Enigma ${enigma.id} carregado. Digite a solução no prompt:`, "info");
+        adicionarLog(`--> Enigma ${indiceEnigmaAtual + 1} de ${bancoDeEnigmas.length} carregado. Digite a solução:`, "info");
     }
 }
 
+// Inicializa a carga dos dados ao abrir
 carregarBancoDeDados();
