@@ -1,5 +1,5 @@
 /**
- * Interface do Terminal - CyberQuest
+ * Interface do Terminal - CyberQuest (Sprint 1)
  */
 
 const screens = {
@@ -10,18 +10,22 @@ const screens = {
 
 function alternarTela(nomeTela) {
     Object.keys(screens).forEach(key => {
-        screens[key].classList.add('hidden');
+        if (screens[key]) {
+            screens[key].classList.add('hidden');
+        }
     });
     if (screens[nomeTela]) {
         screens[nomeTela].classList.remove('hidden');
     }
-};
+}
 
 function exibirFeedback(texto, tipo = 'error') {
     const feedbackBox = document.getElementById('feedback-message');
+    if (!feedbackBox) return;
+
     feedbackBox.textContent = texto;
-    feedbackBox.className = `feedback-message0 ${tipo}`;
-    fedbackBox.classList.remove('hidden');
+    feedbackBox.className = `feedback-message ${tipo}`;
+    feedbackBox.classList.remove('hidden');
 
     setTimeout(() => {
         feedbackBox.classList.add('hidden');
@@ -29,9 +33,9 @@ function exibirFeedback(texto, tipo = 'error') {
 }
 
 function atualizarTopBar(faseAtual, totalFases) {
-    document.getElementById('top-bar').classList.remove('hidden');
-    document.getElementById('phase-display').textContent = `${faseAtual}/${totalFases}`;
+    const topBar = document.getElementById('top-bar');
+    if (topBar) topBar.classList.remove('hidden');
+
+    const phaseDisplay = document.getElementById('phase-display');
+    if (phaseDisplay) phaseDisplay.textContent = `${faseAtual}/${totalFases}`;
 }
-
-
-
