@@ -12,23 +12,30 @@ let bancoDeEnigmas = [];
 const inputPrompt = document.getElementById('terminal-input');
 const promptLabel = document.getElementById('prompt-label');
 
+// Carrega o arquivo JSON diretamente sem fallbacks estáticos
 async function carregarJogo() {
     try {
         const res = await fetch('enigmas.json');
+        if (!res.ok) {
+            throw new Error(`Status HTTP: ${res.status}`);
+        }
         bancoDeEnigmas = await res.json();
+        console.log("SUCESSO: enigmas.json carregado com sucesso!", bancoDeEnigmas);
     } catch (error) {
-        console.error('Erro ao carregar enigmas.json', e);
+        console.error('Erro ao carregar enigmas.json:', error);
+        exibirFeedback("[ERRO] Falha ao carregar enigmas.json", "error");
     }
 }
 
+// Captura do evento de tecla Enter no terminal
 inputPrompt.addEventListener('keydown', (e) => {
     if (e.key === 'Enter') {
         const valor = inputPrompt.value.trim();
-        if (valor!== '') {
+        if (valor !== '') {
             processarEntrada(valor);
             inputPrompt.value = '';
         }
-}
+    }
 });
 
 function processarEntrada(entrada) {
@@ -62,21 +69,34 @@ function processarEntrada(entrada) {
                 exibirFeedback("Digite [menu] para retornar ao início.", "error");
             }
             break;
-        }
     }
+}
+
 function exibirInfoMenu(htmlText) {
     const box = document.getElementById('menu-info-box');
-    box.innerHTML = htmlText;
-    box.classList.remove('hidden');
- }
+    if (box) {
+        box.innerHTML = htmlText;
+        box.classList.remove('hidden');
+    }
+}
 
-function iniciarGameplay() {
+// Inicia o jogo garantindo que a promessa da carga do JSON seja concluída antes
+async function iniciarGameplay() {
+    if (bancoDeEnigmas.length === 0) {
+        await carregarJogo();
+    }
+
+    if (bancoDeEnigmas.length === 0) {
+        exibirFeedback("[ERRO] Banco de enigmas vazio!", "error");
+        return;
+    }
+
     estadoJogo.telaAtual = 'game';
     estadoJogo.indiceEnigma = 0;
     alternarTela('game');
     promptLabel.textContent = "resposta:>";
     carregarEnigma();
- }
+}
 
 function carregarEnigma() {
     const enigma = bancoDeEnigmas[estadoJogo.indiceEnigma];
@@ -91,7 +111,7 @@ function carregarEnigma() {
     document.getElementById('enigma-titulo').textContent = enigma.titulo || `Enigma ${estadoJogo.indiceEnigma + 1}`;
     document.getElementById('enigma-enunciado').textContent = enigma.enunciado;
     document.getElementById('enigma-codigo').textContent = enigma.codigo_python;
- }
+}
 
 function validarResposta(resposta) {
     const enigma = bancoDeEnigmas[estadoJogo.indiceEnigma];
@@ -122,4 +142,5 @@ function concluirJogo() {
     promptLabel.textContent = "cyberquest:>";
 }
 
+// Inicia a requisição do JSON ao carregar o script
 carregarJogo();
