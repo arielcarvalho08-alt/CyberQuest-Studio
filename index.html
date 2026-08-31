@@ -4,49 +4,62 @@ html
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="widht=device-widht, initial-scale=1.0">
-        <title> Cyber Quest - Terminal Educacional</title>
+        <title> Cyber Quest - Retro Terminal</title>
         <link rel="stylesheet" href="style.css">
         <!-- Fonte Monospaced estilo Retro Gamer -->
-         <link href="https://fonts.googleapis.com/ccs2?family=Fira+Code:wght@400;700&display=swap" rel="stylesheet">
+         <link href="https://fonts.googleapis.com/ccs2?family=Fira+Code:wght@400;600;700&display=swap" rel="stylesheet">
     </head>
     <body>
-        <!-- Tela Principal do Terminal-->
+
          <div class="terminal-container">
-            <!-- Cabeçalho Retro (Landing Page)-->
-            <header class="terminal-header">
-                <pre class="ascii-art">
-                    ██████╗ ██╗   ██╗██████╗ ███████╗██████╗  ██████╗ ██╗   ██╗███████╗███████╗████████╗
-                    ██╔════╝╚██╗ ██╔╝██╔══██╗██╔════╝██╔══██╗██╔═══██╗██║   ██║██╔════╝██╔════╝╚══██╔══╝
-                    ██║      ╚████╔╝ ██████╔╝█████╗  ██████╔╝██║   ██║██║   ██║█████╗  ███████╗   ██║   
-                    ██║       ╚██╔╝  ██╔══██╗██╔══╝  ██╔══██╗██║  ██║║██║   ██║██╔══╝  ╚════██║   ██║   
-                    ╚██████╗   ██║   ██████╔╝███████╗██║  ██║╚██████╔╝╚██████╔╝███████╗███████║   ██║   
-                     ╚═════╝   ╚═╝   ╚═════╝ ╚══════╝╚═╝  ╚═╝ ╚═════██╗╚═════╝ ╚══════╝╚══════╝   ╚═╝   
-                                                                    ╚═╝                                                 
-                </pre>
-                <p class="subtitle">[SISTEMA OPERACIONAL CYBERQUEST v1.0 - PYTHON TRAINING tool]</p>
-                <p class="instructions">Digite <span class="highlight">'iniciar'</span>para comecar a invasao ou<span class="highlight">'ajuda'</span>para instrucoes.</p>
-             </header>
-    
-             <hr class="terminal-divider">
-    
-             <!-- Area de Exibcao do Enigma Atual-->
-              <section id="enigma-container" class="enigma-card-hidden">
-                <h2 id="enigma-titulo" class="enigma-title">Carregando fase... </h2>
-                <p id="enigma-enunciado" class="enigma-text"></p>
+            <!-- Barra Superior Simples-->
+            <header id="top-bar" class="top-bar-hidden">
+                <span>[SYSTEM: <strong class="system-status">ONLINE </strong> ]</span>
+                <span>[PROGRESSO: <strong class="phase-display">0/0 </strong> ]</span>
+            </header>
+             <!-- 1. Tela: Menu Principal  -->
+              <section id="screen-menu" class="screen">
+                <h1 class="game-title">CyberQuest</h1>
+                <p  class="subtitle">[SYSTEM v1.0 - PYTHON TRAINING TERMINAL</p>
                 <!-- Bloco de Código Python Formatado-->
-                 <div class="code-box">
-                    <pre><code id="enigma-codigo" class="python-code"></code></pre>
-                 </div>
+                 <div class="menu-options">
+                    <p><span class="highlight">[1]</span> Iniciar Treinamento</p>
+                    <p><span class="highlight">[2]</span> Como Jogar</p>
+                    <p><span class="highlight">[3]</span> Sobre</p>
+                </div>
+                <div id="menu-info-box" class="info-box-hidden"></div>
               </section>
     
-              <!-- Histórico de Comandos / Saída do Terminal-->
-               <div id="terminal-output" class="terminal-logs"></div>
-               <!-- Linha de Entrada (Prompt do Usuário)-->
-                <div class="prompt-line">
-                    <span class="prompt-label">user@cyberquest:~ $</span>
-                    <input type="text" id="terminal-input" class="prompt-input" autofocus autocomplete="off" spellcheck="false">
+              <!-- 2. Tela: Gameplay/ Enigma-->
+               <section id="screen-game" class="screen hidden">
+                <div class="enigma-header">
+                    <span id="enigma-fase-num" class="badge">FASE 1</span>
+                    <span id="enigma-tipo-badge" class="badge tipo">ENIGMA</span>
                 </div>
 
+                <h3 id="enigma-titulo">Carregando Enigma...</h3>
+                <p id="enigma-enunciado">Carregando Enunciado...</p>
+
+                <div class="code-box">
+                    <pre><code id="enigma-codigo"># Código Python Aqui</code></pre>
+                </div>
+               </section>
+
+               <!-- 3. Tela: Conclusão -->
+                <section id="screen-conclusion" class="screen hidden">
+                    <h2>🎉 SESSÃO CONCLUÍDA! </h2>
+                    <p>Parabéns! Você completou todos os enigmas iniciais do sistema<strong>Cyberquest</strong>.</p>
+                    <p class="highlight">> Digite [menu] no terminal para retornar ao início.</p>
+                </section>
+
+                <!-- Prompt Fixo do Terminal Hacker-->
+                <footer class="prompt-footer">
+                    <div id="feedback-message" class="feedback-message hidden"></div>
+                    <div class="prompt-line">
+                        <span id="prompt-label">opcao</span>
+                        <input type="text" id="terminal-input" autofocus autocomplete="off" spellcheck="false">
+                    </div>
+                </footer>
          </div>
          <script src="logic.js"></script>
          <script src="ui.js"></script>

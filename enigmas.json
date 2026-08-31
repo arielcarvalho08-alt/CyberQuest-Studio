@@ -63,7 +63,7 @@
     "dica": "Função responsável por ler uma linha digitada pelo usuário no console."
   },
   {
-    "id": 1,
+    "id": 8,
     "tipo": "caca_ao_bug",
     "titulo": "Fase 01 - Erro de Sintaxe em String",
     "enunciado": "O código abaixo tenta exibir o status do servidor, mas falha ao executar. Identifique o trecho com erro e forneça a correção exata.",
@@ -72,7 +72,7 @@
     "dica": "Observe a abertura e o fechamento das aspas que delimitam o texto."
   },
   {
-  "id": 2,
+  "id": 9,
   "tipo": "caca_ao_bug",
   "titulo": "Fase 02 - Comparação vs Atribuição",
   "enunciado": "A checagem de permissão do sistema falha ao executar e gera um SyntaxError. Corrija a instrução condicional.",
@@ -81,7 +81,7 @@
   "dica": "Um único sinal '=' atribui um valor. Para verificar se dois valores são iguais, é necessário outro operador."
   },
   {
-    "id": 3,
+    "id": 10,
     "tipo": "caca_ao_bug",
     "titulo": "Fase 03 - Conversão de Tipo (TypeError)",
     "enunciado": "O script tenta somar a idade do usuário a um valor numérico para calcular o próximo ano, mas quebra durante a execução.",
@@ -90,7 +90,7 @@
     "dica": "O Python não soma textos (str) diretamente com números inteiros (int). Converta a variável antes da operação."
   },
   {
-    "id": 4,
+    "id": 11,
     "tipo": "caca_ao_bug",
     "titulo": "Fase 04 - Loop Infinito (Lógica)",
     "enunciado": "O programa deveria fazer uma contagem de 5 até 1 e parar, mas entra em um laço infinito travando a execução. Corrija a lógica do loop.",
@@ -99,7 +99,7 @@
     "dica": "Em vez de incrementar o contador a cada passo, ele precisa ser decrementado para alcançar a condição de parada."
   },
   {
-    "id": 5,
+    "id": 12,
     "tipo": "caca_ao_bug",
     "titulo": "Fase 05 - Erro Off-by-One em Lista",
     "enunciado": "Tentaram acessar o último elemento da lista de servidores registrados, mas o código dispara um IndexError. Corrija o acesso ao índice.",
@@ -108,7 +108,7 @@
     "dica": "Os índices em Python começam em 0. O último elemento de uma lista de tamanho N fica na posição N - 1 (ou use o índice -1)."
   },
   {
-    "id": 6,
+    "id": 13,
     "tipo": "caca_ao_bug",
     "titulo": "Fase 06 - Efeito Colateral com Argumento Padrão Mutável",
     "enunciado": "Esta função registra logs de acessos. No entanto, chamadas sucessivas acumulam dados antigos inesperadamente entre sessões. Corrija a definição da função.",
@@ -117,7 +117,7 @@
     "dica": "Argumentos padrão mutáveis (como listas []) são avaliados apenas uma vez na definição da função. Use `None` como valor padrão."
   },
   {
-    "id": 7,
+    "id": 14,
     "tipo": "caca_ao_bug",
     "titulo": "Fase 07 - Modificação de Lista Durante a Iteração",
     "enunciado": "O código tenta remover todos os números pares da lista de portas abertas, mas pula elementos e produz um resultado incorreto. Corrija o algoritmo.",
@@ -126,7 +126,7 @@
     "dica": "Remover itens de uma lista enquanto se itera diretamente sobre ela altera os índices internos. Recomenda-se criar uma nova lista filtrada ou iterar sobre uma cópia."
   },
   {
-    "id": 1,
+    "id": 15,
     "tipo": "prever_saida",
     "titulo": "Fase 01 - F-Strings e Expressões Internas",
     "enunciado": "Analise o código abaixo e determine qual texto exato será exibido no console quando o programa for executado.",
@@ -135,7 +135,7 @@
     "dica": "Resolva as operações dentro das chaves {} antes de montar a string final."
   },
   {
-    "id": 2,
+    "id": 16,
     "tipo": "prever_saida",
     "titulo": "Fase 02 - Slicing Avançado e Passos Negativos",
     "enunciado": "Qual será o resultado impresso após a aplicação do fatiamento (slicing) na string?",
@@ -144,7 +144,7 @@
     "dica": "O passo -1 inverte o sentido do fatiamento: começa no índice 7 (inclusive) e vai até o índice 3 (exclusive)."
   },
   {
-    "id": 3,
+    "id": 17,
     "tipo": "prever_saida",
     "titulo": "Fase 03 - Avaliação Curto-Circuito (Short-Circuit)",
     "enunciado": "Qual valor será atribuído à variável 'resultado' e impresso no terminal?",
@@ -153,7 +153,7 @@
     "dica": "O operador 'or' em Python retorna o primeiro valor considerado verdadeiro (truthy) ou o último valor se todos forem falsos (falsy)."
   },
   {
-    "id": 4,
+    "id": 18,
   "tipo": "prever_saida",
   "titulo": "Fase 04 - Compreensão de Dicionário com Condição",
   "enunciado": "Qual será o dicionário resultante após a execução desta compreensão de dicionário?",
@@ -162,7 +162,7 @@
   "dica": "Filtre apenas os pares onde o valor 'v' é par e, para esses pares, multiplique o valor por 2."
   },
   {
-    "id": 5,
+    "id": 19,
     "tipo": "prever_saida",
     "titulo": "Fase 05 - Escopo de Variáveis e Enclosing (LEGB)",
     "enunciado": "Qual número será impresso na tela após a chamada das funções aninhadas?",
@@ -171,7 +171,7 @@
     "dica": "A instrução 'nonlocal' faz com que a função 'interna' altere a variável 'x' do escopo da função 'externa'."
   },
   {
-    "id": 6,
+    "id": 20,
     "tipo": "prever_saida",
     "titulo": "Fase 06 - Desempacotamento de Argumentos (*args e **kwargs)",
     "enunciado": "Determine o valor final exibido pelo comando print.",
@@ -180,7 +180,7 @@
     "dica": "O prefixo '*' desempacota a lista 'nums', fazendo com que 'base' seja 10 e 'valores' seja a tupla (3, 4)."
   },
   {
-    "id": 7,
+    "id": 21,
     "tipo": "prever_saida",
     "titulo": "Fase 07 - Mutabilidade e Cópia Rasa (Shallow Copy)",
     "enunciado": "Qual será o conteúdo impresso da lista 'matriz[0]' ao final das modificações?",
