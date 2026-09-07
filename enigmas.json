@@ -1,191 +1,164 @@
 [
   {
     "id": 1,
-    "tipo": "preencher_lacuna",
-    "titulo": "Fase 01 - Imprimindo Texto",
-    "enunciado": "Acesse o sistema exibindo a mensagem 'Hack' no console.",
-    "codigo_python": "____('Hack')",
-    "resposta_correta": "print",
-    "dica": "Use a função nativa do Python para exibir textos."
+    "tipo": "prever_saida",
+    "titulo": "Fase 01 - Atribuição Directa de Lista",
+    "enunciado": "O estagiário jurou que mexeu só na lista 'b', mas o chefe está olhando feio para a lista 'a'. O que vai aparecer na tela antes do estagiário ser chamado no RH?",
+    "codigo_python": "a = [1, 2, 3]\nb = a\nb.append(4)\nprint(a)",
+    "resposta_correta": "[1, 2, 3, 4]",
+    "dica": "Atribuir 'b = a' não cria uma cópia da lista, apenas faz ambas as variáveis apontarem para o mesmo objeto na memória."
   },
   {
     "id": 2,
-    "tipo": "preencher_lacuna",
-    "titulo": "Fase 02 - Criando Variável",
-    "enunciado": "Defina o número da porta de acesso preenchendo o nome da variável.",
-    "codigo_python": "____ = 1897",
-    "resposta_correta": "porta",
-    "dica": "Em Python, o nome da variável fica à esquerda do sinal de igual."
+    "tipo": "caca_ao_bug",
+    "titulo": "Fase 02 - Atribuição em Condicional",
+    "enunciado": "O desenvolvedor tentou fazer uma pergunta pro Python, mas acabou dando uma ordem sem querer! Qual é a linha que corrige esse mal-entendido e faz a comparação certa?",
+    "codigo_python": "idade = 18\nif idade = 18:\n    print('Maior de idade')",
+    "resposta_correta": "if idade == 18:",
+    "dica": "O símbolo de igual simples (=) serve para atribuir valor. Para comparar igualdade, utilize o operador correto (==)."
   },
   {
     "id": 3,
     "tipo": "preencher_lacuna",
-    "titulo": "Fase 03 - Condicional Simples",
-    "enunciado": "Verifique se a senha informada é igual a '2050' para liberar o sistema.",
-    "codigo_python": "____ senha == '2050':\n    print('Acesso Liberado')",
-    "resposta_correta": "if",
-    "dica": "Palavra-chave em inglês usada para checar condições ('se')."
+    "titulo": "Fase 03 - Definição de Função",
+    "enunciado": "O código está tentando criar uma função, mas esqueceu a palavra mágica que faz o Python entender o recado. Complete a lacuna antes que o interpretador entre em pânico!",
+    "codigo_python": "____ calcular_total(preco, qtd):\n    return preco * qtd",
+    "resposta_correta": "def",
+    "dica": "Palavra-chave usada para definir uma nova função em Python."
   },
   {
     "id": 4,
-    "tipo": "preencher_lacuna",
-    "titulo": "Fase 04 - Contagem Regressiva",
-    "enunciado": "Complete o laço para repetir a tentativa de conexão 5 vezes.",
-    "codigo_python": "for i in ____(5):\n    print('Tentando conectar...')",
-    "resposta_correta": "range",
-    "dica": "Função usada para gerar uma sequência de números inteiros."
+    "tipo": "prever_saida",
+    "titulo": "Fase 04 - Fatiamento de Listas",
+    "enunciado": "O Python deu um sorrisinho de canto quando você usou '[:]'. Ele realmente criou uma cópia independente ou está te enganando? Descubra o que vai ser impresso!",
+    "codigo_python": "a = [10, 20, 30]\nb = a[:]\nb.append(40)\nprint(a)",
+    "resposta_correta": "[10, 20, 30]",
+    "dica": "O fatiamento [:] cria uma nova cópia da lista. Alterar a nova lista 'b' não afeta a lista original 'a'."
   },
   {
     "id": 5,
-    "tipo": "preencher_lacuna",
-    "titulo": "Fase 05 - Estrutura de Lista",
-    "enunciado": "Adicione um novo IP à lista de endereços bloqueados.",
-    "codigo_python": "ips_bloqueados.____('192.168.0.1')",
-    "resposta_correta": "append",
-    "dica": "Método de lista utilizado para anexar um item ao final dela."
+    "tipo": "caca_ao_bug",
+    "titulo": "Fase 05 - Concatenação de Tipos Diferentes",
+    "enunciado": "O Python se recusou terminantemente a misturar alhos com bugalhos (texto com número inteiro). Como fica a linha corrigida para essa amizade dar certo?",
+    "codigo_python": "idade = 25\nprint('Idade: ' + idade)",
+    "resposta_correta": "print('Idade: ' + str(idade))",
+    "dica": "Não é possível concatenar uma string diretamente com um número. Converta o inteiro para string com str() ou use f-strings."
   },
   {
     "id": 6,
     "tipo": "preencher_lacuna",
-    "titulo": "Fase 06 - Verificando o Tamanho",
-    "enunciado": "Descubra a quantidade de caracteres contidos na variável de token.",
-    "codigo_python": "tamanho = ____(token_acesso)",
-    "resposta_correta": "len",
-    "dica": "Função nativa em Python usada para retornar o comprimento de um objeto."
+    "titulo": "Fase 06 - Adição em Listas",
+    "enunciado": "A fruteira tá quase cheia, mas falta colocar a laranja no final da fila. Qual o nome do método que empurra ela pra dentro da lista?",
+    "codigo_python": "frutas = ['maçã', 'banana']\nfrutas.____('laranja')",
+    "resposta_correta": "append",
+    "dica": "Método utilizado para adicionar um elemento ao final de uma lista."
   },
   {
     "id": 7,
-    "tipo": "preencher_lacuna",
-    "titulo": "Fase 07 - Entrada do Usuário",
-    "enunciado": "Capture a resposta do terminal e armazene na variável 'resposta'.",
-    "codigo_python": "resposta = ____('Digite seu comando: ')",
-    "resposta_correta": "input",
-    "dica": "Função responsável por ler uma linha digitada pelo usuário no console."
+    "tipo": "prever_saida",
+    "titulo": "Fase 07 - Multiplicação de Lista com Inteiros",
+    "enunciado": "Você tentou alterar a lista original depois de clonar os números, mas o Python tem memória boa. O que o console vai cuspir nessa tentativa de alteração?",
+    "codigo_python": "nums = [1, 2]\nresultado = nums * 2\nnums[0] = 99\nprint(resultado)",
+    "resposta_correta": "[1, 2, 1, 2]",
+    "dica": "O operador * cria uma nova lista duplicando os elementos primitivos. Modificar a lista original 'nums' depois disso não altera 'resultado'."
   },
   {
     "id": 8,
-    "tipo": "caca_ao_bug",
-    "titulo": "Fase 08 - Erro de Sintaxe em String",
-    "enunciado": "O código abaixo falha ao executar. Identifique a atribuição da variável e forneça a linha corrigida.",
-    "codigo_python": "status = 'Servidor Online\"\nprint(status)",
-    "resposta_correta": "status = 'Servidor Online'",
-    "dica": "Observe a abertura e o fechamento das aspas que delimitam o texto."
+    "tipo": "preencher_lacuna",
+    "titulo": "Fase 08 - Iteração com Índice",
+    "enunciado": "Você quer saber o nome do convidado E o número da senha dele ao mesmo tempo no laço. Qual função faz essa mágica dupla sem você precisar criar um contador manual?",
+    "codigo_python": "for i, nome in ____(nomes):\n    print(i, nome)",
+    "resposta_correta": "enumerate",
+    "dica": "Função que retorna pares de (índice, elemento) ao iterar sobre uma sequência."
   },
   {
     "id": 9,
     "tipo": "caca_ao_bug",
-    "titulo": "Fase 09 - Comparação vs Atribuição",
-    "enunciado": "A checagem de permissão gera um SyntaxError. Corrija a instrução condicional inteira.",
-    "codigo_python": "permissao = 'admin'\nif permissao = 'admin':\n    print('Acesso total concedido')",
-    "resposta_correta": "if permissao == 'admin':",
-    "dica": "Um único sinal '=' atribui valor. Para verificar igualdade, use '=='."
+    "titulo": "Fase 09 - Acesso Incorreto a Dicionário",
+    "enunciado": "O programador veio do JavaScript achando que podia usar a notação de ponto pra tudo, mas o Python barrou o acesso na entrada. Forneça a linha com a sintaxe certa!",
+    "codigo_python": "usuario = {'nome': 'Lucas'}\nprint(usuario.nome)",
+    "resposta_correta": "print(usuario['nome'])",
+    "dica": "Em Python, os valores de um dicionário são acessados usando colchetes [] e o nome da chave, não a notação de ponto."
   },
   {
     "id": 10,
-    "tipo": "caca_ao_bug",
-    "titulo": "Fase 10 - Conversão de Tipo (TypeError)",
-    "enunciado": "O script tenta somar a idade a um valor numérico. Digite a linha 'proximo_ano' com a conversão correta.",
-    "codigo_python": "idade = '25'\nproximo_ano = idade + 1\nprint(proximo_ano)",
-    "resposta_correta": "proximo_ano = int(idade) + 1",
-    "dica": "Converta a variável de texto com int() antes de somar."
+    "tipo": "prever_saida",
+    "titulo": "Fase 10 - Argumento Padrão Mutável",
+    "enunciado": "A função jurava que estava limpa ao iniciar, mas ela guarda rancor (e dados) de chamadas passadas. O que ela vai entregar na segunda chamada?",
+    "codigo_python": "def adicionar(item, lista=[]):\n    lista.append(item)\n    return lista\n\nadicionar(1)\nprint(adicionar(2))",
+    "resposta_correta": "[1, 2]",
+    "dica": "Em Python, o valor padrão de um parâmetro é criado apenas uma vez no momento da definição da função e reutilizado em chamadas futuras."
   },
   {
     "id": 11,
-    "tipo": "caca_ao_bug",
-    "titulo": "Fase 11 - Loop Infinito (Lógica)",
-    "enunciado": "O programa entra em laço infinito. Digite a instrução de alteração do contador para decrementar.",
-    "codigo_python": "contador = 5\nwhile contador > 0:\n    print(contador)\n    contador += 1",
-    "resposta_correta": "contador -= 1",
-    "dica": "Em vez de incrementar (+=), o contador precisa ser decrementado (-=)."
+    "tipo": "preencher_lacuna",
+    "titulo": "Fase 11 - Verificação em Dicionário",
+    "enunciado":"O sistema precisa checar se o usuário cadastrou o e-mail sem revirar o dicionário inteiro de ponta-cabeça. Qual operador faz essa busca expressa?",
+    "codigo_python": "usuario = {'nome': 'Ana', 'idade': 25}\nif 'email' ____ usuario:\n    print('Email encontrado')",
+    "resposta_correta": "in",
+    "dica": "Operador usado para checar se uma chave ou elemento existe em uma coleção."
   },
   {
     "id": 12,
     "tipo": "caca_ao_bug",
-    "titulo": "Fase 12 - Erro Off-by-One em Lista",
-    "enunciado": "O código dispara um IndexError ao tentar acessar o último item. Digite a linha de acesso ajustada.",
-    "codigo_python": "servidores = ['srv1', 'srv2', 'srv3']\nultimo = servidores[len(servidores)]",
-    "resposta_correta": "ultimo = servidores[len(servidores) - 1]",
-    "dica": "Os índices começam em 0. O último elemento fica na posição len() - 1."
+    "titulo": "Fase 12 - Divisão por Zero na Média",
+    "enunciado": "O cálculo da média tentou rasgar o tecido do espaço-tempo dividindo o valor direto por 0! Mude essa linha para dividir dinamicamente pelo número de elementos.",
+    "codigo_python": "notas = [8, 9, 7]\nmedia = sum(notas) / 0\nprint(media)",
+    "resposta_correta": "media = sum(notas) / len(notas)",
+    "dica": "Para calcular a média, divida a soma total pelo número de elementos obtido com a função len()."
   },
   {
     "id": 13,
-    "tipo": "caca_ao_bug",
-    "titulo": "Fase 13 - Argumento Padrão Mutável",
-    "enunciado": "Argumentos mutáveis acumulam dados. Digite o cabeçalho correto da função 'registrar_acesso'.",
-    "codigo_python": "def registrar_acesso(ip, historico=[]):\n    historico.append(ip)\n    return historico",
-    "resposta_correta": "def registrar_acesso(ip, historico=None):",
-    "dica": "Use None como valor padrão para listas em argumentos de função."
+    "tipo": "prever_saida",
+    "titulo": "Fase 13 - Cópia Rasa com copy()",
+    "enunciado": "Usamos o método copy(), mas essa cópia foi tão rasa quanto conversa de elevador. Qual será o resultado final impresso na lista original?",
+    "codigo_python": "import copy\na = [[1, 2], [3, 4]]\nb = copy.copy(a)\nb[0][0] = 99\nprint(a[0])",
+    "resposta_correta": "[99, 2]",
+    "dica": "A função copy.copy() faz uma cópia rasa. A lista externa é duplicada, mas as sublistas internas ainda compartilham a mesma referência."
   },
   {
     "id": 14,
-    "tipo": "caca_ao_bug",
-    "titulo": "Fase 14 - Modificação de Lista na Iteração",
-    "enunciado": "Remover elementos iterando altera a lista. Digite a list comprehension que filtra apenas os ímpares.",
-    "codigo_python": "portas = [21, 22, 80, 443, 8080]\nfor p in portas:\n    if p % 2 == 0:\n        portas.remove(p)",
-    "resposta_correta": "portas = [p for p in portas if p % 2 != 0]",
-    "dica": "Monte uma nova lista filtrada: [p for p in portas if p % 2 != 0]."
+    "tipo": "preencher_lacuna",
+    "titulo": "Fase 14 - Captura de Exceções",
+    "enunciado": "Alguém tentou dividir por zero e o programa tá prestes a explodir! Qual palavra-chave salva o dia e segura esse erro antes que a tela fique vermelha?",
+    "codigo_python": "try:\n    res = 10 / 0\n____ ZeroDivisionError:\n    res = 0",
+    "resposta_correta": "except",
+    "dica": "Palavra-chave que define o bloco para capturar e tratar exceções em Python."
   },
   {
     "id": 15,
-    "tipo": "prever_saida",
-    "titulo": "Fase 15 - F-Strings e Expressões Internas",
-    "enunciado": "Analise o código e digite exatamente o texto que será impresso na tela.",
-    "codigo_python": "porta = 80\nativo = True\nprint(f\"Porta: {porta + 1} | Status: {not ativo}\")",
-    "resposta_correta": "Porta: 81 | Status: False",
-    "dica": "Resolva porta + 1 (81) e not ativo (False) na formatação da string."
+    "tipo": "caca_ao_bug",
+    "titulo": "Fase 15 - Tentativa de Alterar Tupla",
+    "enunciado": "Alguém tentou dar uma de espertinho e alterar um valor dentro de uma tupla, mas ela é mais teimosa que um mula. Reescreva a linha redefinindo a tupla inteira!",
+    "codigo_python": "coordenadas = (10, 20)\ncoordenadas[0] = 15\nprint(coordenadas)",
+    "resposta_correta": "coordenadas = (15, 20)",
+    "dica": "Tuplas são imutáveis e seus itens não podem ser reatribuídos individualmente. É necessário redefinir a tupla inteira."
   },
   {
     "id": 16,
     "tipo": "prever_saida",
-    "titulo": "Fase 16 - Slicing Avançado e Passos Negativos",
-    "enunciado": "Qual será o texto impresso após a operação de fatiamento (slicing)?",
-    "codigo_python": "codigo = \"SEC-9080-SYS\"\nprint(codigo[7:3:-1])",
-    "resposta_correta": "0809",
-    "dica": "Começa no índice 7 ('0'), anda para trás até o índice 4."
+    "titulo": "Fase 27 - Tuplas com Elementos Mutáveis",
+    "enunciado": "Disseram que tuplas são imutáveis e blindadas contra alterações, mas esqueceram de avisar sobre a lista disfarçada lá dentro! O que a tela vai exibir?",
+    "codigo_python": "dados = ([1, 2], 3)\ndados[0].append(99)\nprint(dados)",
+    "resposta_correta": "([1, 2, 99], 3)",
+    "dica": "Embora a tupla em si seja imutável, os objetos contidos nela (como uma lista) ainda podem ser modificados internamente."
   },
   {
     "id": 17,
-    "tipo": "prever_saida",
-    "titulo": "Fase 17 - Avaliação Curto-Circuito (Short-Circuit)",
-    "enunciado": "Qual valor será impresso no terminal ao avaliar a expressão lógica?",
-    "codigo_python": "a = []\nb = [1, 2, 3]\nresultado = a or b\nprint(resultado)",
-    "resposta_correta": "[1, 2, 3]",
-    "dica": "O operador 'or' retorna o primeiro valor considerado verdadeiro (b)."
+    "tipo": "preencher_lacuna",
+    "titulo": "Fase 17 - Gerenciador de Contexto",
+    "enunciado": "Para não virar o dev desastroso que deixa arquivo aberto consumindo memória no servidor, complete o comando que abre e fecha tudo com elegância e segurança.",
+    "codigo_python": "____ open('dados.txt') as arquivo:\n    conteudo = arquivo.read()",
+    "resposta_correta": "with",
+    "dica": "Palavra-chave usada para garantir a liberação adequada de recursos, fechando o arquivo automaticamente."
   },
   {
     "id": 18,
-    "tipo": "prever_saida",
-    "titulo": "Fase 18 - Compreensão de Dicionário",
-    "enunciado": "Qual será a estrutura do dicionário impresso ao final da execução?",
-    "codigo_python": "dados = {'a': 1, 'b': 2, 'c': 3, 'd': 4}\nresultado = {k: v * 2 for k, v in dados.items() if v % 2 == 0}\nprint(resultado)",
-    "resposta_correta": "{'b': 4, 'd': 8}",
-    "dica": "Filtra apenas valores pares ('b' e 'd') e multiplica os valores por 2."
-  },
-  {
-    "id": 19,
-    "tipo": "prever_saida",
-    "titulo": "Fase 19 - Escopo de Variáveis (LEGB)",
-    "enunciado": "Qual valor numérico será retornado e exibido pelo comando print?",
-    "codigo_python": "x = 10\ndef externa():\n    x = 20\n    def interna():\n        nonlocal x\n        x += 5\n    interna()\n    return x\n\nprint(externa())",
-    "resposta_correta": "25",
-    "dica": "A instrução nonlocal altera a variável x do escopo de externa() para 25."
-  },
-  {
-    "id": 20,
-    "tipo": "prever_saida",
-    "titulo": "Fase 20 - Desempacotamento de Argumentos (*args)",
-    "enunciado": "Determine o número exato resultante que será impresso.",
-    "codigo_python": "def calcular(base, *valores, multiplicador=2):\n    return (base + sum(valores)) * multiplicador\n\nnums = [3, 4]\nprint(calcular(10, *nums, multiplicador=3))",
-    "resposta_correta": "51",
-    "dica": "Soma base (10) com valores (3 + 4) = 17, e multiplica por 3 = 51."
-  },
-  {
-    "id": 21,
-    "tipo": "prever_saida",
-    "titulo": "Fase 21 - Mutabilidade e Cópia Rasa",
-    "enunciado": "Qual será o conteúdo impresso da sublista matriz[0]?",
-    "codigo_python": "matriz = [[0] * 2] * 2\nmatriz[0][0] = 99\nprint(matriz[0])",
-    "resposta_correta": "[99, 0]",
-    "dica": "A sublista 0 contém dois elementos. A alteração no índice [0][0] define 99."
+    "tipo": "caca_ao_bug",
+    "titulo": "Fase 18 - Erro de Indentação",
+    "enunciado": "A função está reclamando que o 'return' foi deixado no relento do lado de fora do bloco. Envie a linha do 'return' com os 4 espaços sagrados de indentação!",
+    "codigo_python": "def saudar(nome):\nreturn f'Olá, {nome}'",
+    "resposta_correta": "    return f'Olá, {nome}'",
+    "dica": "Em Python, o corpo de uma função precisa estar recuado à direita com 4 espaços de indentação."
   }
 ]
