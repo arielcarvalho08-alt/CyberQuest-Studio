@@ -1,146 +1,133 @@
-/**
- * Motor de Execução e Validação de Lógica - CyberQuest (Sprint 1)
- */
-
 let estadoJogo = {
     telaAtual: 'menu',
-    indiceEnigma: 0
+    enigmas: [],
+    indiceAtual: 0,
+    modalAberto: false
 };
 
-let bancoDeEnigmas = [];
+function normalizarResposta(str) {
+    if (str === null || str === undefined) return "";
+    return str
+        .toString()
+        .trim()
+        .replace(/["']/g, "'")          
+        .replace(/\s*,\s*/g, ', ')      
+        .replace(/\s*==\s*/g, ' == ')  
+        .replace(/\s*=\s*/g, ' = ')     
+        .replace(/\s*\(\s*/g, '(')      
+        .replace(/\s*\)\s*/g, ')')
+        .replace(/\s+/g, ' ')          
+        .toLowerCase();
+}
 
-const inputPrompt = document.getElementById('terminal-input');
-const promptLabel = document.getElementById('prompt-label');
-
-// Carrega o arquivo JSON diretamente sem fallbacks estáticos
-async function carregarJogo() {
+async function carregarEnigmas() {
     try {
-        const res = await fetch('enigmas.json');
-        if (!res.ok) {
-            throw new Error(`Status HTTP: ${res.status}`);
-        }
-        bancoDeEnigmas = await res.json();
-        console.log("SUCESSO: enigmas.json carregado com sucesso!", bancoDeEnigmas);
-    } catch (error) {
-        console.error('Erro ao carregar enigmas.json:', error);
-        exibirFeedback("[ERRO] Falha ao carregar enigmas.json", "error");
+        const resposta = await fetch('enigmas.json');
+        estadoJogo.enigmas = await resposta.json();
+        UI.menuProgress.textContent = `0/${estadoJogo.enigmas.length}`;
+    } catch (erro) {
+        console.error("Erro ao carregar enigmas.json:", erro);
     }
 }
 
-// Captura do evento de tecla Enter no terminal
-inputPrompt.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter') {
-        const valor = inputPrompt.value.trim();
-        if (valor !== '') {
-            processarEntrada(valor);
-            inputPrompt.value = '';
-        }
+function iniciarJogo() {
+    if (estadoJogo.enigmas.length === 0) {
+        UI.abrirModal("[ ERRO ]", "Nenhum enigma foi encontrado no arquivo JSON.", "erro");
+        estadoJogo.modalAberto = true;
+        return;
     }
-});
-
-function processarEntrada(entrada) {
-    const comando = entrada.toLowerCase();
-
-    switch (estadoJogo.telaAtual) {
-        case 'menu':
-            if (comando === '1') {
-                iniciarGameplay();
-            } else if (comando === '2') {
-                exibirInfoMenu("<strong>COMO JOGAR:</strong> Digite [1] para começar. Analise o código Python de cada enigma e digite a resposta exata no prompt para avançar!");
-            } else if (comando === '3') {
-                exibirInfoMenu("<strong>SOBRE:</strong> CyberQuest Studio - Sistema retrô para prática dos fundamentos da linguagem Python.");
-            } else {
-                exibirFeedback("Opção inválida! Digite 1, 2 ou 3.", "error");
-            }
-            break;
-
-        case 'game':
-            validarResposta(entrada);
-            break;
-        
-        case 'conclusion':
-            if (comando === 'menu') {
-                estadoJogo.telaAtual = 'menu';
-                estadoJogo.indiceEnigma = 0;
-                alternarTela('menu');
-                document.getElementById('top-bar').classList.add('hidden');
-                promptLabel.textContent = "opcao:>";  
-            } else {
-                exibirFeedback("Digite [menu] para retornar ao início.", "error");
-            }
-            break;
-    }
+    estadoJogo.indiceAtual = 0;
+    estadoJogo.telaAtual = 'jogo';
+    UI.mostrarJogo();
+    exibirEnigmaAtual();
 }
 
-function exibirInfoMenu(htmlText) {
-    const box = document.getElementById('menu-info-box');
-    if (box) {
-        box.innerHTML = htmlText;
-        box.classList.remove('hidden');
-    }
+function exibirEnigmaAtual() {
+    const enigma = estadoJogo.enigmas[estadoJogo.indiceAtual];
+    UI.carregarEnigma(enigma, estadoJogo.indiceAtual, estadoJogo.enigmas.length);
 }
 
-// Inicia o jogo garantindo que a promessa da carga do JSON seja concluída antes
-async function iniciarGameplay() {
-    if (bancoDeEnigmas.length === 0) {
-        await carregarJogo();
-    }
+function processarResposta(respostaDigitada) {
+    const enigmaAtual = estadoJogo.enigmas[estadoJogo.indiceAtual];
+    const entrada = respostaDigitada.trim();
 
-    if (bancoDeEnigmas.length === 0) {
-        exibirFeedback("[ERRO] Banco de enigmas vazio!", "error");
+    if (entrada.toLowerCase() === 'dica') {
+        UI.abrirModal("[ DICA ]", enigmaAtual.dica || "Não há dica disponível para este enigma.", "info");
+        estadoJogo.modalAberto = true;
         return;
     }
 
-    estadoJogo.telaAtual = 'game';
-    estadoJogo.indiceEnigma = 0;
-    alternarTela('game');
-    promptLabel.textContent = "resposta:>";
-    carregarEnigma();
-}
+    const respUsuario = normalizarResposta(entrada);
+    const respCorreta = normalizarResposta(enigmaAtual.resposta_correta);
 
-function carregarEnigma() {
-    const enigma = bancoDeEnigmas[estadoJogo.indiceEnigma];
-    if (!enigma) return;
+    if (respUsuario === respCorreta) {
+        estadoJogo.indiceAtual++;
 
-    atualizarTopBar(estadoJogo.indiceEnigma + 1, bancoDeEnigmas.length);
-    document.getElementById('enigma-fase-num').textContent = `FASE ${estadoJogo.indiceEnigma + 1}/${bancoDeEnigmas.length}`;
-
-    const tipoFormatado = enigma.tipo ? enigma.tipo.replace('_', ' ').toUpperCase() : 'ENIGMA';
-    document.getElementById('enigma-tipo-badge').textContent = tipoFormatado;
-
-    document.getElementById('enigma-titulo').textContent = enigma.titulo || `Enigma ${estadoJogo.indiceEnigma + 1}`;
-    document.getElementById('enigma-enunciado').textContent = enigma.enunciado;
-    document.getElementById('enigma-codigo').textContent = enigma.codigo_python;
-}
-
-function validarResposta(resposta) {
-    const enigma = bancoDeEnigmas[estadoJogo.indiceEnigma];
-
-    if (resposta.trim() === enigma.resposta_correta.trim()) {
-        exibirFeedback("[SUCESSO] Resposta correta!", "success");
-        inputPrompt.disabled = true;
-
-        setTimeout(() => {
-            inputPrompt.disabled = false;
-            inputPrompt.focus();
-            estadoJogo.indiceEnigma++;
-
-            if (estadoJogo.indiceEnigma < bancoDeEnigmas.length) {
-                carregarEnigma();
-            } else {
-                concluirJogo();
-            }
-        }, 1200);
+        if (estadoJogo.indiceAtual < estadoJogo.enigmas.length) {
+            UI.abrirModal("[ CORRETO ]", "Acesso concedido! Pressione ENTER para avançar.", "sucesso");
+            estadoJogo.modalAberto = true;
+        } else {
+            estadoJogo.telaAtual = 'conclusao';
+            const total = estadoJogo.enigmas.length;
+            UI.mostrarConclusao("Iniciante", `${total}/${total}`);
+        }
     } else {
-        exibirFeedback("[ERRO] Resposta incorreta! Tente novamente.", "error");
+        UI.abrirModal("[ INCORRETO ]", "Resposta incorreta! Tente novamente ou digite 'dica'.", "erro");
+        estadoJogo.modalAberto = true;
     }
 }
 
-function concluirJogo() {
-    estadoJogo.telaAtual = 'conclusion';
-    alternarTela('conclusion');
-    promptLabel.textContent = "cyberquest:>";
-}
+UI.terminalInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+        const inputBruto = UI.terminalInput.value;
 
-// Inicia a requisição do JSON ao carregar o script
-carregarJogo();
+        
+        if (estadoJogo.modalAberto) {
+            UI.fecharModal();
+            estadoJogo.modalAberto = false;
+            UI.limparInput();
+
+            if (estadoJogo.telaAtual === 'jogo') {
+                exibirEnigmaAtual();
+            }
+            return;
+        }
+
+        const comando = inputBruto.trim();
+
+        // Roteamento por tela
+        if (estadoJogo.telaAtual === 'menu') {
+            if (comando === '1') {
+                iniciarJogo();
+            } else if (comando === '2') {
+                UI.abrirModal("[ COMO JOGAR ]", "Analise o código Python, preveja o resultado e digite sua resposta no prompt. Digite 'dica' se precisar de ajuda.", "info");
+                estadoJogo.modalAberto = true;
+            } else if (comando === '3') {
+                UI.abrirModal("[ SOBRE ]", "CyberQuest v1.0 - Plataforma Interativa de Programação Python.", "info");
+                estadoJogo.modalAberto = true;
+            } else {
+                UI.abrirModal("[ AVISO ]", "Opção inválida. Digite 1, 2 ou 3.", "erro");
+                estadoJogo.modalAberto = true;
+            }
+        } else if (estadoJogo.telaAtual === 'jogo') {
+            if (comando !== "") {
+                processarResposta(comando);
+            }
+        } else if (estadoJogo.telaAtual === 'conclusao') {
+            if (comando === '1') {
+                estadoJogo.telaAtual = 'menu';
+                UI.mostrarMenu();
+            } else if (comando === '2') {
+                UI.abrirModal("[ BLOQUEADO ]", "O próximo nível ainda está em desenvolvimento!", "info");
+                estadoJogo.modalAberto = true;
+            }
+        }
+
+        UI.limparInput();
+    }
+});
+
+window.onload = () => {
+    carregarEnigmas();
+    UI.mostrarMenu();
+};
