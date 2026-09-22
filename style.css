@@ -292,3 +292,14 @@ body, html {
 .modal-card.erro h3, .modal-card.erro p {
     color: #ff3344;
 }
+#nickname-modal input {
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid #ffcc00;
+    outline: none;
+    color: #ffffff;
+    font-family: 'VT323', monospace;
+    font-size: 1.8rem;
+    width: 100%;
+    text-align: center;
+}

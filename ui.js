@@ -2,6 +2,8 @@ const UI = {
     screenMenu: document.getElementById('screen-menu'),
     screenGame: document.getElementById('screen-game'),
     screenConclusion: document.getElementById('screen-conclusion'),
+    nicknameModal: document.getElementById('nickname-modal'),
+    nicknameInput: document.getElementById('nickname-input'),
 
     tipoTag: document.getElementById('tipo-tag'),
     tituloTag: document.getElementById('titulo-tag'),
@@ -68,6 +70,10 @@ const UI = {
 
     limparInput() {
         this.terminalInput.value = "";
+    },
+
+    fecharNicknameModal(){
+        this.nicknameModal.classList('hidden');
     }
 };
 
