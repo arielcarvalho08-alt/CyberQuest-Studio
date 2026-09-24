@@ -2,251 +2,279 @@
   {
     "id": 1,
     "tipo": "prever_saida",
-    "titulo": "Fase 01 - Atribuição Directa de Lista",
-    "enunciado": "O estagiário jurou que mexeu só na lista 'b', mas o chefe está olhando feio para a lista 'a'. O que vai aparecer na tela antes do estagiário ser chamado no RH?",
-    "codigo_python": "a = [1, 2, 3]\nb = a\nb.append(4)\nprint(a)",
-    "resposta_correta": "[1, 2, 3, 4]",
-    "dica": "Atribuir 'b = a' não cria uma cópia da lista, apenas faz ambas as variáveis apontarem para o mesmo objeto na memória."
+    "nivel": "facil",
+    "titulo": "Fase 01 - A Armadilha da Concatenação",
+    "enunciado": "O dev júnior tentou somar a idade que veio de um formulário com 5 anos de experiência. O resultado saiu um pouco maior do que o esperado. O que vai imprimir no console?",
+    "codigo_python": "idade = \"20\"\ntotal = idade + \"5\"\nprint(total)",
+    "resposta_correta": "205",
+    "dica": "O operador '+' em strings realiza concatenação (junção de textos), não soma matemática."
   },
   {
     "id": 2,
-    "tipo": "caca_ao_bug",
-    "titulo": "Fase 02 - Atribuição em Condicional",
-    "enunciado": "O desenvolvedor tentou fazer uma pergunta pro Python, mas acabou dando uma ordem sem querer! Qual é a linha que corrige esse mal-entendido e faz a comparação certa?",
-    "codigo_python": "idade = 18\nif idade = 18:\n    print('Maior de idade')",
-    "resposta_correta": "if idade == 18:",
-    "dica": "O símbolo de igual simples (=) serve para atribuir valor. Para comparar igualdade, utilize o operador correto (==)."
+    "tipo": "prever_saida",
+    "nivel": "facil",
+    "titulo": "Fase 02 - O Booleano Ilusório",
+    "enunciado": "Para economizar linhas de código, o estagiário decidiu verificar a presença de dados assim. A condição vai passar?",
+    "codigo_python": "nome = \"\"\nif nome:\n    print(\"Preenchido\")\nelse:\n    print(\"Vazio\")",
+    "resposta_correta": "Vazio",
+    "dica": "Em Python, strings vazias (\"\") são avaliadas como Falso (Falsy) em contextos booleanos."
   },
   {
     "id": 3,
-    "tipo": "preencher_lacuna",
-    "titulo": "Fase 03 - Definição de Função",
-    "enunciado": "O código está tentando criar uma função, mas esqueceu a palavra mágica que faz o Python entender o recado. Complete a lacuna antes que o interpretador entre em pânico!",
-    "codigo_python": "____ calcular_total(preco, qtd):\n    return preco * qtd",
-    "resposta_correta": "def",
-    "dica": "Palavra-chave usada para definir uma nova função em Python."
+    "tipo": "prever_saida",
+    "nivel": "facil",
+    "titulo": "Fase 03 - Fatiando a Pizza",
+    "enunciado": "O time de suporte tentou pegar apenas uma parte da palavra de um log do sistema usando slicing. Qual palavra vai aparecer na tela?",
+    "codigo_python": "texto = \"Python\"\nprint(texto[1:4])",
+    "resposta_correta": "yth",
+    "dica": "No slicing [inicio:fim], o índice de início é inclusivo e o índice de fim é exclusivo."
   },
   {
     "id": 4,
     "tipo": "prever_saida",
-    "titulo": "Fase 04 - Fatiamento de Listas",
-    "enunciado": "O Python deu um sorrisinho de canto quando você usou '[:]'. Ele realmente criou uma cópia independente ou está te enganando? Descubra o que vai ser impresso!",
-    "codigo_python": "a = [10, 20, 30]\nb = a[:]\nb.append(40)\nprint(a)",
-    "resposta_correta": "[10, 20, 30]",
-    "dica": "O fatiamento [:] cria uma nova cópia da lista. Alterar a nova lista 'b' não afeta a lista original 'a'."
+    "nivel": "medio",
+    "titulo": "Fase 04 - O Argumento Mutável Padrão",
+    "enunciado": "A função foi chamada duas vezes para cadastrar itens, mas a lista do segundo cliente veio com 'brinde'. O que o segundo print vai exibir?",
+    "codigo_python": "def adicionar(item, lista=[]):\n    lista.append(item)\n    return lista\n\nadicionar(\"café\")\nprint(adicionar(\"rosquinha\"))",
+    "resposta_correta": "['café', 'rosquinha']",
+    "dica": "Argumentos padrão mutáveis (como listas) são avaliados apenas uma vez na definição da função e compartilhados entre chamadas."
   },
   {
     "id": 5,
-    "tipo": "caca_ao_bug",
-    "titulo": "Fase 05 - Concatenação de Tipos Diferentes",
-    "enunciado": "O Python se recusou terminantemente a misturar alhos com bugalhos (texto com número inteiro). Como fica a linha corrigida para essa amizade dar certo?",
-    "codigo_python": "idade = 25\nprint('Idade: ' + idade)",
-    "resposta_correta": "print('Idade: ' + str(idade))",
-    "dica": "Não é possível concatenar uma string diretamente com um número. Converta o inteiro para string com str() ou use f-strings."
+    "tipo": "prever_saida",
+    "nivel": "medio",
+    "titulo": "Fase 05 - A Pegadinha do Escopo (LEGB)",
+    "enunciado": "O desenvolvedor tentou alterar o valor de uma variável global dentro de uma função sem avisar o Python. Qual valor vai ser impresso no final?",
+    "codigo_python": "x = 10\ndef alterar():\n    x = 20\n\nalterar()\nprint(x)",
+    "resposta_correta": "10",
+    "dica": "Atribuir um valor a uma variável dentro de uma função cria uma nova variável local, a menos que se use a palavra-chave 'global'."
   },
   {
     "id": 6,
-    "tipo": "preencher_lacuna",
-    "titulo": "Fase 06 - Adição em Listas",
-    "enunciado": "A fruteira tá quase cheia, mas falta colocar a laranja no final da fila. Qual o nome do método que empurra ela pra dentro da lista?",
-    "codigo_python": "frutas = ['maçã', 'banana']\nfrutas.____('laranja')",
-    "resposta_correta": "append",
-    "dica": "Método utilizado para adicionar um elemento ao final de uma lista."
+    "tipo": "prever_saida",
+    "nivel": "medio",
+    "titulo": "Fase 06 - Compreensão de Lista no Laço",
+    "enunciado": "Tentando criar uma lista de números pares rapidamente para um relatório. Qual será o conteúdo final da lista?",
+    "codigo_python": "numeros = [i * 2 for i in range(5) if i % 2 == 0]\nprint(numeros)",
+    "resposta_correta": "[0, 8]",
+    "dica": "O range(5) gera 0, 1, 2, 3, 4. Apenas 0, 2 e 4 passam no filtro (i % 2 == 0), gerando 0*2=0, 2*2=4 (ops, no caso i=2 gera 4 e i=4 gera 8 -> 0 e 8)."
   },
   {
     "id": 7,
     "tipo": "prever_saida",
-    "titulo": "Fase 07 - Multiplicação de Lista com Inteiros",
-    "enunciado": "Você tentou alterar a lista original depois de clonar os números, mas o Python tem memória boa. O que o console vai cuspir nessa tentativa de alteração?",
-    "codigo_python": "nums = [1, 2]\nresultado = nums * 2\nnums[0] = 99\nprint(resultado)",
-    "resposta_correta": "[1, 2, 1, 2]",
-    "dica": "O operador * cria uma nova lista duplicando os elementos primitivos. Modificar a lista original 'nums' depois disso não altera 'resultado'."
+    "nivel": "dificil",
+    "titulo": "Fase 07 - Encerramento do Late Binding em Closure",
+    "enunciado": "O arquiteto criou uma lista de funções lambda usando um loop. Quando ele tentou executar a primeira função gerada, veio uma surpresa. O que vai imprimir?",
+    "codigo_python": "funcoes = [lambda: i for i in range(3)]\nprint(funcoes[0]())",
+    "resposta_correta": "2",
+    "dica": "As closures em Python buscam o valor da variável 'i' no escopo externo no momento em que a função é executada, e não quando é criada."
   },
   {
     "id": 8,
-    "tipo": "preencher_lacuna",
-    "titulo": "Fase 08 - Iteração com Índice",
-    "enunciado": "Você quer saber o nome do convidado E o número da senha dele ao mesmo tempo no laço. Qual função faz essa mágica dupla sem você precisar criar um contador manual?",
-    "codigo_python": "for i, nome in ____(nomes):\n    print(i, nome)",
-    "resposta_correta": "enumerate",
-    "dica": "Função que retorna pares de (índice, elemento) ao iterar sobre uma sequência."
+    "tipo": "prever_saida",
+    "nivel": "dificil",
+    "titulo": "Fase 08 - O Lado Obscuro do 'is' vs '=='",
+    "enunciado": "Testando a identidade de objetos inteiros em um script de alta performance. O que este código vai imprimir?",
+    "codigo_python": "a = 256\nb = 256\nc = 257\nd = 257\nprint(a is b, c is d)",
+    "resposta_correta": "True False",
+    "dica": "O Python reutiliza objetos de inteiros pequenos na memória (no intervalo de -5 a 256). Fora desse limite, novos objetos são alocados."
   },
   {
     "id": 9,
-    "tipo": "caca_ao_bug",
-    "titulo": "Fase 09 - Acesso Incorreto a Dicionário",
-    "enunciado": "O programador veio do JavaScript achando que podia usar a notação de ponto pra tudo, mas o Python barrou o acesso na entrada. Forneça a linha com a sintaxe certa!",
-    "codigo_python": "usuario = {'nome': 'Lucas'}\nprint(usuario.nome)",
-    "resposta_correta": "print(usuario['nome'])",
-    "dica": "Em Python, os valores de um dicionário são acessados usando colchetes [] e o nome da chave, não a notação de ponto."
+    "tipo": "prever_saida",
+    "nivel": "dificil",
+    "titulo": "Fase 09 - Modificação de Lista Durante Iteração",
+    "enunciado": "Tentando remover zeros de uma lista enquanto itera sobre ela. Quantos elementos sobraram na lista final impressa?",
+    "codigo_python": "nums = [0, 1, 0, 2, 3]\nfor n in nums:\n    if n == 0:\n        nums.remove(n)\nprint(nums)",
+    "resposta_correta": "[1, 0, 2, 3]",
+    "dica": "Modificar a própria lista enquanto ela é iterada altera os índices internos do loop, fazendo com que o Python 'pule' a verificação de alguns elementos."
   },
   {
     "id": 10,
-    "tipo": "prever_saida",
-    "titulo": "Fase 10 - Argumento Padrão Mutável",
-    "enunciado": "A função jurava que estava limpa ao iniciar, mas ela guarda rancor (e dados) de chamadas passadas. O que ela vai entregar na segunda chamada?",
-    "codigo_python": "def adicionar(item, lista=[]):\n    lista.append(item)\n    return lista\n\nadicionar(1)\nprint(adicionar(2))",
-    "resposta_correta": "[1, 2]",
-    "dica": "Em Python, o valor padrão de um parâmetro é criado apenas uma vez no momento da definição da função e reutilizado em chamadas futuras."
+    "tipo": "caca_ao_bug",
+    "nivel": "facil",
+    "titulo": "Fase 10 - O Esquecimento do Dois-Pontos",
+    "enunciado": "O dev júnior tentou criar um loop para contar até 5, mas o Python travou logo na sintaxe acusando um erro de estrutura. Qual é a linha corrigida para o bloco funcionar?",
+    "codigo_python": "for i in range(5)\n    print(i)",
+    "resposta_correta": "for i in range(5):",
+    "dica": "Estruturas de controle como 'for', 'if', 'while' e 'def' exigem o uso do caractere dois-pontos (:) ao final da instrução."
   },
   {
     "id": 11,
-    "tipo": "preencher_lacuna",
-    "titulo": "Fase 11 - Verificação em Dicionário",
-    "enunciado":"O sistema precisa checar se o usuário cadastrou o e-mail sem revirar o dicionário inteiro de ponta-cabeça. Qual operador faz essa busca expressa?",
-    "codigo_python": "usuario = {'nome': 'Ana', 'idade': 25}\nif 'email' ____ usuario:\n    print('Email encontrado')",
-    "resposta_correta": "in",
-    "dica": "Operador usado para checar se uma chave ou elemento existe em uma coleção."
+    "tipo": "caca_ao_bug",
+    "nivel": "facil",
+    "titulo": "Fase 11 - Misturando Tipos na Mensagem",
+    "enunciado": "Tentando exibir a pontuação do jogador no console, o sistema quebrou lançando um 'TypeError'. Qual é a linha corrigida para concatenar a mensagem corretamente?",
+    "codigo_python": "pontos = 100\nprint(\"Sua pontuação é: \" + pontos)",
+    "resposta_correta": "print(\"Sua pontuação é: \" + str(pontos))",
+    "dica": "Não é possível concatenar uma string diretamente com um número inteiro usando '+'. É preciso converter o número em texto usando str() ou usar f-strings."
   },
   {
     "id": 12,
     "tipo": "caca_ao_bug",
-    "titulo": "Fase 12 - Divisão por Zero na Média",
-    "enunciado": "O cálculo da média tentou rasgar o tecido do espaço-tempo dividindo o valor direto por 0! Mude essa linha para dividir dinamicamente pelo número de elementos.",
-    "codigo_python": "notas = [8, 9, 7]\nmedia = sum(notas) / 0\nprint(media)",
-    "resposta_correta": "media = sum(notas) / len(notas)",
-    "dica": "Para calcular a média, divida a soma total pelo número de elementos obtido com a função len()."
+    "nivel": "facil",
+    "titulo": "Fase 12 - Fora dos Limites",
+    "enunciado": "O estagiário tentou acessar o último item da lista de frutas, mas tomou um 'IndexError' na cara. Qual é a linha de código correta para pegar a última fruta?",
+    "codigo_python": "frutas = [\"maçã\", \"banana\", \"laranja\"]\nprint(frutas[3])",
+    "resposta_correta": "print(frutas[2])",
+    "dica": "A indexação em Python começa em 0. Em uma lista de 3 itens, os índices válidos são 0, 1 e 2 (ou -1 para o último)."
   },
   {
-  "id": 13,
-  "tipo": "caca_ao_bug",
-  "titulo": "Fase 02 - Comparação vs Atribuição",
-  "enunciado": "A checagem de permissão do sistema falha ao executar e gera um SyntaxError. Corrija a instrução condicional.",
-  "codigo_python": "permissao = 'admin'\nif permissao = 'admin':\n    print('Acesso total concedido')",
-  "resposta_correta": "if permissao == 'admin':",
-  "dica": "Um único sinal '=' atribui um valor. Para verificar se dois valores são iguais, é necessário outro operador."
+    "id": 13,
+    "tipo": "caca_ao_bug",
+    "nivel": "medio",
+    "titulo": "Fase 13 - O Dicionário Inexistente",
+    "enunciado": "O sistema tentou buscar a idade de um usuário que não cadastrou essa informação, derrubando o servidor com um 'KeyError'. Qual linha corrigida evita o erro usando o método adequado de dicionário?",
+    "codigo_python": "usuario = {\"nome\": \"Carlos\"}\nidade = usuario[\"idade\"]",
+    "resposta_correta": "idade = usuario.get(\"idade\")",
+    "dica": "Acessar chaves com colchetes diretamente dispara exceção se a chave não existir. O método .get() retorna None ou um valor padrão seguro."
   },
   {
     "id": 14,
-    "tipo": "prever_saida",
-    "titulo": "Fase 13 - Cópia Rasa com copy()",
-    "enunciado": "Usamos o método copy(), mas essa cópia foi tão rasa quanto conversa de elevador. Qual será o resultado final impresso na lista original?",
-    "codigo_python": "import copy\na = [[1, 2], [3, 4]]\nb = copy.copy(a)\nb[0][0] = 99\nprint(a[0])",
-    "resposta_correta": "[99, 2]",
-    "dica": "A função copy.copy() faz uma cópia rasa. A lista externa é duplicada, mas as sublistas internas ainda compartilham a mesma referência."
+    "tipo": "caca_ao_bug",
+    "nivel": "medio",
+    "titulo": "Fase 14 - O Retorno Fantasma",
+    "enunciado": "A função deveria calcular a média e entregar o resultado para o relatório, mas a variável que recebeu a chamada ficou com 'None'. Qual linha corrige o envio da informação?",
+    "codigo_python": "def calcular_media(a, b):\n    media = (a + b) / 2\n\nresultado = calcular_media(8, 10)",
+    "resposta_correta": "return (a + b) / 2",
+    "dica": "Se uma função não tiver uma instrução 'return' explícita, ela retornará implicitamente o valor None em Python."
   },
   {
     "id": 15,
-    "tipo": "preencher_lacuna",
-    "titulo": "Fase 14 - Captura de Exceções",
-    "enunciado": "Alguém tentou dividir por zero e o programa tá prestes a explodir! Qual palavra-chave salva o dia e segura esse erro antes que a tela fique vermelha?",
-    "codigo_python": "try:\n    res = 10 / 0\n____ ZeroDivisionError:\n    res = 0",
-    "resposta_correta": "except",
-    "dica": "Palavra-chave que define o bloco para capturar e tratar exceções em Python."
+    "tipo": "caca_ao_bug",
+    "nivel": "medio",
+    "titulo": "Fase 15 - Alteração de Tupla Imutável",
+    "enunciado": "Tentando atualizar a versão do sistema armazenada em uma tupla, o script lançou um 'TypeError'. Qual é a forma correta de redefinir essa estrutura?",
+    "codigo_python": "config = (1, 0, 0)\nconfig[2] = 1",
+    "resposta_correta": "config = (1, 0, 1)",
+    "dica": "Tuplas são estruturas imutáveis em Python e não permitem reatribuição de seus itens individuais. É necessário redefinir a tupla inteira."
   },
   {
     "id": 16,
     "tipo": "caca_ao_bug",
-    "titulo": "Fase 15 - Tentativa de Alterar Tupla",
-    "enunciado": "Alguém tentou dar uma de espertinho e alterar um valor dentro de uma tupla, mas ela é mais teimosa que um mula. Reescreva a linha redefinindo a tupla inteira!",
-    "codigo_python": "coordenadas = (10, 20)\ncoordenadas[0] = 15\nprint(coordenadas)",
-    "resposta_correta": "coordenadas = (15, 20)",
-    "dica": "Tuplas são imutáveis e seus itens não podem ser reatribuídos individualmente. É necessário redefinir a tupla inteira."
+    "nivel": "dificil",
+    "titulo": "Fase 16 - O Construtor sem 'self'",
+    "enunciado": "Ao instanciar uma classe, o Python acusou que o método `__init__` recebeu mais argumentos do que o esperado. Qual é a linha correta da assinatura do método?",
+    "codigo_python": "class Usuario:\n    def __init__(nome, email):\n        self.nome = nome\n        self.email = email",
+    "resposta_correta": "def __init__(self, nome, email):",
+    "dica": "Métodos de instância em classes Python devem receber o 'self' obrigatoriamente como primeiro parâmetro na sua definição."
   },
   {
     "id": 17,
     "tipo": "caca_ao_bug",
-    "titulo": "Fase 04 - Loop Infinito (Lógica)",
-    "enunciado": "O programa deveria fazer uma contagem de 5 até 1 e parar, mas entra em um laço infinito travando a execução. Corrija a lógica do loop.",
-    "codigo_python": "contador = 5\nwhile contador > 0:\n    print(contador)\n    contador += 1",
-    "resposta_correta": "contador -= 1",
-    "dica": "Em vez de incrementar o contador a cada passo, ele precisa ser decrementado para alcançar a condição de parada."
+    "nivel": "dificil",
+    "titulo": "Fase 17 - Copiando Listas Aninhadas",
+    "enunciado": "Ao tentar clonar uma matriz com o método .copy(), o dev percebeu que alterar a cópia também alterava a matriz original. Qual linha com o módulo 'copy' resolve essa referência em profundidade?",
+    "codigo_python": "matriz = [[1, 2], [3, 4]]\ncopia = matriz.copy()",
+    "resposta_correta": "copia = copy.deepcopy(matriz)",
+    "dica": "O método .copy() faz uma cópia rasa (shallow copy). Para copiar objetos aninhados de forma independente, é preciso utilizar a função deepcopy do módulo copy."
   },
   {
     "id": 18,
     "tipo": "caca_ao_bug",
-    "titulo": "Fase 05 - Erro Off-by-One em Lista",
-    "enunciado": "Tentaram acessar o último elemento da lista de servidores registrados, mas o código dispara um IndexError. Corrija o acesso ao índice.",
-    "codigo_python": "servidores = ['srv1', 'srv2', 'srv3']\nultimo = servidores[len(servidores)]",
-    "resposta_correta": "ultimo = servidores[len(servidores) - 1]",
-    "dica": "Os índices em Python começam em 0. O último elemento de uma lista de tamanho N fica na posição N - 1 (ou use o índice -1)."
+    "nivel": "dificil",
+    "titulo": "Fase 18 - Modificação de Escopo Enclausurado",
+    "enunciado": "Dentro de uma função interna, o dev tentou incrementar uma variável da função pai e tomou um 'UnboundLocalError'. Qual instrução dentro da função interna corrige o acesso ao escopo?",
+    "codigo_python": "def contador():\n    total = 0\n    def incrementar():\n        total += 1\n    incrementar()",
+    "resposta_correta": "nonlocal total",
+    "dica": "Para reatribuir ou alterar variáveis de um escopo externo (que não seja global) dentro de uma função aninhada, deve-se declarar a variável com a palavra-chave 'nonlocal'."
   },
   {
     "id": 19,
-    "tipo": "caca_ao_bug",
-    "titulo": "Fase 06 - Efeito Colateral com Argumento Padrão Mutável",
-    "enunciado": "Esta função registra logs de acessos. No entanto, chamadas sucessivas acumulam dados antigos inesperadamente entre sessões. Corrija a definição da função.",
-    "codigo_python": "def registrar_acesso(ip, historico=[]):\n    historico.append(ip)\n    return historico",
-    "resposta_correta": "def registrar_acesso(ip, historico=None):\n    if historico is None:\n        historico = []\n    historico.append(ip)\n    return historico",
-    "dica": "Argumentos padrão mutáveis (como listas []) são avaliados apenas uma vez na definição da função. Use `None` como valor padrão."
+    "tipo": "preencher_lacuna",
+    "nivel": "facil",
+    "titulo": "Fase 19 - Interrompendo o Laço",
+    "enunciado": "O dev precisa parar um loop imediatamente assim que encontrar o item desejado, sem esperar que ele percorra a lista inteira. Qual palavra reserva faz isso?",
+    "codigo_python": "for item in [1, 2, 3, 4]:\n    if item == 3:\n        ____\n    print(item)",
+    "resposta_correta": "break",
+    "dica": "Comando utilizado para encerrar a execução de um laço de repetição (for ou while) prematuramente."
   },
   {
     "id": 20,
-    "tipo": "caca_ao_bug",
-    "titulo": "Fase 07 - Modificação de Lista Durante a Iteração",
-    "enunciado": "O código tenta remover todos os números pares da lista de portas abertas, mas pula elementos e produz um resultado incorreto. Corrija o algoritmo.",
-    "codigo_python": "portas = [21, 22, 80, 443, 8080]\nfor p in portas:\n    if p % 2 == 0:\n        portas.remove(p)",
-    "resposta_correta": "portas = [p for p in portas if p % 2 != 0]",
-    "dica": "Remover itens de uma lista enquanto se itera diretamente sobre ela altera os índices internos. Recomenda-se criar uma nova lista filtrada ou iterar sobre uma cópia."
+    "tipo": "preencher_lacuna",
+    "nivel": "facil",
+    "titulo": "Fase 20 - Importação de Módulo",
+    "enunciado": "O sistema precisa gerar números aleatórios para um sorteio, mas esqueceu a palavra correta para carregar a biblioteca nativa do Python. Complete o código!",
+    "codigo_python": "____ random\n\nnumero = random.randint(1, 10)",
+    "resposta_correta": "import",
+    "dica": "Palavra-chave usada para trazer módulos e bibliotecas externas ou nativas para o seu código."
   },
   {
     "id": 21,
-    "tipo": "prever_saida",
-    "titulo": "Fase 01 - F-Strings e Expressões Internas",
-    "enunciado": "Analise o código abaixo e determine qual texto exato será exibido no console quando o programa for executado.",
-    "codigo_python": "porta = 80\nativo = True\nprint(f\"Porta: {porta + 1} | Status: {not ativo}\")",
-    "resposta_correta": "Porta: 81 | Status: False",
-    "dica": "Resolva as operações dentro das chaves {} antes de montar a string final."
+    "tipo": "preencher_lacuna",
+    "nivel": "facil",
+    "titulo": "Fase 21 - Adicionando na Lista",
+    "enunciado": "Um novo produto precisa ser inserido no final da lista de estoque. Qual método de lista preenche essa lacuna?",
+    "codigo_python": "estoque = [\"mouse\", \"teclado\"]\nestoque.____(\"monitor\")",
+    "resposta_correta": "append",
+    "dica": "Método de listas em Python responsável por anexar um novo elemento ao final da estrutura."
   },
   {
     "id": 22,
-    "tipo": "prever_saida",
-    "titulo": "Fase 02 - Slicing Avançado e Passos Negativos",
-    "enunciado": "Qual será o resultado impresso após a aplicação do fatiamento (slicing) na string?",
-    "codigo_python": "codigo = \"SEC-9080-SYS\"\nprint(codigo[7:3:-1])",
-    "resposta_correta": "0809",
-    "dica": "O passo -1 inverte o sentido do fatiamento: começa no índice 7 (inclusive) e vai até o índice 3 (exclusive)."
+    "tipo": "preencher_lacuna",
+    "nivel": "medio",
+    "titulo": "Fase 22 - Tratamento de Exceções",
+    "enunciado": "Para evitar que o programa quebre ao tentar dividir por zero, o dev preparou um bloco de segurança. Qual instrução vai na lacuna para capturar a falha?",
+    "codigo_python": "try:\n    res = 10 / 0\n____ ZeroDivisionError:\n    print(\"Divisão inválida\")",
+    "resposta_correta": "except",
+    "dica": "Instrução usada em conjunto com o 'try' para capturar e tratar erros/exceções disparados no código."
   },
   {
     "id": 23,
-    "tipo": "prever_saida",
-    "titulo": "Fase 03 - Avaliação Curto-Circuito (Short-Circuit)",
-    "enunciado": "Qual valor será atribuído à variável 'resultado' e impresso no terminal?",
-    "codigo_python": "a = []\nb = [1, 2, 3]\nresultado = a or b\nprint(resultado)",
-    "resposta_correta": "[1, 2, 3]",
-    "dica": "O operador 'or' em Python retorna o primeiro valor considerado verdadeiro (truthy) ou o último valor se todos forem falsos (falsy)."
+    "tipo": "preencher_lacuna",
+    "nivel": "medio",
+    "titulo": "Fase 23 - Descompactação de Argumentos (*args)",
+    "enunciado": "A função precisa aceitar uma quantidade variável de argumentos posicionais sem saber quantos virão ao certo. Qual caractere especial deve ser usado antes do parâmetro?",
+    "codigo_python": "def somar_todos(____valores):\n    return sum(valores)",
+    "resposta_correta": "*",
+    "dica": "Operador (asterisco) utilizado na definição de funções para agrupar múltiplos argumentos posicionais em uma tupla."
   },
   {
     "id": 24,
-  "tipo": "prever_saida",
-  "titulo": "Fase 04 - Compreensão de Dicionário com Condição",
-  "enunciado": "Qual será o dicionário resultante após a execução desta compreensão de dicionário?",
-  "codigo_python": "dados = {'a': 1, 'b': 2, 'c': 3, 'd': 4}\nresultado = {k: v * 2 for k, v in dados.items() if v % 2 == 0}\nprint(resultado)",
-  "resposta_correta": "{'b': 4, 'd': 8}",
-  "dica": "Filtre apenas os pares onde o valor 'v' é par e, para esses pares, multiplique o valor por 2."
+    "tipo": "preencher_lacuna",
+    "nivel": "medio",
+    "titulo": "Fase 24 - Geradores com Yield",
+    "enunciado": "Para economizar memória em uma sequência gigante, a função deve pausar e entregar o valor sob demanda em vez de retornar tudo de uma vez. Qual palavra substitui o 'return'?",
+    "codigo_python": "def contador():\n    for i in range(3):\n        ____ i",
+    "resposta_correta": "yield",
+    "dica": "Palavra-chave que transforma uma função comum em um gerador (generator), produzindo valores de forma preguiçosa (lazy execution)."
   },
   {
     "id": 25,
-    "tipo": "prever_saida",
-    "titulo": "Fase 05 - Escopo de Variáveis e Enclosing (LEGB)",
-    "enunciado": "Qual número será impresso na tela após a chamada das funções aninhadas?",
-    "codigo_python": "x = 10\ndef externa():\n    x = 20\n    def interna():\n        nonlocal x\n        x += 5\n    interna()\n    return x\n\nprint(externa())",
-    "resposta_correta": "25",
-    "dica": "A instrução 'nonlocal' faz com que a função 'interna' altere a variável 'x' do escopo da função 'externa'."
+    "tipo": "preencher_lacuna",
+    "nivel": "dificil",
+    "titulo": "Fase 25 - Gerenciador de Contexto Personalizado",
+    "enunciado": "O dev sênior está construindo uma classe para gerenciar conexões com banco de dados usando o comando 'with'. Qual método mágico precisa ser implementado para executar a saída do bloco?",
+    "codigo_python": "class Conexao:\n    def __enter__(self):\n        return self\n    def ____(self, exc_type, exc_val, exc_tb):\n        print(\"Conexão fechada\")",
+    "resposta_correta": "__exit__",
+    "dica": "Método dunder chamado automaticamente ao finalizar o bloco de um 'with', responsável por limpar recursos ou fechar conexões."
   },
   {
     "id": 26,
-    "tipo": "prever_saida",
-    "titulo": "Fase 06 - Desempacotamento de Argumentos (*args e **kwargs)",
-    "enunciado": "Determine o valor final exibido pelo comando print.",
-    "codigo_python": "def calcular(base, *valores, multiplicador=2):\n    return (base + sum(valores)) * multiplicador\n\nnums = [3, 4]\nprint(calcular(10, *nums, multiplicador=3))",
-    "resposta_correta": "51",
-    "dica": "O prefixo '*' desempacota a lista 'nums', fazendo com que 'base' seja 10 e 'valores' seja a tupla (3, 4)."
+    "tipo": "preencher_lacuna",
+    "nivel": "dificil",
+    "titulo": "Fase 26 - Funções Anônimas Instantâneas",
+    "enunciado": "Precisamos ordenar uma lista de dicionários pelo preço sem criar uma função com 'def'. Qual palavra cria essa função inline minimalista?",
+    "codigo_python": "produtos = [{\"nome\": \"A\", \"preco\": 30}, {\"nome\": \"B\", \"preco\": 10}]\nprodutos.sort(key=____ p: p[\"preco\"])",
+    "resposta_correta": "lambda",
+    "dica": "Palavra-chave usada para definir funções anônimas (de uma única linha) em Python."
   },
   {
     "id": 27,
-    "tipo": "prever_saida",
-    "titulo": "Fase 07 - Mutabilidade e Cópia Rasa (Shallow Copy)",
-    "enunciado": "Qual será o conteúdo impresso da lista 'matriz[0]' ao final das modificações?",
-    "codigo_python": "matriz = [[0] * 2] * 2\nmatriz[0][0] = 99\nprint(matriz[0])",
-    "resposta_correta": "[99, 0]",
-    "dica": "Cuidado com o operador '*' em listas aninhadas: ele replica referências para a mesma lista interna, não cópias independentes."
+    "tipo": "preencher_lacuna",
+    "nivel": "dificil",
+    "titulo": "Fase 27 - Modificando Métodos com Decoradores",
+    "enunciado": "Para registrar a execução de uma função sem alterar seu corpo, o arquiteto criou uma estrutura que envelopa a chamada. Qual símbolo inicial transforma essa função em um decorador aplicado?",
+    "codigo_python": "____meu_decorador\ndef minha_funcao():\nprint(\"Executando...\")",
+    "resposta_correta": "@",
+    "dica": "Símbolo (arroba) colocado acima da definição de uma função para aplicar um decorador sobre ela."
   },
   {
     "id": 28,
     "tipo": "engenharia_reversa",
-    "titulo": "Fase 01 - Primeiro Operador",
-    "enunciado": "Descubra qual operador deve ocupar a lacuna para transformar cada entrada na saída correspondente:",
+    "nivel": "facil",
+    "titulo": "Fase 28 - O Operador Generoso",
+    "enunciado": "O cliente jura que a conta dele só aumenta do nada! Descubra qual operador o estagiário colocou aqui para inflar esses números em exatas 3 unidades:",
     "codigo_python": "resultado = x ___ 3",
     "dados_teste": [
       { "entrada": 2, "saida": 5 },
@@ -259,186 +287,253 @@
   {
     "id": 29,
     "tipo": "engenharia_reversa",
-    "titulo": "Fase 02 - Operação Oculta",
-    "enunciado": "Uma operação desconhecida está sendo realizada sobre x. Descubra qual operador completa o código:",
-    "codigo_python": "resultado = x ___ 4",
+    "nivel": "facil",
+    "titulo": "Fase 29 - A Máquina de Duplicar",
+    "enunciado": "A diretoria pediu um algoritmo de crescimento exponencial, mas o dev entregou uma réplica exata da promoção 'leve o dobro'. Qual operador está multiplicando a vida do usuário?",
+    "codigo_python": "resultado = x ___ 2",
     "dados_teste": [
-      { "entrada": 2, "saida": 8 },
-      { "entrada": 5, "saida": 20 },
-      { "entrada": 7, "saida": 28 }
+      { "entrada": 3, "saida": 6 },
+      { "entrada": 5, "saida": 10 },
+      { "entrada": 8, "saida": 16 }
     ],
     "resposta_correta": "*",
-    "dica": "Veja quantas vezes o valor de entrada aparece na saída."
+    "dica": "Perceba que a saída é sempre o dobro da entrada fornecida."
   },
   {
     "id": 30,
     "tipo": "engenharia_reversa",
-    "titulo": "Fase 03 - Operador Oculto",
-    "enunciado": "Descubra qual operador matemático substitui a lacuna para satisfazer a tabela Entrada -> Saída:",
+    "nivel": "facil",
+    "titulo": "Fase 30 - Cortador de Metades",
+    "enunciado": "O orçamento da equipe foi submetido a essa função misteriosa e caiu exatamente pela metade. Qual operador de divisão foi usado para repartir o bolo?",
     "codigo_python": "resultado = x ___ 2",
     "dados_teste": [
-      { "entrada": 2, "saida": 4 },
-      { "entrada": 3, "saida": 9 },
-      { "entrada": 4, "saida": 16 }
+      { "entrada": 10, "saida": 5.0 },
+      { "entrada": 20, "saida": 10.0 },
+      { "entrada": 50, "saida": 25.0 }
     ],
-    "resposta_correta": "**",
-    "dica": "A saída não está simplesmente multiplicando x por 2. Observe a relação entre cada número e seu próprio valor."
+    "resposta_correta": "/",
+    "dica": "Observe que o resultado é sempre um número de ponto flutuante equivalente à metade da entrada."
   },
   {
     "id": 31,
     "tipo": "engenharia_reversa",
-    "titulo": "Fase 04 - O Resto da Divisão",
-    "enunciado": "O programa recebe um número e produz o resto de sua divisão por 4. Descubra qual operador está faltando:",
-    "codigo_python": "resultado = x ___ 4",
+    "nivel": "medio",
+    "titulo": "Fase 31 - O Exterminador de Decimais",
+    "enunciado": "O departamento financeiro odeia centavos e contratou esse método para passar a faca na parte decimal sem dó nem piedade. Qual operador faz a divisão inteira?",
+    "codigo_python": "resultado = x ___ 3",
     "dados_teste": [
-      { "entrada": 7, "saida": 3 },
-      { "entrada": 12, "saida": 0 },
-      { "entrada": 19, "saida": 3 }
+      { "entrada": 7, "saida": 2 },
+      { "entrada": 10, "saida": 3 },
+      { "entrada": 14, "saida": 4 }
     ],
-    "resposta_correta": "%",
-    "dica": "Quando a divisão é exata, o resultado é zero. Quando sobra alguma coisa, somente essa sobra aparece."
+    "resposta_correta": "//",
+    "dica": "O resultado ignora completamente o resto e mantém apenas a parte inteira da divisão."
   },
   {
     "id": 32,
     "tipo": "engenharia_reversa",
-    "titulo": "Fase 05 - Comparação Secreta",
-    "enunciado": "A expressão abaixo retorna apenas True ou False. Descubra qual operador de comparação produz exatamente os resultados apresentados:",
-    "codigo_python": "resultado = x ___ 8",
+    "nivel": "medio",
+    "titulo": "Fase 32 - O Caçador de Sobras",
+    "enunciado": "O algoritmo da pizza dividiu os pedaços entre 4 pessoas e só nos deu o que sobrou no tabuleiro. Qual operador pega o resto de uma divisão?",
+    "codigo_python": "resultado = x ___ 4",
     "dados_teste": [
-      { "entrada": 5, "saida": true },
-      { "entrada": 8, "saida": false },
-      { "entrada": 11, "saida": false }
+      { "entrada": 9, "saida": 1 },
+      { "entrada": 10, "saida": 2 },
+      { "entrada": 11, "saida": 3 }
     ],
-    "resposta_correta": "<",
-    "dica": "O próprio número usado na comparação não produz verdadeiro. Procure uma relação que só aceite valores menores."
+    "resposta_correta": "%",
+    "dica": "Conhecido como operador de módulo, ele devolve o resto exato da divisão inteira."
   },
   {
     "id": 33,
     "tipo": "engenharia_reversa",
-    "titulo": "Fase 06 - Transformação Desconhecida",
-    "enunciado": "A lacuna representa uma expressão completa. Descubra qual transformação gera todas as saídas abaixo:",
-    "codigo_python": "resultado = ___",
+    "nivel": "medio",
+    "titulo": "Fase 33 - O Quadrado Mágico",
+    "enunciado": "Os números entram normais e saem absurdamente gigantescos! Descubra qual operador elevou a autoestima de cada valor ao quadrado:",
+    "codigo_python": "resultado = x ___ 2",
     "dados_teste": [
-      { "entrada": 2, "saida": 5 },
-      { "entrada": 4, "saida": 9 },
-      { "entrada": 7, "saida": 15 }
+      { "entrada": 3, "saida": 9 },
+      { "entrada": 4, "saida": 16 },
+      { "entrada": 5, "saida": 25 }
     ],
-    "resposta_correta": "x * 2 + 1",
-    "dica": "Tente descobrir primeiro como x é alterado. Depois procure o pequeno ajuste necessário para chegar à saída."
+    "resposta_correta": "**",
+    "dica": "Operador responsável por realizar a potenciação (elevação de um número a uma potência)."
   },
   {
     "id": 34,
     "tipo": "engenharia_reversa",
-    "titulo": "Fase 07 - Código Invertido",
-    "enunciado": "O programa deveria classificar um número como positivo ou negativo. Descubra qual condição substitui a lacuna para que todos os testes produzam os resultados esperados:",
-    "codigo_python": "resultado = 'positivo' if x ___ 0 else 'negativo'",
+    "nivel": "dificil",
+    "titulo": "Fase 34 - O Criptógrafo Binário (Shift Right)",
+    "enunciado": "O hacker tentou ofuscar o salário da diretoria movendo os bits diretamente na memória para a direita! Qual operador bitwise cometeu essa audácia?",
+    "codigo_python": "resultado = x ___ 1",
     "dados_teste": [
-      { "entrada": 12, "saida": "positivo" },
-      { "entrada": -5, "saida": "negativo" },
-      { "entrada": 3, "saida": "positivo" }
+      { "entrada": 8, "saida": 4 },
+      { "entrada": 12, "saida": 6 },
+      { "entrada": 20, "saida": 10 }
     ],
-    "resposta_correta": ">=",
-    "dica": "Compare o sinal de cada entrada com zero. Pense também no que aconteceria caso a entrada fosse exatamente zero."
+    "resposta_correta": ">>",
+    "dica": "Este operador desloca os bits do número para a direita, o que na prática equivale a dividir por 2 a cada casa deslocada."
   },
   {
     "id": 35,
-    "tipo": "reconstrucao",
-    "titulo": "Fase 01 - Soma Desmontada",
-    "enunciado": "As linhas foram embaralhadas. Organize-as para criar um programa que some dois números e mostre o resultado:",
-    "linhas_embaralhadas": [
-      "print(resultado)",
-      "resultado = a + b",
-      "a = 5",
-      "b = 3"
+    "tipo": "engenharia_reversa",
+    "nivel": "dificil",
+    "titulo": "Fase 35 - O Interruptor XOR",
+    "enunciado": "O sistema de segurança está mascarando IDs com um operador bitwise a nível de circuito. Qual operador aplica o 'OU Exclusivo' (XOR) em cada valor?",
+    "codigo_python": "resultado = x ___ 5",
+    "dados_teste": [
+      { "entrada": 1, "saida": 4 },
+      { "entrada": 5, "saida": 0 },
+      { "entrada": 7, "saida": 2 }
     ],
-    "resposta_correta": "3-4-2-1",
-    "dica": "Antes de calcular, os dois valores precisam existir."
+    "resposta_correta": "^",
+    "dica": "O operador XOR bitwise retorna 1 onde os bits comparados forem diferentes entre si."
   },
   {
     "id": 36,
-    "tipo": "reconstrucao",
-    "titulo": "Fase 02 - Dobro Perdido",
-    "enunciado": "Reorganize as linhas para que o programa descubra o dobro de um número e exiba o resultado:",
-    "linhas_embaralhadas": [
-      "print(dobro)",
-      "numero = 9",
-      "dobro = numero * 2",
-      "print('Resultado:')"
+    "tipo": "engenharia_reversa",
+    "nivel": "dificil",
+    "titulo": "Fase 36 - A Inversão Bizarra (~)",
+    "enunciado": "O júnior apertou uma tecla misteriosa e transformou todos os números positivos em negativos alterados por um! Qual operador bitwise unário causou este efeito de complemento de um?",
+    "codigo_python": "resultado = ___ x",
+    "dados_teste": [
+      { "entrada": 0, "saida": -1 },
+      { "entrada": 4, "saida": -5 },
+      { "entrada": 10, "saida": -11 }
     ],
-    "resposta_correta": "2-4-3-1",
-    "dica": "A mensagem pode ser exibida antes do cálculo, mas a variável usada na multiplicação precisa ser criada primeiro."
+    "resposta_correta": "~",
+    "dica": "O operador bitwise NOT inverte todos os bits do número, resultando na fórmula -(x + 1)."
   },
   {
     "id": 37,
     "tipo": "reconstrucao",
-    "titulo": "Fase 03 - Média Embaralhada",
-    "enunciado": "Organize as instruções para calcular a média de três notas e depois exibi-la:",
+    "nivel": "facil",
+    "titulo": "Fase 37 - Boas-Vindas sem Caos",
+    "enunciado": "O gato do dev passeou pelo teclado e desmontou a função de saudação do sistema. Ordene os blocos antes que a aplicação receba o usuário no vácuo:",
     "linhas_embaralhadas": [
-      "media = (nota1 + nota2 + nota3) / 3",
-      "nota3 = 9",
-      "print(media)",
-      "nota1 = 7",
-      "nota2 = 8"
+      "print('Olá, ' + nome)",
+      "def saudar(nome):",
+      "saudar('Dev')"
     ],
-    "resposta_correta": "4-5-2-1-3",
-    "dica": "A fórmula só pode ser executada quando todas as três notas já tiverem recebido seus valores."
+    "resposta_correta": "2,1,3",
+    "dica": "Você precisa definir a função primeiro, escrever seu bloco interno e só depois chamá-la."
   },
   {
     "id": 38,
     "tipo": "reconstrucao",
-    "titulo": "Fase 04 - Condição Desmontada",
-    "enunciado": "As instruções abaixo devem formar um programa que informe se uma pessoa pode entrar em uma área destinada a maiores de 18 anos:",
+    "nivel": "facil",
+    "titulo": "Fase 38 - O Cheque de Maioridade",
+    "enunciado": "O segurança do clube de código precisa verificar a idade da galera na entrada. Reconstrua a condicional na ordem certa para evitar penetras:",
     "linhas_embaralhadas": [
-      "print('Entrada permitida')",
-      "idade = 20",
+      "print('Bar liberado!')",
       "if idade >= 18:",
-      "print('Entrada proibida')"
+      "idade = 20"
     ],
-    "resposta_correta": "2-3-1-4",
-    "dica": "Primeiro existe a idade, depois a condição decide qual mensagem será executada."
+    "resposta_correta": "3,2,1",
+    "dica": "Primeiro declare a variável de idade, depois faça o teste condicional e finalize com a ação de resposta."
   },
   {
     "id": 39,
     "tipo": "reconstrucao",
-    "titulo": "Fase 05 - Laço Reconstruído",
-    "enunciado": "Monte a sequência correta para que o programa percorra os números de 1 a 5 e mostre cada um deles:",
+    "nivel": "facil",
+    "titulo": "Fase 39 - Laço Reconstruído",
+    "enunciado": "Monte a sequência correta para que o programa avise que vai começar, percorra os números de 1 a 5 e encerre sem surtos:",
     "linhas_embaralhadas": [
       "print(i)",
       "for i in range(1, 6):",
       "print('Iniciando...')",
       "print('Fim!')"
     ],
-    "resposta_correta": "3-2-1-4",
-    "dica": "Identifique primeiro o que acontece uma única vez e o que precisa acontecer repetidamente."
+    "resposta_correta": "3,2,1,4",
+    "dica": "Identifique primeiro o que acontece uma única vez no início, o que roda dentro do loop e o que fecha o programa."
   },
   {
     "id": 40,
     "tipo": "reconstrucao",
-    "titulo": "Fase 06 - Decisão Embaralhada",
-    "enunciado": "Reorganize o código para verificar se um número é par ou ímpar:",
+    "nivel": "medio",
+    "titulo": "Fase 40 - O Acumulador de Pontos",
+    "enunciado": "O estagiário derrubou o Script de Pontuação no chão e as peças se espalharam. Monte o laço que soma todos os pontos de uma lista:",
     "linhas_embaralhadas": [
-      "print('Ímpar')",
-      "if numero % 2 == 0:",
-      "numero = 14",
-      "print('Par')",
-      "else:"
+      "total += p",
+      "total = 0",
+      "print(total)",
+      "for p in [10, 20, 30]:"
     ],
-    "resposta_correta": "3-2-4-5-1",
-    "dica": "O número precisa existir antes da verificação. Depois, lembre que o bloco do else vem associado ao if."
+    "resposta_correta": "2,4,1,3",
+    "dica": "Crie o acumulador zerado antes do loop, incremente os valores dentro do laço e exiba o resultado no final."
   },
   {
     "id": 41,
     "tipo": "reconstrucao",
-    "titulo": "Fase 07 - Algoritmo Quebrado",
-    "enunciado": "Reconstrua o programa para verificar uma senha. A senha deve ser armazenada, comparada e, dependendo do resultado, uma das duas mensagens deve ser exibida:",
+    "nivel": "medio",
+    "titulo": "Fase 41 - O Escudo Contra o Zero",
+    "enunciado": "Tentar dividir por zero derrubou o servidor na sexta-feira às 18h! Organize este bloco de 'try/except' para o sistema sobreviver ao desastre:",
     "linhas_embaralhadas": [
-      "print('Acesso negado')",
-      "senha = 'python123'",
-      "if senha == 'python123':",
-      "print('Acesso permitido')",
-      "else:"
+      "except ZeroDivisionError:",
+      "resultado = 10 / 0",
+      "try:",
+      "print('Erro: Divisão por zero!')"
     ],
-    "resposta_correta": "2-3-4-5-1",
-    "dica": "Pense na estrutura lógica: primeiro existe um valor, depois ele é testado e somente então uma das duas possibilidades é executada."
-}
+    "resposta_correta": "3,2,1,4",
+    "dica": "Abra o bloco de risco com 'try', coloque a operação perigosa dentro dele, capture o erro com 'except' e mostre a mensagem de aviso."
+  },
+  {
+    "id": 42,
+    "tipo": "reconstrucao",
+    "nivel": "medio",
+    "titulo": "Fase 42 - O Filtro de Pares",
+    "enunciado": "A lista de convidados VIP só aceita números de ID que sejam pares. Ordene este loop com condição para filtrar os sortudos:",
+    "linhas_embaralhadas": [
+      "if num % 2 == 0:",
+      "for num in numeros:",
+      "numeros = [1, 2, 3, 4, 5]",
+      "print(num)"
+    ],
+    "resposta_correta": "3,2,1,4",
+    "dica": "Inicie com a lista de dados, itere sobre ela, aplique a verificação do resto da divisão e exiba o número."
+  },
+  {
+    "id": 43,
+    "tipo": "reconstrucao",
+    "nivel": "dificil",
+    "titulo": "Fase 43 - A Fábrica de Objetos",
+    "enunciado": "O arquiteto de software tentou criar uma classe simples para os usuários do sistema, mas as linhas saíram da ordem de execução. Monte a estrutura da POO:",
+    "linhas_embaralhadas": [
+      "u1 = Usuario('Ana')",
+      "self.nome = nome",
+      "class Usuario:",
+      "def __init__(self, nome):"
+    ],
+    "resposta_correta": "3,4,2,1",
+    "dica": "Declare a classe, defina o construtor __init__, atribua o atributo e, por fim, instancie o objeto."
+  },
+  {
+    "id": 44,
+    "tipo": "reconstrucao",
+    "nivel": "dificil",
+    "titulo": "Fase 44 - O Robô de Download (While True)",
+    "enunciado": "Um script de download precisa ficar tentando puxar os dados do servidor até conseguir, usando um loop infinito controlado. Ajuste a ordem dos comandos:",
+    "linhas_embaralhadas": [
+      "if baixou:",
+      "baixou = tentar_download()",
+      "break",
+      "while True:"
+    ],
+    "resposta_correta": "4,2,1,3",
+    "dica": "Inicie o laço infinito com 'while True', execute a tentativa, verifique a condição de sucesso e use o 'break' para sair."
+  },
+  {
+    "id": 45,
+    "tipo": "reconstrucao",
+    "nivel": "dificil",
+    "titulo": "Fase 45 - O Abridor Seguro de Arquivo",
+    "enunciado": "O banco de dados exigiu que o relatório seja lido usando um Gerenciador de Contexto para não vazar memória. Reorganize o bloco 'with open':",
+    "linhas_embaralhadas": [
+      "print(conteudo)",
+      "with open('dados.txt', 'r') as arquivo:",
+      "conteudo = arquivo.read()"
+    ],
+    "resposta_correta": "2,3,1",
+    "dica": "Abra o arquivo com 'with', faça a leitura do conteúdo atribuindo a uma variável e depois imprima o resultado."
+  }
 ]
