@@ -10,14 +10,14 @@
     "dica": "O operador '+' em strings realiza concatenação (junção de textos), não soma matemática."
   },
   {
-    "id": 2,
-    "tipo": "prever_saida",
-    "nivel": "facil",
-    "titulo": "Fase 02 - O Booleano Ilusório",
-    "enunciado": "Para economizar linhas de código, o estagiário decidiu verificar a presença de dados assim. A condição vai passar?",
-    "codigo_python": "nome = \"\"\nif nome:\n    print(\"Preenchido\")\nelse:\n    print(\"Vazio\")",
-    "resposta_correta": "Vazio",
-    "dica": "Em Python, strings vazias (\"\") são avaliadas como Falso (Falsy) em contextos booleanos."
+  "id": 2,
+  "tipo": "prever_saida",
+  "nivel": "facil",
+  "titulo": "Fase 02 - A Ilusão das Listas Gêmeas",
+  "enunciado": "O administrador tentou comparar duas listas com valores idênticos usando operadores diferentes para impressionar no code review. O que vai aparecer no console?",
+  "codigo_python": "a = [1, 2]\nb = [1, 2]\nprint(a == b, a is b)",
+  "resposta_correta": "True False",
+  "dica": "O operador '==' compara se os CONTEÚDOS são iguais. O operador 'is' compara se são o MESMO objeto na memória."
   },
   {
     "id": 3,
@@ -56,7 +56,7 @@
     "titulo": "Fase 06 - Compreensão de Lista no Laço",
     "enunciado": "Tentando criar uma lista de números pares rapidamente para um relatório. Qual será o conteúdo final da lista?",
     "codigo_python": "numeros = [i * 2 for i in range(5) if i % 2 == 0]\nprint(numeros)",
-    "resposta_correta": "[0, 8]",
+    "resposta_correta": "[0,4,8]",
     "dica": "O range(5) gera 0, 1, 2, 3, 4. Apenas 0, 2 e 4 passam no filtro (i % 2 == 0), gerando 0*2=0, 2*2=4 (ops, no caso i=2 gera 4 e i=4 gera 8 -> 0 e 8)."
   },
   {
@@ -84,9 +84,9 @@
     "tipo": "prever_saida",
     "nivel": "dificil",
     "titulo": "Fase 09 - Modificação de Lista Durante Iteração",
-    "enunciado": "Tentando remover zeros de uma lista enquanto itera sobre ela. Quantos elementos sobraram na lista final impressa?",
+    "enunciado": "Tentando remover zeros de uma lista enquanto itera sobre ela. Quais elementos sobraram na lista final impressa?",
     "codigo_python": "nums = [0, 1, 0, 2, 3]\nfor n in nums:\n    if n == 0:\n        nums.remove(n)\nprint(nums)",
-    "resposta_correta": "[1, 0, 2, 3]",
+    "resposta_correta": "[1, 2, 3]",
     "dica": "Modificar a própria lista enquanto ela é iterada altera os índices internos do loop, fazendo com que o Python 'pule' a verificação de alguns elementos."
   },
   {
