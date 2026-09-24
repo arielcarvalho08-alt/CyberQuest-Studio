@@ -10,17 +10,19 @@
 </head>
 <body>
     <div id="terminal-screen" class="terminal-container">
-        <div id ="nickname-modal" class="modal-overlay">
+        
+        <div id="nickname-modal" class="modal-overlay">
             <div class="modal-card info">
-                <h3>[IDENTIFICAÇÃO]</h3>
+                <h3>[ IDENTIFICAÇÃO ]</h3>
                 <p>Digite seu nickname Hacker para salvar/carregar seu progresso:</p>
-                <div class="input-container" style:"border: none;">
-                    <span class="prompt-symbol">&gt</span>
-                    <input type="text" id="nickname-input" placeholder ="Ex: CyberDev" autofocus autocomplete="off">   
+                <div class="input-container nickname-box">
+                    <span class="prompt-symbol">&gt;</span>
+                    <input type="text" id="nickname-input" placeholder="Ex: CyberDev" autofocus autocomplete="off">   
                 </div>
                 <div class="modal-footer" style="margin-top: 15px;">Pressione ENTER para confirmar</div>
             </div>
         </div>
+
         <div id="modal-overlay" class="modal-overlay hidden">
             <div id="modal-card" class="modal-card info">
                 <h3 id="modal-title">[ INFORMAÇÃO ]</h3>
@@ -72,6 +74,7 @@
             </div>
         </section>
 
+        <!-- Tela de Conclusão -->
         <section id="screen-conclusion" class="game-screen hidden">
             <div class="top-system-bar">
                 <span class="system-tag">SYSTEM v1.0</span>
@@ -91,13 +94,13 @@
 
         <div class="input-container">
             <span class="prompt-symbol">&gt;</span>
-            <input type="text" id="terminal-input" placeholder="Digite 1, 2 ou 3..." autofocus autocomplete="off">
+            <input type="text" id="terminal-input" placeholder="Digite 1, 2 ou 3..." autocomplete="off">
         </div>
 
     </div>
 
     <script type="module" src="db.js"></script>
-    <script type="module"src="ui.js"></script>
-    <script type = "module" src="logic.js"></script>
+    <script type="module" src="ui.js"></script>
+    <script type="module" src="logic.js"></script>
 </body>
 </html>
