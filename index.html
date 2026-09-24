@@ -1,54 +1,91 @@
-html
 <!DOCTYPE html>
-<html lang = "pt-BR">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="widht=device-widht, initial-scale=1.0">
-        <title> Cyber Quest - Terminal Educacional</title>
-        <link rel="stylesheet" href="style.css">
-        <!-- Fonte Monospaced estilo Retro Gamer -->
-         <link href="https://fonts.googleapis.com/ccs2?family=Fira+Code:wght@400;700&display=swap" rel="stylesheet">
-    </head>
-    <body>
-        <!-- Tela Principal do Terminal-->
-         <div class="terminal-container">
-            <!-- Cabeçalho Retro (Landing Page)-->
-            <header class="terminal-header">
-                <pre class="ascii-art">
-                    ██████╗ ██╗   ██╗██████╗ ███████╗██████╗  ██████╗ ██╗   ██╗███████╗███████╗████████╗
-                    ██╔════╝╚██╗ ██╔╝██╔══██╗██╔════╝██╔══██╗██╔═══██╗██║   ██║██╔════╝██╔════╝╚══██╔══╝
-                    ██║      ╚████╔╝ ██████╔╝█████╗  ██████╔╝██║   ██║██║   ██║█████╗  ███████╗   ██║   
-                    ██║       ╚██╔╝  ██╔══██╗██╔══╝  ██╔══██╗██║  ██║║██║   ██║██╔══╝  ╚════██║   ██║   
-                    ╚██████╗   ██║   ██████╔╝███████╗██║  ██║╚██████╔╝╚██████╔╝███████╗███████║   ██║   
-                     ╚═════╝   ╚═╝   ╚═════╝ ╚══════╝╚═╝  ╚═╝ ╚═════██╗╚═════╝ ╚══════╝╚══════╝   ╚═╝   
-                                                                    ╚═╝                                                 
-                </pre>
-                <p class="subtitle">[SISTEMA OPERACIONAL CYBERQUEST v1.0 - PYTHON TRAINING tool]</p>
-                <p class="instructions">Digite <span class="highlight">'iniciar'</span>para comecar a invasao ou<span class="highlight">'ajuda'</span>para instrucoes.</p>
-             </header>
-    
-             <hr class="terminal-divider">
-    
-             <!-- Area de Exibcao do Enigma Atual-->
-              <section id="enigma-container" class="enigma-card-hidden">
-                <h2 id="enigma-titulo" class="enigma-title">Carregando fase... </h2>
-                <p id="enigma-enunciado" class="enigma-text"></p>
-                <!-- Bloco de Código Python Formatado-->
-                 <div class="code-box">
-                    <pre><code id="enigma-codigo" class="python-code"></code></pre>
-                 </div>
-              </section>
-    
-              <!-- Histórico de Comandos / Saída do Terminal-->
-               <div id="terminal-output" class="terminal-logs"></div>
-               <!-- Linha de Entrada (Prompt do Usuário)-->
-                <div class="prompt-line">
-                    <span class="prompt-label">user@cyberquest:~ $</span>
-                    <input type="text" id="terminal-input" class="prompt-input" autofocus autocomplete="off" spellcheck="false">
-                </div>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CYBERQUEST</title>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="terminal-screen" class="terminal-container">
+            
+        <div id="modal-overlay" class="modal-overlay hidden">
+            <div id="modal-card" class="modal-card info">
+                <h3 id="modal-title">[ INFORMAÇÃO ]</h3>
+                <p id="modal-text">Conteúdo...</p>
+                <div class="modal-footer">Pressione ENTER para fechar</div>
+            </div>
+        </div>
 
-         </div>
-         <script src="logic.js"></script>
-         <script src="ui.js"></script>
-    </body>
+        <section id="screen-menu" class="game-screen">
+            <div class="top-system-bar">
+                <span class="system-tag">SYSTEM v1.0</span>
+                <span class="progresso-tag">Progresso: <span id="menu-progress">0/18</span></span>
+            </div>
+            
+            <div class="menu-content">
+                <h1 class="pixel-title">CYBERQUEST</h1>
+                <p class="subtitle">(Feito em pixelart)</p>
+                
+                <div class="menu-options">
+                    <p><span class="option-num">[1]</span> Iniciar gameplay</p>
+                    <p><span class="option-num">[2]</span> Como jogar</p>
+                    <p><span class="option-num">[3]</span> Sobre</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="screen-game" class="game-screen hidden">
+            <div class="top-bar">
+                <div class="top-left">
+                    <span id="tipo-tag" class="badge-tipo">caca_ao_bug</span>
+                    <span id="titulo-tag" class="enigma-titulo">Fase 02 - Atribuição em Condicional</span>
+                </div>
+                <div class="top-right">
+                    <span class="progresso-tag">Progresso: <span id="game-progress">2/18</span></span>
+                </div>
+            </div>
+
+            <div class="enunciado-card">
+                <span class="enunciado-label">[ DESAFIO ]</span>
+                <p id="enunciado-text">Carregando enunciado...</p>
+            </div>
+
+            <div class="code-box-container">
+                <div class="code-header">
+                    <span>PYTHON CODE</span>
+                    <span class="file-tag">script.py</span>
+                </div>
+                <pre><code id="code-content"># Código aparecerá aqui</code></pre>
+            </div>
+        </section>
+
+        <section id="screen-conclusion" class="game-screen hidden">
+            <div class="top-system-bar">
+                <span class="system-tag">SYSTEM v1.0</span>
+                <span class="progresso-tag">Progresso: <span id="conclusion-progress">18/18</span></span>
+            </div>
+            
+            <div class="conclusion-content">
+                <h2 id="motivation-msg" class="pixel-subtitle">Missão Cumprida!</h2>
+                <h1 id="congrats-msg" class="pixel-title-sm">Parabéns! Você passou pelo nível Iniciante!</h1>
+
+                <div class="conclusion-options">
+                    <p><span class="option-num">[1]</span> Digite para retornar ao menu</p>
+                    <p><span class="option-num">[2]</span> Digite para ir para o próximo nível (Bloqueado)</p>
+                </div>
+            </div>
+        </section>
+
+        <div class="input-container">
+            <span class="prompt-symbol">&gt;</span>
+            <input type="text" id="terminal-input" placeholder="Digite 1, 2 ou 3..." autofocus autocomplete="off">
+        </div>
+
+    </div>
+
+    <script src="ui.js"></script>
+    <script src="logic.js"></script>
+</body>
 </html>

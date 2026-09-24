@@ -1,133 +1,133 @@
-/**
- * Engine de Logica e Validacao
- */
+let estadoJogo = {
+    telaAtual: 'menu',
+    enigmas: [],
+    indiceAtual: 0,
+    modalAberto: false
+};
 
-let bancoDeEnigmas = [];
-let indiceEnigmaAtual = 0;
-let jogoIniciado = false;
+function normalizarResposta(str) {
+    if (str === null || str === undefined) return "";
+    return str
+        .toString()
+        .trim()
+        .replace(/["']/g, "'")          
+        .replace(/\s*,\s*/g, ', ')      
+        .replace(/\s*==\s*/g, ' == ')  
+        .replace(/\s*=\s*/g, ' = ')     
+        .replace(/\s*\(\s*/g, '(')      
+        .replace(/\s*\)\s*/g, ')')
+        .replace(/\s+/g, ' ')          
+        .toLowerCase();
+}
 
-const inputPrompt = document.getElementById('terminal-input');
-
-// 1. Iniciando a aplicacao
-async function carregarBancoDeDados() {
+async function carregarEnigmas() {
     try {
         const resposta = await fetch('enigmas.json');
-        if (!resposta.ok) throw new Error("Erro ao buscar JSON");
-
-        bancoDeEnigmas= await resposta.json();
-        console.log("Banco de dados de enigma carregado com sucesso", bancoDeEnigmas);
+        estadoJogo.enigmas = await resposta.json();
+        UI.menuProgress.textContent = `0/${estadoJogo.enigmas.length}`;
     } catch (erro) {
-        console.error("Falha ao carregar enigmas.json:", erro);
-        adicionarLog("[AVISO] Servidor local não detectado. Usando modo de teste.", "info");
-
-        bancoDeEnigmas = [
-            {
-                id: 1,
-                titulo: "Fase 01 - Imprimindo Texto",
-                enunciado: "Complete com o comando nativo do Python para exibir textos na tela",
-                codigo_python: "____('Invasao iniciada')",
-                resposta_correta: "print",
-                mensagem_sucesso: "Comando executado! Texto exibido no console."
-            }
-        ];
+        console.error("Erro ao carregar enigmas.json:", erro);
     }
 }
-// --------------------------------------------------------------------------------------------------//
 
-// 2. Escuta da tecla ENTER
-if (inputPrompt) {
-    inputPrompt.addEventListener('keydown', function(evento) {
-        if (evento.key === 'Enter') {
-            const textoDigitado = inputPrompt.value;
-
-            if (textoDigitado.trim() !== '') {
-                adicionarLog(`user@cyberquest:~ $ ${textoDigitado}`, 'info');
-
-                tratarEntradaDoUsuario(textoDigitado);
-
-                limparPrompt();
-            }
-        }
-    });
+function iniciarJogo() {
+    if (estadoJogo.enigmas.length === 0) {
+        UI.abrirModal("[ ERRO ]", "Nenhum enigma foi encontrado no arquivo JSON.", "erro");
+        estadoJogo.modalAberto = true;
+        return;
+    }
+    estadoJogo.indiceAtual = 0;
+    estadoJogo.telaAtual = 'jogo';
+    UI.mostrarJogo();
+    exibirEnigmaAtual();
 }
-// --------------------------------------------------------------------------------------------------//
 
-/** 3. Comandos do menu e do jogo
-@param {string} entrada
-**/
+function exibirEnigmaAtual() {
+    const enigma = estadoJogo.enigmas[estadoJogo.indiceAtual];
+    UI.carregarEnigma(enigma, estadoJogo.indiceAtual, estadoJogo.enigmas.length);
+}
 
-function tratarEntradaDoUsuario(entrada) {
-    const comandoLimpo = entrada.trim().toLowerCase();
+function processarResposta(respostaDigitada) {
+    const enigmaAtual = estadoJogo.enigmas[estadoJogo.indiceAtual];
+    const entrada = respostaDigitada.trim();
 
-    if (!jogoIniciado) {
-        if (comandoLimpo === 'iniciar' || comandoLimpo === '1') {
-            jogoIniciado = true;
-            indiceEnigmaAtual = 0;
-            adicionarLog("Iniciando sequencia de invasao...", "sucesso");
-
-            setTimeout(() => {
-                carregarEnigmaNaTela();
-            }, 1000);
-            return;
-        }
-
-        if (comandoLimpo === 'ajuda' || comandoLimpo === '2') {
-            adicionarLog("=== INSTRUÇÕES CYBERQUEST ===", "info");
-            adicionarLog("1. Analise o codigo Python na tela.", "info");
-            adicionarLog("2. Digite apenas o trecho que falta ou a resposta correta.", "info");
-            adicionarLog("3. Pressione ENTER para enviar.", "info");
-            return;
-        }
-
-        adicionarLog(`Comando '${comandoLimpo}' nao reconhecido. Digite 'iniciar' para jogar.`, "erro");
-            return;
+    if (entrada.toLowerCase() === 'dica') {
+        UI.abrirModal("[ DICA ]", enigmaAtual.dica || "Não há dica disponível para este enigma.", "info");
+        estadoJogo.modalAberto = true;
+        return;
     }
 
-    validarRespostaDoEnigma(entrada);
-}
-// --------------------------------------------------------------------------------------------------//
+    const respUsuario = normalizarResposta(entrada);
+    const respCorreta = normalizarResposta(enigmaAtual.resposta_correta);
 
-/**4. Validacao da resposta
-@param {string} respostaDigitada
-**/
+    if (respUsuario === respCorreta) {
+        estadoJogo.indiceAtual++;
 
-function validarRespostaDoEnigma(respostaDigitada) {
-    const enigmaAtual = bancoDeEnigmas[indiceEnigmaAtual];
-    if (!enigmaAtual) return;
-
-    const respostaSanitizada = respostaDigitada.trim();
-    const gabaritoOficial = enigmaAtual.resposta_correta.trim();
-
-    if (respostaSanitizada === gabaritoOficial) {
-        adicionarLog(`[OK]  RESPOSTA CORRRETA! ${enigmaAtual.mensagem_sucesso || ''}` , "sucesso");
-        inputPrompt.disabled = true;
-
-        setTimeout(() => {
-            indiceEnigmaAtual++;
-            inputPrompt.disabled = false;
-            inputPrompt.focus(); 
-
-            if (indiceEnigmaAtual < bancoDeEnigmas.length) {
-                carregarEnigmaNaTela();
-            } else {
-                adicionarLog("[SISTEMA HACKEADO] Você concluiu todos os enigmas deste modulo!", "sucesso");
-                jogoIniciado = false;
-            }
-        }, 1500);      
+        if (estadoJogo.indiceAtual < estadoJogo.enigmas.length) {
+            UI.abrirModal("[ CORRETO ]", "Acesso concedido! Pressione ENTER para avançar.", "sucesso");
+            estadoJogo.modalAberto = true;
+        } else {
+            estadoJogo.telaAtual = 'conclusao';
+            const total = estadoJogo.enigmas.length;
+            UI.mostrarConclusao("Iniciante", `${total}/${total}`);
+        }
     } else {
-        adicionarLog("[ERRO] Sintaxe ou resposta incorreta. Analise o codigo e tente novamente!", "erro");
-    }
-}
-// --------------------------------------------------------------------------------------------------//
-
-// 5. Carregamento do enigma
-
-function carregarEnigmaNaTela() {
-    const enigma = bancoDeEnigmas[indiceEnigmaAtual];
-    if (enigma) {
-        renderizarEnigma(enigma);
-        adicionarLog(`--> Enigma ${enigma.id} carregado. Digite a solução no prompt:`, "info");
+        UI.abrirModal("[ INCORRETO ]", "Resposta incorreta! Tente novamente ou digite 'dica'.", "erro");
+        estadoJogo.modalAberto = true;
     }
 }
 
-carregarBancoDeDados();
+UI.terminalInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+        const inputBruto = UI.terminalInput.value;
+
+        
+        if (estadoJogo.modalAberto) {
+            UI.fecharModal();
+            estadoJogo.modalAberto = false;
+            UI.limparInput();
+
+            if (estadoJogo.telaAtual === 'jogo') {
+                exibirEnigmaAtual();
+            }
+            return;
+        }
+
+        const comando = inputBruto.trim();
+
+        // Roteamento por tela
+        if (estadoJogo.telaAtual === 'menu') {
+            if (comando === '1') {
+                iniciarJogo();
+            } else if (comando === '2') {
+                UI.abrirModal("[ COMO JOGAR ]", "Analise o código Python, preveja o resultado e digite sua resposta no prompt. Digite 'dica' se precisar de ajuda.", "info");
+                estadoJogo.modalAberto = true;
+            } else if (comando === '3') {
+                UI.abrirModal("[ SOBRE ]", "CyberQuest v1.0 - Plataforma Interativa de Programação Python.", "info");
+                estadoJogo.modalAberto = true;
+            } else {
+                UI.abrirModal("[ AVISO ]", "Opção inválida. Digite 1, 2 ou 3.", "erro");
+                estadoJogo.modalAberto = true;
+            }
+        } else if (estadoJogo.telaAtual === 'jogo') {
+            if (comando !== "") {
+                processarResposta(comando);
+            }
+        } else if (estadoJogo.telaAtual === 'conclusao') {
+            if (comando === '1') {
+                estadoJogo.telaAtual = 'menu';
+                UI.mostrarMenu();
+            } else if (comando === '2') {
+                UI.abrirModal("[ BLOQUEADO ]", "O próximo nível ainda está em desenvolvimento!", "info");
+                estadoJogo.modalAberto = true;
+            }
+        }
+
+        UI.limparInput();
+    }
+});
+
+window.onload = () => {
+    carregarEnigmas();
+    UI.mostrarMenu();
+};

@@ -1,50 +1,76 @@
-/**
- * Modulo da interface (UI)
- */
+const UI = {
+    screenMenu: document.getElementById('screen-menu'),
+    screenGame: document.getElementById('screen-game'),
+    screenConclusion: document.getElementById('screen-conclusion'),
 
-const enigmaContainer = document.getElementById('enigma-container');
-const enigmaTitulo = document.getElementById('enigma-titulo');
-const enigmaEnunciado = document.getElementById('enigma-enunciado');
-const enigmaCodigo = document.getElementById('enigma-codigo');
-const terminalOutput = document.getElementById('terminal-output');
-const terminalInput = document.getElementById('terminal-input');
+    tipoTag: document.getElementById('tipo-tag'),
+    tituloTag: document.getElementById('titulo-tag'),
+    gameProgress: document.getElementById('game-progress'),
+    menuProgress: document.getElementById('menu-progress'),
+    enunciadoText: document.getElementById('enunciado-text'),
+    codeContent: document.getElementById('code-content'),
 
-/**
- * Exibe um enigma na tela
- * @param {Object} enigma - Objeto contendo os detalhes do enigma
- */
+    modalOverlay: document.getElementById('modal-overlay'),
+    modalCard: document.getElementById('modal-card'),
+    modalTitle: document.getElementById('modal-title'),
+    modalText: document.getElementById('modal-text'),
 
-function renderizarEnigma(enigmaObjeto) {
-    if (!enigmaObjeto) return;
+    terminalInput: document.getElementById('terminal-input'),
 
-    enigmaContainer.classList.remove('hidden');
-    enigmaTitulo.textContent = enigmaObjeto.titulo;
-    enigmaEnunciado.textContent = enigmaObjeto.enunciado;
-    enigmaCodigo.textContent = enigmaObjeto.codigo_python;
-}
+    mostrarMenu() {
+        this.esconderTodas();
+        this.screenMenu.classList.remove('hidden');
+        this.terminalInput.placeholder = "Digite 1, 2 ou 3...";
+    },
 
-/**
- * @param {string} mensagem - Mensagem a ser exibida
- * @param {string} tipo - Tipo da mensagem (info, sucesso, erro)
- */
+    mostrarJogo() {
+        this.esconderTodas();
+        this.screenGame.classList.remove('hidden');
+        this.terminalInput.placeholder = "Digite sua resposta ou 'dica'...";
+    },
 
-function adicionarLog(texto, tipo = 'info') {
-    const logDiv = document.createElement('div');
-    logDiv.classList.add('log-entry');
+    mostrarConclusao(nivelNome, progressoTexto) {
+        this.esconderTodas();
+        this.screenConclusion.classList.remove('hidden');
+        document.getElementById('congrats-msg').textContent = `Parabéns! Você passou pelo nível ${nivelNome}!`;
+        document.getElementById('conclusion-progress').textContent = progressoTexto;
+        this.terminalInput.placeholder = "Digite 1 para Menu ou 2 para Próximo Nível...";
+    },
 
-    if (tipo === 'sucesso') logDiv.classList.add('log-success');
-    if (tipo === 'erro') logDiv.classList.add('log-error');
-    if (tipo === 'info') logDiv.classList.add('log-info');
+    esconderTodas() {
+        this.screenMenu.classList.add('hidden');
+        this.screenGame.classList.add('hidden');
+        this.screenConclusion.classList.add('hidden');
+    },
 
-    logDiv.textContent = `> ${texto}`;
-    terminalOutput.appendChild(logDiv);
-    terminalOutput.scrollTop = terminalOutput.scrollHeight;
-}
+    abrirModal(titulo, texto, tipo = 'info') {
+        this.modalCard.className = `modal-card ${tipo}`;
+        this.modalTitle.textContent = titulo;
+        this.modalText.textContent = texto;
+        this.modalOverlay.classList.remove('hidden');
+    },
 
-function limparPrompt() {
-    terminalInput.value = '';
-}
+    fecharModal() {
+        this.modalOverlay.classList.add('hidden');
+    },
+    
+    carregarEnigma(enigma, indiceAtual, totalEnigmas) {
+        this.tipoTag.textContent = enigma.tipo || "geral";
+        this.tituloTag.textContent = enigma.titulo || `Fase ${String(indiceAtual + 1).padStart(2, '0')}`;
+        
+        const txtProgresso = `${indiceAtual + 1}/${totalEnigmas}`;
+        this.gameProgress.textContent = txtProgresso;
+        this.menuProgress.textContent = `0/${totalEnigmas}`;
+        
+        this.enunciadoText.textContent = enigma.enunciado;
+        this.codeContent.textContent = enigma.codigo_python || "# Sem código para esta fase";
+    },
+
+    limparInput() {
+        this.terminalInput.value = "";
+    }
+};
 
 document.addEventListener('click', () => {
-    terminalInput.focus();
+    UI.terminalInput.focus();
 });
