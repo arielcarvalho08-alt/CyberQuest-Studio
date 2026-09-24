@@ -6,10 +6,21 @@
     <title>CYBERQUEST</title>
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
     <div id="terminal-screen" class="terminal-container">
-            
+        <div id ="nickname-modal" class="modal-overlay">
+            <div class="modal-card info">
+                <h3>[IDENTIFICAÇÃO]</h3>
+                <p>Digite seu nickname Hacker para salvar/carregar seu progresso:</p>
+                <div class="input-container" style:"border: none;">
+                    <span class="prompt-symbol">&gt</span>
+                    <input type="text" id="nickname-input" placeholder ="Ex: CyberDev" autofocus autocomplete="off">   
+                </div>
+                <div class="modal-footer" style="margin-top: 15px;">Pressione ENTER para confirmar</div>
+            </div>
+        </div>
         <div id="modal-overlay" class="modal-overlay hidden">
             <div id="modal-card" class="modal-card info">
                 <h3 id="modal-title">[ INFORMAÇÃO ]</h3>
@@ -85,7 +96,8 @@
 
     </div>
 
-    <script src="ui.js"></script>
-    <script src="logic.js"></script>
+    <script type="module" src="db.js"></script>
+    <script type="module"src="ui.js"></script>
+    <script type = "module" src="logic.js"></script>
 </body>
 </html>

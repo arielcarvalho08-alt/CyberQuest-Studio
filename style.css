@@ -96,7 +96,6 @@ body, html {
     flex-grow: 1;
 }
 
-/* Menu */
 .menu-content {
     display: flex;
     flex-direction: column;
@@ -151,7 +150,7 @@ body, html {
     line-height: 1.35;
 }
 
-/* BLOCO DE CÓDIGO */
+
 .code-box-container {
     flex-grow: 1;
     background: #040d06;
@@ -291,4 +290,65 @@ body, html {
 }
 .modal-card.erro h3, .modal-card.erro p {
     color: #ff3344;
+}
+
+.tabela-io {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 10px 0 16px 0;
+    background: #040d06;
+    border: 1px solid #183d20;
+    border-radius: 4px;
+}
+
+.tabela-io th, .tabelo-io td {
+    padding: 8px 12px;
+    text-align: center;
+    border: 1px solid #0f2b16;
+    font-family: 'VT323', monospace;
+    font-size: 1.4rem;
+}
+
+.tabela-io th {
+    background: #0d2414;
+    color: #33ff77;
+    letter-spacing: 1px;
+}
+
+.saida-destaque {
+    color: #ffcc00;
+    font-weight: bold;
+}
+
+.instrucao-reconstrucao {
+    font-size: 1.2rem;
+    color: #ffcc00;
+    margin-bottom: 12px;
+}
+
+.linhas-embaralhadas {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.linha-code-item {
+    background: #040d06;
+    border: 1px solid #183d20;
+    padding: 8px 12px;
+    border-radius: 4px;
+    color: #a3f5c2;
+    font-size: 1.5rem;
+#nickname-modal input {
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid #ffcc00;
+    outline: none;
+    color: #ffffff;
+    font-family: 'VT323', monospace;
+    font-size: 1.8rem;
+    width: 100%;
+    text-align: center;
+}
 }

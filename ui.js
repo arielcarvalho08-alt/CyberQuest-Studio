@@ -2,6 +2,8 @@ const UI = {
     screenMenu: document.getElementById('screen-menu'),
     screenGame: document.getElementById('screen-game'),
     screenConclusion: document.getElementById('screen-conclusion'),
+    nicknameModal: document.getElementById('nickname-modal'),
+    nicknameInput: document.getElementById('nickname-input'),
 
     tipoTag: document.getElementById('tipo-tag'),
     tituloTag: document.getElementById('titulo-tag'),
@@ -63,11 +65,76 @@ const UI = {
         this.menuProgress.textContent = `0/${totalEnigmas}`;
         
         this.enunciadoText.textContent = enigma.enunciado;
-        this.codeContent.textContent = enigma.codigo_python || "# Sem código para esta fase";
+        const codeContainer = document.querySelector('.code-box-container');
+
+        if (enigma.tipo === 'engenharia_reversa' && enigma.dados_teste) {
+            let tabelaHtml = `
+                <div class="code-header">
+                    <span>TABELA DE ENTRADA / SAÍDA</span>
+                    <span class="file-tag">op_test.py</span>
+                </div>
+                <table class="tabela-io">
+                    <thead>
+                        <tr>
+                            <th>Entrada (x)</th>
+                            <th>➔</th>
+                            <th>Saída Esperada</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${enigma.dados_teste.map(t => `
+                            <tr>
+                                <td><code>x = ${t.entrada}</code></td>
+                                <td>➔</td>
+                                <td><code class="saida-destaque">${t.saida}</code></td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+                <div class="code-header">
+                    <span>CÓDIGO BASE</span>
+                </div>
+                <pre><code>${enigma.codigo_python}</code></pre>
+            `;
+            codeContainer.innerHTML = tabelaHtml;
+            this.terminalInput.placeholder = "Digite o operador oculto (ex: **, *, //) ou 'dica'...";
+        }
+
+        else if (enigma.tipo === 'reconstrucao' && enigma.linhas_embaralhadas) {
+            let reconstrucaoHtml = `
+                <div class="code-header">
+                    <span>LINHAS EMBARALHADAS</span>
+                    <span class="file-tag">reconstruct.py</span>
+                </div>
+                <p class="instrucao-reconstrucao">Organize as linhas e digite a ordem correta dos números:</p>
+                <div class="linhas-embaralhadas">
+                    ${enigma.linhas_embaralhadas.map(linha => `
+                        <div class="linha-code-item"><code>${linha}</code></div>
+                    `).join('')}
+                </div>
+            `;
+            codeContainer.innerHTML = reconstrucaoHtml;
+            this.terminalInput.placeholder = "Digite a sequência correta (ex: 321 ou 132) ou 'dica'..."; 
+        }
+
+        else {
+            codeContainer.innerHTML = `
+                <div class="code-header">
+                    <span>PYTHON CODE</span>
+                    <span class="file-tag">script.py</span>
+                </div>
+                <pre><code id="code-content">${enigma.codigo_python || "# Sem código para esta fase"}</code></pre>
+            `;
+            this.terminalInput.placeholder = "Digite sua resposta ou 'dica'...";
+        }
     },
 
     limparInput() {
         this.terminalInput.value = "";
+    },
+
+    fecharNicknameModal(){
+        this.nicknameModal.classList('hidden');
     }
 };
 

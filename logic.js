@@ -1,10 +1,13 @@
+import { buscarOuCriarProgresso, salvarProgressoNuvem, buscarEnigmasNuvem } from './db.js';
+
 let estadoJogo = {
-    telaAtual: 'menu',
+    nickname: '',
+    telaAtual: 'login',
     enigmas: [],
     indiceAtual: 0,
     modalAberto: false
 };
-
+    
 function normalizarResposta(str) {
     if (str === null || str === undefined) return "";
     return str
@@ -14,29 +17,33 @@ function normalizarResposta(str) {
         .replace(/\s*,\s*/g, ', ')      
         .replace(/\s*==\s*/g, ' == ')  
         .replace(/\s*=\s*/g, ' = ')     
-        .replace(/\s*\(\s*/g, '(')      
-        .replace(/\s*\)\s*/g, ')')
+        .replace(/\s*\(\s*/g, '(')         .replace(/\s*\)\s*/g, ')')
         .replace(/\s+/g, ' ')          
         .toLowerCase();
 }
 
 async function carregarEnigmas() {
-    try {
-        const resposta = await fetch('enigmas.json');
-        estadoJogo.enigmas = await resposta.json();
-        UI.menuProgress.textContent = `0/${estadoJogo.enigmas.length}`;
-    } catch (erro) {
-        console.error("Erro ao carregar enigmas.json:", erro);
+    let dadosNuvem = await buscarEnigmasNuvem();
+    if (dadosNuvem && dadosNuvem.length > 0) {
+        estadoJogo.enigmas = dadosNuvem;
+    } else {
+        try {
+            const resposta = await fetch('enigmas.json');
+            estadoJogo.enigmas = await resposta.json();
+        } catch (erro) {
+            console.error("Erro ao carregar enigmas locais.", erro);
+        }
     }
+
+    UI.menuProgress.textContent = `0/${estadoJogo.enigmas.length}`;
 }
 
 function iniciarJogo() {
     if (estadoJogo.enigmas.length === 0) {
-        UI.abrirModal("[ ERRO ]", "Nenhum enigma foi encontrado no arquivo JSON.", "erro");
+        UI.abrirModal("[ ERRO ]", "Nenhum enigma foi encontrado.", "erro");
         estadoJogo.modalAberto = true;
         return;
     }
-    estadoJogo.indiceAtual = 0;
     estadoJogo.telaAtual = 'jogo';
     UI.mostrarJogo();
     exibirEnigmaAtual();
@@ -57,11 +64,24 @@ function processarResposta(respostaDigitada) {
         return;
     }
 
-    const respUsuario = normalizarResposta(entrada);
-    const respCorreta = normalizarResposta(enigmaAtual.resposta_correta);
+    let acertou = false;
 
-    if (respUsuario === respCorreta) {
+    if (enigmaAtual.tipo === 'engenharia_reversa') {
+        acertou = validarEngenhariaReversa(entrada, enigmaAtual);
+    } else if (enigmaAtual.tipo === 'reconstrucao') {
+        acertou = validarReconstrucao(entrada, enigmaAtual.resposta_correta);
+    } else {
+        const respUsuario = normalizarResposta(entrada);
+        const respCorreta = normalizarResposta(enigmaAtual.resposta_correta);
+        acertou = (respUsuario === respCorreta); 
+    }
+
+    if (acertou) {
         estadoJogo.indiceAtual++;
+
+        if (typeof salvarProgressoNuvem === 'function') {
+            salvarProgressoNuvem(estadoJogo.nickname, estadoJogo.indiceAtual);
+        }
 
         if (estadoJogo.indiceAtual < estadoJogo.enigmas.length) {
             UI.abrirModal("[ CORRETO ]", "Acesso concedido! Pressione ENTER para avançar.", "sucesso");
@@ -77,11 +97,65 @@ function processarResposta(respostaDigitada) {
     }
 }
 
+function validarEngenhariaReversa(operadorDigitado, enigma) {
+    const op = operadorDigitado.trim();
+
+    if (op === enigma.resposta_correta.trim()) return true;
+
+    if (!enigma.dados_teste || !enigma.codigo_python) return false;
+
+    try {
+        for (let teste of enigma.dados_teste) {
+            const expressaoBase = enigma.codigo_python.split('=')[1] || enigma.codigo_python;
+
+            const expressaoCalculada = expressaoBase
+                .replace('_____', op)
+                .replace(/\bx\b/g, teste.entrada);
+
+            const resultado = Function(`"use strict"; return (${expressaoCalculada})`)();
+
+            if (resultado !== teste.saida) {
+                return false;
+            }
+        }
+        return true;
+    } catch (e) {
+        return false;
+    }
+}
+
+function validarReconstrucao(sequenciaDigitada, respostaCorreta) {
+    if (!sequenciaDigitada) return false;
+
+    const apenasNumerosUser = sequenciaDigitada.replace(/\D/g, '');
+    const apenasNumerosCorreto = respostaCorreta.replace(/\D/g, '');
+
+    return apenasNumerosUser === apenasNumerosCorreto;
+}
+
+if (UI.nicknameInput) {
+    UI.nicknameInput.addEventListener('keydown', async (e) => {
+        if (e.key === 'Enter') {
+            const nick = UI.nicknameInput.value.trim();
+            if (!nick) return;
+
+            estadoJogo.nickname = nick;
+            
+            const progresso = await buscarOuCriarProgresso(nick);
+            if (progresso) {
+                estadoJogo.indiceAtual = progresso.fase_atual || 0;
+            }
+            UI.fecharNicknameModal();
+            estadoJogo.telaAtual = 'menu';
+            UI.mostrarMenu();
+        }
+    });
+}
+
 UI.terminalInput.addEventListener('keydown', (e) => {
     if (e.key === 'Enter') {
         const inputBruto = UI.terminalInput.value;
 
-        
         if (estadoJogo.modalAberto) {
             UI.fecharModal();
             estadoJogo.modalAberto = false;
@@ -95,7 +169,6 @@ UI.terminalInput.addEventListener('keydown', (e) => {
 
         const comando = inputBruto.trim();
 
-        // Roteamento por tela
         if (estadoJogo.telaAtual === 'menu') {
             if (comando === '1') {
                 iniciarJogo();
@@ -120,6 +193,9 @@ UI.terminalInput.addEventListener('keydown', (e) => {
             } else if (comando === '2') {
                 UI.abrirModal("[ BLOQUEADO ]", "O próximo nível ainda está em desenvolvimento!", "info");
                 estadoJogo.modalAberto = true;
+            } else {
+                UI.abrirModal("[ AVISO ]", "Opção inválida. Digite 1 para voltar ao menu ou 2 para o próximo nível.", "erro");
+                estadoJogo.modalAberto = true;
             }
         }
 
@@ -127,7 +203,11 @@ UI.terminalInput.addEventListener('keydown', (e) => {
     }
 });
 
-window.onload = () => {
-    carregarEnigmas();
-    UI.mostrarMenu();
+window.onload = async () => {
+    await carregarEnigmas();
+    if (estadoJogo.telaAtual === 'login' && typeof UI.mostrarNicknameModal === 'function') {
+        UI.mostrarNicknameModal();
+    } else {
+        UI.mostrarMenu();
+    }
 };
