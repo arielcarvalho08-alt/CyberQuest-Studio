@@ -1,5 +1,8 @@
+import{ buscarOuCriarProgresso, salvarProgressoNuvem, buscarEnigmaNuvem} from './db.js';
+
 let estadoJogo = {
-    telaAtual: 'menu',
+    nickname: '',
+    telaAtual: 'login',
     enigmas: [],
     indiceAtual: 0,
     modalAberto: false
@@ -21,13 +24,18 @@ function normalizarResposta(str) {
 }
 
 async function carregarEnigmas() {
-    try {
-        const resposta = await fetch('enigmas.json');
-        estadoJogo.enigmas = await resposta.json();
-        UI.menuProgress.textContent = `0/${estadoJogo.enigmas.length}`;
-    } catch (erro) {
-        console.error("Erro ao carregar enigmas.json:", erro);
+    let dadosNuvem = await buscarEnigmasNuvem();
+    if (dadosNuvem && dadosNuvem.length > 0){
+        estadoJogo.enigmas = dadosNuvem;
+    } else {
+        try{
+            const resposta = await fetch('enigmas.json');
+            estadoJogo.enigmas = await resposta.json();
+        } catch (erro){
+            console.error("Erro ao carregar enigmas locais.", erro);
+        }
     }
+    UI.menuProgress.textContent = `0/${estadoJogo.enigmas.lenght}`;
 }
 
 function iniciarJogo() {
@@ -63,6 +71,8 @@ function processarResposta(respostaDigitada) {
     if (respUsuario === respCorreta) {
         estadoJogo.indiceAtual++;
 
+        salvarProgressoNuvem(estadoJogo.nickname, estadoJogo.indiceAtual);
+
         if (estadoJogo.indiceAtual < estadoJogo.enigmas.length) {
             UI.abrirModal("[ CORRETO ]", "Acesso concedido! Pressione ENTER para avançar.", "sucesso");
             estadoJogo.modalAberto = true;
@@ -77,11 +87,27 @@ function processarResposta(respostaDigitada) {
     }
 }
 
-UI.terminalInput.addEventListener('keydown', (e) => {
+UI.terminalInput.addEventListener('keydown', async (e) => {
+    if (e.key === 'Enter') {
+        const nick = UI.nicknameInput.value.trim();
+        if(!nick) return;
+
+        estadoJogo.nickname = nick;
+        
+        const progresso = await buscarOuCriarProgresso(nick);
+        if(progresso){
+            estadoJogo.indiceAtual = progresso.fase_atual || 0;
+        }
+        UI.fecharNicknameModal();
+        estadoJogo.telaAtual = 'menu';
+        UI.mostrarMenu();
+    }
+});
+
+UI.terminalInput.addEventListener('keydown', async (e) => {
     if (e.key === 'Enter') {
         const inputBruto = UI.terminalInput.value;
 
-        
         if (estadoJogo.modalAberto) {
             UI.fecharModal();
             estadoJogo.modalAberto = false;
