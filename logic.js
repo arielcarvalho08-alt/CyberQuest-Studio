@@ -1,11 +1,13 @@
-import { buscarOuCriarProgresso, salvarProgressoNuvem, buscarEnigmasNuvem } from './db.js';
+import UI from './ui.js';
+import { buscarDadosJogador, buscarOuCriarProgresso, salvarProgressoNuvem, buscarEnigmasNuvem } from './db.js';
 
 let estadoJogo = {
     nickname: '',
     telaAtual: 'login',
     enigmas: [],
     indiceAtual: 0,
-    modalAberto: false
+    modalAberto: false,
+    pendenteConfirmacaoNick: null
 };
     
 function normalizarResposta(str) {
@@ -35,7 +37,7 @@ async function carregarEnigmas() {
         }
     }
 
-    UI.menuProgress.textContent = `0/${estadoJogo.enigmas.length}`;
+    UI.menuProgress.textContent = `${estadoJogo.indiceAtual}/${estadoJogo.enigmas.length}`;
 }
 
 function iniciarJogo() {
@@ -78,6 +80,8 @@ function processarResposta(respostaDigitada) {
 
     if (acertou) {
         estadoJogo.indiceAtual++;
+
+        localStorage.setItem('cyberquest_fase', estadoJogo.indiceAtual);
 
         if (typeof salvarProgressoNuvem === 'function') {
             salvarProgressoNuvem(estadoJogo.nickname, estadoJogo.indiceAtual);
@@ -133,28 +137,63 @@ function validarReconstrucao(sequenciaDigitada, respostaCorreta) {
     return apenasNumerosUser === apenasNumerosCorreto;
 }
 
+async function efetivarLogin(nick, fase) {
+    estadoJogo.nickname = nick;
+    estadoJogo.indiceAtual = fase || 0;
+    
+    localStorage.setItem('cyberquest_nickname', nick);
+    localStorage.setItem('cyberquest_fase', estadoJogo.indiceAtual);
+    
+    UI.fecharNicknameModal();
+    estadoJogo.telaAtual = 'menu';
+    UI.menuProgress.textContent = `${estadoJogo.indiceAtual}/${estadoJogo.enigmas.length}`;
+    UI.mostrarMenu();
+}
+
 if (UI.nicknameInput) {
     UI.nicknameInput.addEventListener('keydown', async (e) => {
         if (e.key === 'Enter') {
-            const nick = UI.nicknameInput.value.trim();
-            if (!nick) return;
-
-            estadoJogo.nickname = nick;
+            e.preventDefault(); 
             
-            const progresso = await buscarOuCriarProgresso(nick);
-            if (progresso) {
-                estadoJogo.indiceAtual = progresso.fase_atual || 0;
+            const nickDigitado = UI.nicknameInput.value.trim();
+
+            if (estadoJogo.pendenteConfirmacaoNick) {
+                const { nick: nickSalvo, fase } = estadoJogo.pendenteConfirmacaoNick;
+
+                if (!nickDigitado || nickDigitado.toLowerCase() === nickSalvo.toLowerCase()) {
+                    estadoJogo.pendenteConfirmacaoNick = null;
+                    efetivarLogin(nickSalvo, fase);
+                    return;
+                }
+
+                estadoJogo.pendenteConfirmacaoNick = null;
             }
-            UI.fecharNicknameModal();
-            estadoJogo.telaAtual = 'menu';
-            UI.mostrarMenu();
+
+            if (!nickDigitado) return;
+
+            const dadosExistentes = await buscarDadosJogador(nickDigitado);
+
+            if (dadosExistentes) {
+                estadoJogo.pendenteConfirmacaoNick = { nick: dadosExistentes.nickname, fase: dadosExistentes.fase_atual };
+                
+                const instrucao = document.querySelector('#nickname-modal p') || document.querySelector('#nickname-instrucao');
+                if (instrucao) {
+                    instrucao.innerHTML = `<span style="color: #ffaa00;">[!] O nick "${dadosExistentes.nickname}" já existe (Fase ${dadosExistentes.fase_atual}).</span><br>Pressione <b>ENTER</b> para carregar ou digite um novo nome acima:`;
+                }
+                
+                UI.focarNicknameInput();
+                return;
+            }
+
+            const novoProgresso = await buscarOuCriarProgresso(nickDigitado);
+            efetivarLogin(nickDigitado, novoProgresso ? novoProgresso.fase_atual : 0);
         }
     });
 }
 
 UI.terminalInput.addEventListener('keydown', (e) => {
     if (e.key === 'Enter') {
-        const inputBruto = UI.terminalInput.value;
+        e.preventDefault();
 
         if (estadoJogo.modalAberto) {
             UI.fecharModal();
@@ -167,6 +206,7 @@ UI.terminalInput.addEventListener('keydown', (e) => {
             return;
         }
 
+        const inputBruto = UI.terminalInput.value;
         const comando = inputBruto.trim();
 
         if (estadoJogo.telaAtual === 'menu') {
@@ -178,10 +218,23 @@ UI.terminalInput.addEventListener('keydown', (e) => {
             } else if (comando === '3') {
                 UI.abrirModal("[ SOBRE ]", "CyberQuest v1.0 - Plataforma Interativa de Programação Python.", "info");
                 estadoJogo.modalAberto = true;
+            } else if (comando === '4' || comando.toLowerCase() === 'sair') {
+                localStorage.removeItem('cyberquest_nickname');
+                localStorage.removeItem('cyberquest_fase');
+                
+                estadoJogo.nickname = '';
+                estadoJogo.indiceAtual = 0;
+                estadoJogo.telaAtual = 'login';
+                
+                UI.limparInput();
+                if (typeof UI.abrirNicknameModal === 'function') {
+                    UI.abrirNicknameModal();
+                }
             } else {
-                UI.abrirModal("[ AVISO ]", "Opção inválida. Digite 1, 2 ou 3.", "erro");
+                UI.abrirModal("[ AVISO ]", "Opção inválida. Digite 1 (Jogar), 2 (Ajuda), 3 (Sobre) ou 4 (Trocar Nick).", "erro");
                 estadoJogo.modalAberto = true;
             }
+
         } else if (estadoJogo.telaAtual === 'jogo') {
             if (comando !== "") {
                 processarResposta(comando);
@@ -205,9 +258,27 @@ UI.terminalInput.addEventListener('keydown', (e) => {
 
 window.onload = async () => {
     await carregarEnigmas();
-    if (estadoJogo.telaAtual === 'login' && typeof UI.mostrarNicknameModal === 'function') {
-        UI.mostrarNicknameModal();
-    } else {
+
+    const nickSalvo = localStorage.getItem('cyberquest_nickname');
+    const faseSalva = localStorage.getItem('cyberquest_fase');
+
+    if (nickSalvo) {
+        estadoJogo.nickname = nickSalvo;
+        estadoJogo.indiceAtual = faseSalva ? parseInt(faseSalva, 10) : 0;
+        estadoJogo.telaAtual = 'menu';
+
+        if (typeof UI.fecharNicknameModal === 'function') {
+            UI.fecharNicknameModal();
+        }
+        UI.menuProgress.textContent = `${estadoJogo.indiceAtual}/${estadoJogo.enigmas.length}`;
         UI.mostrarMenu();
+        console.log(`[SESSÃO RESTAURADA] Usuário: ${nickSalvo} | Fase: ${estadoJogo.indiceAtual}`);
+    } else {
+        estadoJogo.telaAtual = 'login';
+        if (typeof UI.abrirNicknameModal === 'function') {
+            UI.abrirNicknameModal();
+        } else {
+            UI.mostrarMenu();
+        }
     }
 };

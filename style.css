@@ -150,7 +150,6 @@ body, html {
     line-height: 1.35;
 }
 
-
 .code-box-container {
     flex-grow: 1;
     background: #040d06;
@@ -301,7 +300,7 @@ body, html {
     border-radius: 4px;
 }
 
-.tabela-io th, .tabelo-io td {
+.tabela-io th, .tabela-io td {
     padding: 8px 12px;
     text-align: center;
     border: 1px solid #0f2b16;
@@ -340,15 +339,29 @@ body, html {
     border-radius: 4px;
     color: #a3f5c2;
     font-size: 1.5rem;
-#nickname-modal input {
+}
+
+.nickname-box {
+    border: 1px solid #183d20;
+    background: #040d06;
+    border-radius: 4px;
+    padding: 6px 12px;
+    margin: 15px 0;
+    display: flex;
+    align-items: center;
+}
+
+#nickname-input {
     background: transparent;
     border: none;
-    border-bottom: 2px solid #ffcc00;
     outline: none;
-    color: #ffffff;
+    color: #33ff77;
     font-family: 'VT323', monospace;
     font-size: 1.8rem;
     width: 100%;
-    text-align: center;
+    cursor: text;
 }
+
+#nickname-input::placeholder {
+    color: #1c522a;
 }

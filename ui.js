@@ -20,15 +20,20 @@ const UI = {
     terminalInput: document.getElementById('terminal-input'),
 
     mostrarMenu() {
-        this.esconderTodas();
-        this.screenMenu.classList.remove('hidden');
-        this.terminalInput.placeholder = "Digite 1, 2 ou 3...";
+    this.esconderTodas();
+    this.screenMenu.classList.remove('hidden');
+    
+    if (this.terminalInput) {
+        this.terminalInput.placeholder = "Digite 1 (Jogar), 2 (Ajuda), 3 (Sobre) ou 4 (Trocar Nick)...";
+    }
+    this.focarTerminalInput();
     },
 
     mostrarJogo() {
         this.esconderTodas();
         this.screenGame.classList.remove('hidden');
         this.terminalInput.placeholder = "Digite sua resposta ou 'dica'...";
+        this.focarTerminalInput();
     },
 
     mostrarConclusao(nivelNome, progressoTexto) {
@@ -37,6 +42,7 @@ const UI = {
         document.getElementById('congrats-msg').textContent = `Parabéns! Você passou pelo nível ${nivelNome}!`;
         document.getElementById('conclusion-progress').textContent = progressoTexto;
         this.terminalInput.placeholder = "Digite 1 para Menu ou 2 para Próximo Nível...";
+        this.focarTerminalInput();
     },
 
     esconderTodas() {
@@ -54,6 +60,43 @@ const UI = {
 
     fecharModal() {
         this.modalOverlay.classList.add('hidden');
+        this.focarTerminalInput();
+    },
+
+    abrirNicknameModal() {
+        this.nicknameModal.classList.remove('hidden');
+        
+        const instrucao = document.querySelector('#nickname-instrucao');
+        if (instrucao) {
+            instrucao.textContent = "Digite o seu nickname. Se já jogou antes, o seu progresso será carregado!";
+        }
+
+        if (this.nicknameInput) {
+            this.nicknameInput.placeholder = "Ex: CyberDev";
+        }
+
+        this.focarNicknameInput();
+    },
+
+    fecharNicknameModal() {
+        this.nicknameModal.classList.add('hidden');
+        this.focarTerminalInput();
+    },
+
+    focarNicknameInput() {
+        setTimeout(() => {
+            if (this.nicknameInput) {
+                this.nicknameInput.focus();
+            }
+        }, 50);
+    },
+
+    focarTerminalInput() {
+        setTimeout(() => {
+            if (this.terminalInput && this.nicknameModal.classList.contains('hidden')) {
+                this.terminalInput.focus();
+            }
+        }, 50);
     },
     
     carregarEnigma(enigma, indiceAtual, totalEnigmas) {
@@ -62,7 +105,7 @@ const UI = {
         
         const txtProgresso = `${indiceAtual + 1}/${totalEnigmas}`;
         this.gameProgress.textContent = txtProgresso;
-        this.menuProgress.textContent = `0/${totalEnigmas}`;
+        this.menuProgress.textContent = `${indiceAtual}/${totalEnigmas}`;
         
         this.enunciadoText.textContent = enigma.enunciado;
         const codeContainer = document.querySelector('.code-box-container');
@@ -131,13 +174,15 @@ const UI = {
 
     limparInput() {
         this.terminalInput.value = "";
-    },
-
-    fecharNicknameModal(){
-        this.nicknameModal.classList('hidden');
     }
 };
 
-document.addEventListener('click', () => {
-    UI.terminalInput.focus();
+document.addEventListener('click', (e) => {
+    if (!UI.nicknameModal.classList.contains('hidden')) {
+        UI.nicknameInput.focus();
+    } else {
+        UI.terminalInput.focus();
+    }
 });
+
+export default UI;
