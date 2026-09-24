@@ -1,6 +1,8 @@
+import { buscarOuCriarProgresso, salvarProgressoNuvem, buscarEnigmasNuvem } from './db.js';
+
 let estadoJogo = {
-    nickname: '',    
-    telaAtual: 'menu',
+    nickname: '',
+    telaAtual: 'login',
     enigmas: [],
     indiceAtual: 0,
     modalAberto: false
@@ -15,28 +17,33 @@ function normalizarResposta(str) {
         .replace(/\s*,\s*/g, ', ')      
         .replace(/\s*==\s*/g, ' == ')  
         .replace(/\s*=\s*/g, ' = ')     
-        .replace(/\s*\(\s*/g, '(')               .replace(/\s*\)\s*/g, ')')
+        .replace(/\s*\(\s*/g, '(')         .replace(/\s*\)\s*/g, ')')
         .replace(/\s+/g, ' ')          
         .toLowerCase();
 }
 
 async function carregarEnigmas() {
-    try {
-        const resposta = await fetch('enigmas.json');
-        estadoJogo.enigmas = await resposta.json();
-        UI.menuProgress.textContent = `0/${estadoJogo.enigmas.length}`;
-    } catch (erro) {
-        console.error("Erro ao carregar enigmas.json:", erro);
+    let dadosNuvem = await buscarEnigmasNuvem();
+    if (dadosNuvem && dadosNuvem.length > 0) {
+        estadoJogo.enigmas = dadosNuvem;
+    } else {
+        try {
+            const resposta = await fetch('enigmas.json');
+            estadoJogo.enigmas = await resposta.json();
+        } catch (erro) {
+            console.error("Erro ao carregar enigmas locais.", erro);
+        }
     }
+
+    UI.menuProgress.textContent = `0/${estadoJogo.enigmas.length}`;
 }
 
 function iniciarJogo() {
     if (estadoJogo.enigmas.length === 0) {
-        UI.abrirModal("[ ERRO ]", "Nenhum enigma foi encontrado no arquivo JSON.", "erro");
+        UI.abrirModal("[ ERRO ]", "Nenhum enigma foi encontrado.", "erro");
         estadoJogo.modalAberto = true;
         return;
     }
-    estadoJogo.indiceAtual = 0;
     estadoJogo.telaAtual = 'jogo';
     UI.mostrarJogo();
     exibirEnigmaAtual();
@@ -126,6 +133,25 @@ function validarReconstrucao(sequenciaDigitada, respostaCorreta) {
     return apenasNumerosUser === apenasNumerosCorreto;
 }
 
+if (UI.nicknameInput) {
+    UI.nicknameInput.addEventListener('keydown', async (e) => {
+        if (e.key === 'Enter') {
+            const nick = UI.nicknameInput.value.trim();
+            if (!nick) return;
+
+            estadoJogo.nickname = nick;
+            
+            const progresso = await buscarOuCriarProgresso(nick);
+            if (progresso) {
+                estadoJogo.indiceAtual = progresso.fase_atual || 0;
+            }
+            UI.fecharNicknameModal();
+            estadoJogo.telaAtual = 'menu';
+            UI.mostrarMenu();
+        }
+    });
+}
+
 UI.terminalInput.addEventListener('keydown', (e) => {
     if (e.key === 'Enter') {
         const inputBruto = UI.terminalInput.value;
@@ -177,7 +203,11 @@ UI.terminalInput.addEventListener('keydown', (e) => {
     }
 });
 
-window.onload = () => {
-    carregarEnigmas();
-    UI.mostrarMenu();
+window.onload = async () => {
+    await carregarEnigmas();
+    if (estadoJogo.telaAtual === 'login' && typeof UI.mostrarNicknameModal === 'function') {
+        UI.mostrarNicknameModal();
+    } else {
+        UI.mostrarMenu();
+    }
 };
