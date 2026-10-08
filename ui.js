@@ -16,6 +16,8 @@ const UI = {
     modalCard: document.getElementById('modal-card'),
     modalTitle: document.getElementById('modal-title'),
     modalText: document.getElementById('modal-text'),
+    timerDisplay: document.getElementById('timer-display'),
+    comboDisplay: document.getElementById('combo-display'),
 
     terminalInput: document.getElementById('terminal-input'),
 
@@ -34,6 +36,24 @@ const UI = {
         this.screenGame.classList.remove('hidden');
         this.terminalInput.placeholder = "Digite sua resposta ou 'dica'...";
         this.focarTerminalInput();
+    },
+
+    atualizarComboDisplay(segundos) {
+        if (this.comboDisplay) {
+            this.comboDisplay.textContent = `TEMPO: ${String(segundos).padStart(2, '0')}s `;
+
+            if (segundos <= 10) {
+                this.timerDisplay.classList.add('tempo-critico');
+            } else {
+                this.timerdisplay.classList.remove('tempo-critico');
+            }
+        }
+    },
+
+    adicionarComboDisplay(combo, multiplicador) {
+        if (this.comboDisplay) {
+            this.comboDisplay.textContent = `COMBO: ${combo}x (x${multiplicador.toFixed(1)})`;
+        }
     },
 
     mostrarConclusao(nivelNome, progressoTexto) {
@@ -82,6 +102,7 @@ const UI = {
         this.nicknameModal.classList.add('hidden');
         this.focarTerminalInput();
     },
+
 
     focarNicknameInput() {
         setTimeout(() => {
