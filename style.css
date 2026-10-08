@@ -365,3 +365,29 @@ body, html {
 #nickname-input::placeholder {
     color: #1c522a;
 }
+
+.hud-alana-bar {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+}
+
+.badge-hud {
+    background-color: #111; 
+    border: 1px solid #33ff77;
+    color:#33ff77;
+    padding: 4px 8px;
+    font-family: 'VT323', monospace;
+    font-size: 1.1rem;
+}
+
+.tempo-critico {
+    color: #ff3333 !important;
+    border-color: #ff3333 !important;
+    animation: piscar-alerta 0.8s infinite alternate
+}
+
+@keyframes piscar-alerta {
+    from { opacity: 1;}
+    to { opacity: 0.3; }
+}

@@ -7,7 +7,11 @@ let estadoJogo = {
     enigmas: [],
     indiceAtual: 0,
     modalAberto: false,
-    pendenteConfirmacaoNick: null
+    pendenteConfirmacaoNick: null,
+    comboAtual: 0,
+    multiplicador: 1.0,
+    tempoRestante: 30,
+    timerInterveal: null
 };
     
 function normalizarResposta(str) {
@@ -54,6 +58,8 @@ function iniciarJogo() {
 function exibirEnigmaAtual() {
     const enigma = estadoJogo.enigmas[estadoJogo.indiceAtual];
     UI.carregarEnigma(enigma, estadoJogo.indiceAtual, estadoJogo.enigmas.length);
+    UI.adicionarComboDisplay(estadoJogo.comboAtual,estadoJogo.multiplicador);
+    iniciarTemporizador(30);
 }
 
 function processarResposta(respostaDigitada) {
@@ -79,7 +85,21 @@ function processarResposta(respostaDigitada) {
     }
 
     if (acertou) {
+        pararTemporizador();
         estadoJogo.indiceAtual++;
+        estadoJogo.comboAtual++;
+
+        if (estadoJogo.comboAtual >= 5) {
+            estadoJogo.multiplicador = 2.0;
+        } else if (estadoJogo.comboAtual >= 3) {
+            estadoJogo.multiplicador = 1.5;
+        } else {
+            estadoJogo.multiplicador = 1.0;
+        }
+
+        const bonusTempo = estadoJogo.tempoRestante * 2;
+
+        const xpGanho =  Math.round ((xpBase + bonusTempo) * estadoJogo.multiplicador);
 
         localStorage.setItem('cyberquest_fase', estadoJogo.indiceAtual);
 
@@ -98,6 +118,9 @@ function processarResposta(respostaDigitada) {
     } else {
         UI.abrirModal("[ INCORRETO ]", "Resposta incorreta! Tente novamente ou digite 'dica'.", "erro");
         estadoJogo.modalAberto = true;
+        estadoJogo.comboAtual = 0;
+        estadoJogo.multiplicador = 1.0;
+        UI.atualizarComboDisplay(estadoJogo.comboAtual, estadoJogo.multiplicador);
     }
 }
 
@@ -138,6 +161,7 @@ function validarReconstrucao(sequenciaDigitada, respostaCorreta) {
 }
 
 async function efetivarLogin(nick, fase) {
+    pararTemporizador();
     estadoJogo.nickname = nick;
     estadoJogo.indiceAtual = fase || 0;
     
@@ -150,10 +174,43 @@ async function efetivarLogin(nick, fase) {
     UI.mostrarMenu();
 }
 
+function iniciarTemporizador (segundos = 30) {
+    pararTemporizador();
+    estadoJogo.tempoRestante = segundos;
+    UI.atualizarTimerDisplay(estadoJogo.tempoRestante);
+
+    estadoJogo.timerInterval = setInterval(() => {
+        estadoJogo.tempoRestante--;
+        UI.atualizarTimerDisplay(estadoJogo.tempoRestante);
+
+        if(estadoJogo.tempoRestante <= 0) {
+            pararTemporizador();
+            tratarTempoEsgotado();
+        }
+    }, 1000);
+}
+
+function pararTemporizador (){
+    if(estadoJogo.timerInterval) {
+        clearInterval(estadoJogo.timerInterval);
+        estadoJogo.tiemrInterval = null;
+    }
+}
+
+function tratarTempoEsgotado () {
+    estadoJogo.comboAtual = 0;
+    estadoJogo.multiplicador = 1.0;
+    UI.atualizarComboDisplay(estadoJogo.comboAtual, estadoJogo.multiplicador);
+
+    UI.abrirModal("[ TEMPO ESGOTADO ]", "O tempo para responder acabou! Seu combo de acertos foi resetado.", "erro");
+    estadoJogo.modalAberto = true;
+}
+
 if (UI.nicknameInput) {
     UI.nicknameInput.addEventListener('keydown', async (e) => {
         if (e.key === 'Enter') {
-            e.preventDefault(); 
+            e.preventDefault();
+            pararTemporizador();
             
             const nickDigitado = UI.nicknameInput.value.trim();
 
@@ -219,6 +276,7 @@ UI.terminalInput.addEventListener('keydown', (e) => {
                 UI.abrirModal("[ SOBRE ]", "CyberQuest v1.0 - Plataforma Interativa de Programação Python.", "info");
                 estadoJogo.modalAberto = true;
             } else if (comando === '4' || comando.toLowerCase() === 'sair') {
+                pararTemporizador();
                 localStorage.removeItem('cyberquest_nickname');
                 localStorage.removeItem('cyberquest_fase');
                 
