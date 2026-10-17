@@ -37,17 +37,34 @@ export async function salvarProgressoNuvem(nickname, novaFase){
         console.error("Falha de rede no auto save", err);
     }
 }
-export async function buscarEnigmasNuvem(){
-    try{
-      const {data, error} = await supabase
-      .from('enigmas')
-      .select('*')
-      .order('id', {ascending: true});
+export async function buscarEnigmasPorNivel(nivel) {
+    try {
+        const { data, error } = await supabase
+            .from('enigmas')
+            .select('*')
+            .eq('nivel', nivel)
+            .order('id', { ascending: true });
 
-      if(error) throw error;
+        if (error) throw error;
         return data;
-    }catch(err){
-        console.error("Erro ao usar os enigmas na nuvem, usando fallback", err);
+    } catch (err) {
+        console.error(`Erro ao buscar enigmas do nível ${nivel}, usando fallback:`, err);
         return null;
     }
+}
+
+export async function buscarRanking() {
+    try {
+        const { data, error } = await supabase
+            .from('progresso')
+            .select('nickname, fase_atual')
+            .order('fase_atual', { ascending: false })
+            .limit(10);
+
+        if (error) throw error;
+        return data;
+    } catch (err) {
+        console.error("Erro ao buscar ranking:", err);
+        return [];
     }
+}

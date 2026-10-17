@@ -1,213 +1,59 @@
-import { buscarOuCriarProgresso, salvarProgressoNuvem, buscarEnigmasNuvem } from './db.js';
+import UI from './ui.js';
+import { buscarOuCriarProgresso, salvarProgressoNuvem, buscarEnigmasPorNivel, buscarRanking } from './db.js';
 
 let estadoJogo = {
     nickname: '',
     telaAtual: 'login',
+    nivelAtual: 'facil', // Controla a trilha de níveis ('facil', 'medio', 'dificil')
     enigmas: [],
     indiceAtual: 0,
-    modalAberto: false
+    modalAberto: false,
+    pendenteConfirmacaoNick: null
 };
-    
-function normalizarResposta(str) {
-    if (str === null || str === undefined) return "";
-    return str
-        .toString()
-        .trim()
-        .replace(/["']/g, "'")          
-        .replace(/\s*,\s*/g, ', ')      
-        .replace(/\s*==\s*/g, ' == ')  
-        .replace(/\s*=\s*/g, ' = ')     
-        .replace(/\s*\(\s*/g, '(')         .replace(/\s*\)\s*/g, ')')
-        .replace(/\s+/g, ' ')          
-        .toLowerCase();
-}
 
-async function carregarEnigmas() {
-    let dadosNuvem = await buscarEnigmasNuvem();
+// Função para carregar os enigmas do Supabase baseados no nível selecionado
+async function carregarEnigmasDoNivel(nivel) {
+    estadoJogo.nivelAtual = nivel;
+    let dadosNuvem = await buscarEnigmasPorNivel(nivel);
+    
     if (dadosNuvem && dadosNuvem.length > 0) {
         estadoJogo.enigmas = dadosNuvem;
     } else {
+        // Fallback local caso caia a net
         try {
             const resposta = await fetch('enigmas.json');
-            estadoJogo.enigmas = await resposta.json();
+            const todos = await resposta.json();
+            estadoJogo.enigmas = todos.filter(e => e.nivel === nivel);
         } catch (erro) {
             console.error("Erro ao carregar enigmas locais.", erro);
+            estadoJogo.enigmas = [];
         }
     }
-
-    UI.menuProgress.textContent = `0/${estadoJogo.enigmas.length}`;
-}
-
-function iniciarJogo() {
-    if (estadoJogo.enigmas.length === 0) {
-        UI.abrirModal("[ ERRO ]", "Nenhum enigma foi encontrado.", "erro");
-        estadoJogo.modalAberto = true;
-        return;
+    if (UI.menuProgress) {
+        UI.menuProgress.textContent = `${estadoJogo.indiceAtual}/${estadoJogo.enigmas.length} [${nivel.toUpperCase()}]`;
     }
-    estadoJogo.telaAtual = 'jogo';
-    UI.mostrarJogo();
-    exibirEnigmaAtual();
 }
 
-function exibirEnigmaAtual() {
-    const enigma = estadoJogo.enigmas[estadoJogo.indiceAtual];
-    UI.carregarEnigma(enigma, estadoJogo.indiceAtual, estadoJogo.enigmas.length);
-}
-
-function processarResposta(respostaDigitada) {
-    const enigmaAtual = estadoJogo.enigmas[estadoJogo.indiceAtual];
-    const entrada = respostaDigitada.trim();
-
-    if (entrada.toLowerCase() === 'dica') {
-        UI.abrirModal("[ DICA ]", enigmaAtual.dica || "Não há dica disponível para este enigma.", "info");
+// Função para buscar o ranking no Supabase e abrir na tela
+async function exibirRankingModal() {
+    const ranking = await buscarRanking();
+    if (!ranking || ranking.length === 0) {
+        UI.abrirModal("[ RANKING ]", "Nenhum registro encontrado no ranking.", "info");
         estadoJogo.modalAberto = true;
         return;
     }
 
-    let acertou = false;
-
-    if (enigmaAtual.tipo === 'engenharia_reversa') {
-        acertou = validarEngenhariaReversa(entrada, enigmaAtual);
-    } else if (enigmaAtual.tipo === 'reconstrucao') {
-        acertou = validarReconstrucao(entrada, enigmaAtual.resposta_correta);
-    } else {
-        const respUsuario = normalizarResposta(entrada);
-        const respCorreta = normalizarResposta(enigmaAtual.resposta_correta);
-        acertou = (respUsuario === respCorreta); 
-    }
-
-    if (acertou) {
-        estadoJogo.indiceAtual++;
-
-        if (typeof salvarProgressoNuvem === 'function') {
-            salvarProgressoNuvem(estadoJogo.nickname, estadoJogo.indiceAtual);
-        }
-
-        if (estadoJogo.indiceAtual < estadoJogo.enigmas.length) {
-            UI.abrirModal("[ CORRETO ]", "Acesso concedido! Pressione ENTER para avançar.", "sucesso");
-            estadoJogo.modalAberto = true;
-        } else {
-            estadoJogo.telaAtual = 'conclusao';
-            const total = estadoJogo.enigmas.length;
-            UI.mostrarConclusao("Iniciante", `${total}/${total}`);
-        }
-    } else {
-        UI.abrirModal("[ INCORRETO ]", "Resposta incorreta! Tente novamente ou digite 'dica'.", "erro");
-        estadoJogo.modalAberto = true;
-    }
-}
-
-function validarEngenhariaReversa(operadorDigitado, enigma) {
-    const op = operadorDigitado.trim();
-
-    if (op === enigma.resposta_correta.trim()) return true;
-
-    if (!enigma.dados_teste || !enigma.codigo_python) return false;
-
-    try {
-        for (let teste of enigma.dados_teste) {
-            const expressaoBase = enigma.codigo_python.split('=')[1] || enigma.codigo_python;
-
-            const expressaoCalculada = expressaoBase
-                .replace('_____', op)
-                .replace(/\bx\b/g, teste.entrada);
-
-            const resultado = Function(`"use strict"; return (${expressaoCalculada})`)();
-
-            if (resultado !== teste.saida) {
-                return false;
-            }
-        }
-        return true;
-    } catch (e) {
-        return false;
-    }
-}
-
-function validarReconstrucao(sequenciaDigitada, respostaCorreta) {
-    if (!sequenciaDigitada) return false;
-
-    const apenasNumerosUser = sequenciaDigitada.replace(/\D/g, '');
-    const apenasNumerosCorreto = respostaCorreta.replace(/\D/g, '');
-
-    return apenasNumerosUser === apenasNumerosCorreto;
-}
-
-if (UI.nicknameInput) {
-    UI.nicknameInput.addEventListener('keydown', async (e) => {
-        if (e.key === 'Enter') {
-            const nick = UI.nicknameInput.value.trim();
-            if (!nick) return;
-
-            estadoJogo.nickname = nick;
-            
-            const progresso = await buscarOuCriarProgresso(nick);
-            if (progresso) {
-                estadoJogo.indiceAtual = progresso.fase_atual || 0;
-            }
-            UI.fecharNicknameModal();
-            estadoJogo.telaAtual = 'menu';
-            UI.mostrarMenu();
-        }
+    let conteudoHtml = `<table class="tabela-ranking"><thead><tr><th>#</th><th>NICKNAME</th><th>FASE</th></tr></thead><tbody>`;
+    ranking.forEach((pos, idx) => {
+        conteudoHtml += `<tr><td>${idx + 1}º</td><td>${pos.nickname}</td><td>${pos.fase_atual}</td></tr>`;
     });
+    conteudoHtml += `</tbody></table>`;
+
+    UI.abrirModal("[ TOP 10 JOGADORES ]", conteudoHtml, "info");
+    estadoJogo.modalAberto = true;
 }
-
-UI.terminalInput.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter') {
-        const inputBruto = UI.terminalInput.value;
-
-        if (estadoJogo.modalAberto) {
-            UI.fecharModal();
-            estadoJogo.modalAberto = false;
-            UI.limparInput();
-
-            if (estadoJogo.telaAtual === 'jogo') {
-                exibirEnigmaAtual();
-            }
-            return;
-        }
-
-        const comando = inputBruto.trim();
-
-        if (estadoJogo.telaAtual === 'menu') {
-            if (comando === '1') {
-                iniciarJogo();
-            } else if (comando === '2') {
-                UI.abrirModal("[ COMO JOGAR ]", "Analise o código Python, preveja o resultado e digite sua resposta no prompt. Digite 'dica' se precisar de ajuda.", "info");
-                estadoJogo.modalAberto = true;
-            } else if (comando === '3') {
-                UI.abrirModal("[ SOBRE ]", "CyberQuest v1.0 - Plataforma Interativa de Programação Python.", "info");
-                estadoJogo.modalAberto = true;
-            } else {
-                UI.abrirModal("[ AVISO ]", "Opção inválida. Digite 1, 2 ou 3.", "erro");
-                estadoJogo.modalAberto = true;
-            }
-        } else if (estadoJogo.telaAtual === 'jogo') {
-            if (comando !== "") {
-                processarResposta(comando);
-            }
-        } else if (estadoJogo.telaAtual === 'conclusao') {
-            if (comando === '1') {
-                estadoJogo.telaAtual = 'menu';
-                UI.mostrarMenu();
-            } else if (comando === '2') {
-                UI.abrirModal("[ BLOQUEADO ]", "O próximo nível ainda está em desenvolvimento!", "info");
-                estadoJogo.modalAberto = true;
-            } else {
-                UI.abrirModal("[ AVISO ]", "Opção inválida. Digite 1 para voltar ao menu ou 2 para o próximo nível.", "erro");
-                estadoJogo.modalAberto = true;
-            }
-        }
-
-        UI.limparInput();
-    }
-});
 
 window.onload = async () => {
-    await carregarEnigmas();
-    if (estadoJogo.telaAtual === 'login' && typeof UI.mostrarNicknameModal === 'function') {
-        UI.mostrarNicknameModal();
-    } else {
-        UI.mostrarMenu();
-    }
+    await carregarEnigmasDoNivel('facil');
+    UI.mostrarMenu();
 };
