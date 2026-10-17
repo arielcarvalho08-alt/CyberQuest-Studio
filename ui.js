@@ -16,19 +16,50 @@ const UI = {
     modalCard: document.getElementById('modal-card'),
     modalTitle: document.getElementById('modal-title'),
     modalText: document.getElementById('modal-text'),
+    timerDisplay: document.getElementById('timer-display'),
+    comboDisplay: document.getElementById('combo-display'),
 
     terminalInput: document.getElementById('terminal-input'),
 
     mostrarMenu() {
+      adicionar-enigmas
         this.esconderTodas();
         this.screenMenu.classList.remove('hidden');
         this.terminalInput.placeholder = "Digite 1 (Jogar), 2 (Ranking), 3 (Ajuda), 4 (Sobre) ou 5 (Trocar Nick)...";
+
+    this.esconderTodas();
+    this.screenMenu.classList.remove('hidden');
+    
+    if (this.terminalInput) {
+        this.terminalInput.placeholder = "Digite 1 (Jogar), 2 (Ajuda), 3 (Sobre) ou 4 (Trocar Nick)...";
+    }
+    this.focarTerminalInput();
+ main
     },
 
     mostrarJogo() {
         this.esconderTodas();
         this.screenGame.classList.remove('hidden');
         this.terminalInput.placeholder = "Digite sua resposta ou 'dica'...";
+        this.focarTerminalInput();
+    },
+
+    atualizarComboDisplay(segundos) {
+        if (this.comboDisplay) {
+            this.comboDisplay.textContent = `TEMPO: ${String(segundos).padStart(2, '0')}s `;
+
+            if (segundos <= 10) {
+                this.timerDisplay.classList.add('tempo-critico');
+            } else {
+                this.timerdisplay.classList.remove('tempo-critico');
+            }
+        }
+    },
+
+    adicionarComboDisplay(combo, multiplicador) {
+        if (this.comboDisplay) {
+            this.comboDisplay.textContent = `COMBO: ${combo}x (x${multiplicador.toFixed(1)})`;
+        }
     },
 
     mostrarConclusao(nivelNome, progressoTexto) {
@@ -37,6 +68,7 @@ const UI = {
         document.getElementById('congrats-msg').textContent = `Parabéns! Você passou pelo nível ${nivelNome}!`;
         document.getElementById('conclusion-progress').textContent = progressoTexto;
         this.terminalInput.placeholder = "Digite 1 para Menu ou 2 para Próximo Nível...";
+        this.focarTerminalInput();
     },
 
     esconderTodas() {
@@ -54,6 +86,44 @@ const UI = {
 
     fecharModal() {
         this.modalOverlay.classList.add('hidden');
+        this.focarTerminalInput();
+    },
+
+    abrirNicknameModal() {
+        this.nicknameModal.classList.remove('hidden');
+        
+        const instrucao = document.querySelector('#nickname-instrucao');
+        if (instrucao) {
+            instrucao.textContent = "Digite o seu nickname. Se já jogou antes, o seu progresso será carregado!";
+        }
+
+        if (this.nicknameInput) {
+            this.nicknameInput.placeholder = "Ex: CyberDev";
+        }
+
+        this.focarNicknameInput();
+    },
+
+    fecharNicknameModal() {
+        this.nicknameModal.classList.add('hidden');
+        this.focarTerminalInput();
+    },
+
+
+    focarNicknameInput() {
+        setTimeout(() => {
+            if (this.nicknameInput) {
+                this.nicknameInput.focus();
+            }
+        }, 50);
+    },
+
+    focarTerminalInput() {
+        setTimeout(() => {
+            if (this.terminalInput && this.nicknameModal.classList.contains('hidden')) {
+                this.terminalInput.focus();
+            }
+        }, 50);
     },
     
     carregarEnigma(enigma, indiceAtual, totalEnigmas) {
@@ -62,7 +132,7 @@ const UI = {
         
         const txtProgresso = `${indiceAtual + 1}/${totalEnigmas}`;
         this.gameProgress.textContent = txtProgresso;
-        this.menuProgress.textContent = `0/${totalEnigmas}`;
+        this.menuProgress.textContent = `${indiceAtual}/${totalEnigmas}`;
         
         this.enunciadoText.textContent = enigma.enunciado;
         const codeContainer = document.querySelector('.code-box-container');
@@ -131,13 +201,15 @@ const UI = {
 
     limparInput() {
         this.terminalInput.value = "";
-    },
-
-    fecharNicknameModal(){
-        this.nicknameModal.classList('hidden');
     }
 };
 
-document.addEventListener('click', () => {
-    UI.terminalInput.focus();
+document.addEventListener('click', (e) => {
+    if (!UI.nicknameModal.classList.contains('hidden')) {
+        UI.nicknameInput.focus();
+    } else {
+        UI.terminalInput.focus();
+    }
 });
+
+export default UI;
