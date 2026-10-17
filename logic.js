@@ -1,44 +1,47 @@
 import UI from './ui.js';
+ adicionar-enigmas
+import { buscarOuCriarProgresso, salvarProgressoNuvem, buscarEnigmasPorNivel, buscarRanking } from './db.js';
 import { buscarDadosJogador, buscarOuCriarProgresso, salvarProgressoNuvem, buscarEnigmasNuvem } from './db.js';
+ main
 
 let estadoJogo = {
     nickname: '',
     telaAtual: 'login',
+    nivelAtual: 'facil', // Controla a trilha de níveis ('facil', 'medio', 'dificil')
     enigmas: [],
     indiceAtual: 0,
     modalAberto: false,
+ adicionar-enigmas
+    pendenteConfirmacaoNick: null
+
     pendenteConfirmacaoNick: null,
     comboAtual: 0,
     multiplicador: 1.0,
     tempoRestante: 30,
     timerInterveal: null
+main
 };
-    
-function normalizarResposta(str) {
-    if (str === null || str === undefined) return "";
-    return str
-        .toString()
-        .trim()
-        .replace(/["']/g, "'")          
-        .replace(/\s*,\s*/g, ', ')      
-        .replace(/\s*==\s*/g, ' == ')  
-        .replace(/\s*=\s*/g, ' = ')     
-        .replace(/\s*\(\s*/g, '(')         .replace(/\s*\)\s*/g, ')')
-        .replace(/\s+/g, ' ')          
-        .toLowerCase();
-}
 
-async function carregarEnigmas() {
-    let dadosNuvem = await buscarEnigmasNuvem();
+async function carregarEnigmasDoNivel(nivel) {
+    estadoJogo.nivelAtual = nivel;
+    let dadosNuvem = await buscarEnigmasPorNivel(nivel);
+    
     if (dadosNuvem && dadosNuvem.length > 0) {
         estadoJogo.enigmas = dadosNuvem;
     } else {
+        
         try {
             const resposta = await fetch('enigmas.json');
-            estadoJogo.enigmas = await resposta.json();
+            const todos = await resposta.json();
+            estadoJogo.enigmas = todos.filter(e => e.nivel === nivel);
         } catch (erro) {
             console.error("Erro ao carregar enigmas locais.", erro);
+            estadoJogo.enigmas = [];
         }
+    }
+adicionar-enigmas
+    if (UI.menuProgress) {
+        UI.menuProgress.textContent = `${estadoJogo.indiceAtual}/${estadoJogo.enigmas.length} [${nivel.toUpperCase()}]`;
     }
 
     UI.menuProgress.textContent = `${estadoJogo.indiceAtual}/${estadoJogo.enigmas.length}`;
@@ -60,18 +63,31 @@ function exibirEnigmaAtual() {
     UI.carregarEnigma(enigma, estadoJogo.indiceAtual, estadoJogo.enigmas.length);
     UI.adicionarComboDisplay(estadoJogo.comboAtual,estadoJogo.multiplicador);
     iniciarTemporizador(30);
+main
 }
 
-function processarResposta(respostaDigitada) {
-    const enigmaAtual = estadoJogo.enigmas[estadoJogo.indiceAtual];
-    const entrada = respostaDigitada.trim();
-
-    if (entrada.toLowerCase() === 'dica') {
-        UI.abrirModal("[ DICA ]", enigmaAtual.dica || "Não há dica disponível para este enigma.", "info");
+async function exibirRankingModal() {
+    const ranking = await buscarRanking();
+    if (!ranking || ranking.length === 0) {
+        UI.abrirModal("[ RANKING ]", "Nenhum registro encontrado no ranking.", "info");
         estadoJogo.modalAberto = true;
         return;
     }
 
+ adicionar-enigmas
+    let conteudoHtml = `<table class="tabela-ranking"><thead><tr><th>#</th><th>NICKNAME</th><th>FASE</th></tr></thead><tbody>`;
+    ranking.forEach((pos, idx) => {
+        conteudoHtml += `<tr><td>${idx + 1}º</td><td>${pos.nickname}</td><td>${pos.fase_atual}</td></tr>`;
+    });
+    conteudoHtml += `</tbody></table>`;
+
+    UI.abrirModal("[ TOP 10 JOGADORES ]", conteudoHtml, "info");
+    estadoJogo.modalAberto = true;
+}
+
+window.onload = async () => {
+    await carregarEnigmasDoNivel('facil');
+    UI.mostrarMenu();
     let acertou = false;
 
     if (enigmaAtual.tipo === 'engenharia_reversa') {
@@ -339,4 +355,5 @@ window.onload = async () => {
             UI.mostrarMenu();
         }
     }
+ main
 };

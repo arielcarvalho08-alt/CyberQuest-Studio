@@ -22,6 +22,11 @@ const UI = {
     terminalInput: document.getElementById('terminal-input'),
 
     mostrarMenu() {
+      adicionar-enigmas
+        this.esconderTodas();
+        this.screenMenu.classList.remove('hidden');
+        this.terminalInput.placeholder = "Digite 1 (Jogar), 2 (Ranking), 3 (Ajuda), 4 (Sobre) ou 5 (Trocar Nick)...";
+
     this.esconderTodas();
     this.screenMenu.classList.remove('hidden');
     
@@ -29,6 +34,7 @@ const UI = {
         this.terminalInput.placeholder = "Digite 1 (Jogar), 2 (Ajuda), 3 (Sobre) ou 4 (Trocar Nick)...";
     }
     this.focarTerminalInput();
+ main
     },
 
     mostrarJogo() {

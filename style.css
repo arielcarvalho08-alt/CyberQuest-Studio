@@ -362,6 +362,37 @@ body, html {
     cursor: text;
 }
 
+}
+.tabela-ranking {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 12px 0;
+    background: #040d06;
+    border: 1px solid #183d20;
+}
+
+.tabela-ranking th, .tabela-ranking td {
+    padding: 6px 10px;
+    text-align: center;
+    border: 1px solid #0f2b16;
+    font-family: 'VT323', monospace;
+    font-size: 1.3rem;
+}
+
+.tabela-ranking th {
+    background: #0d2414;
+    color: #33ff77;
+    letter-spacing: 1px;
+}
+
+.tabela-ranking td {
+    color: #cceedd;
+}
+
+.tabela-ranking tr:nth-child(1) td {
+    color: #ffcc00;
+    font-weight: bold;
+
 #nickname-input::placeholder {
     color: #1c522a;
 }
