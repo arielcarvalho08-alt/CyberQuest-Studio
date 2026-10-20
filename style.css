@@ -44,9 +44,10 @@ body, html {
 }
 
 .pixel-subtitle {
-    font-size: 1.6rem;
-    color: #88a390;
-    margin-bottom: 12px;
+    font-family: 'Press Start 2P', cursive;
+    font-size: 1.4rem;
+    color: #ffcc00;
+    margin-bottom: 16px;
 }
 
 .subtitle {
@@ -60,14 +61,44 @@ body, html {
     justify-content: space-between;
     align-items: center;
     font-size: 1.2rem;
-    padding-bottom: 10px;
+    padding-bottom: 8px;
     border-bottom: 1px solid #14331c;
+}
+
+/* Estilo para a sub-barra de status abaixo do progresso */
+.status-bar-sub {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 4px 0 8px 0;
+    border-bottom: 1px dashed #14331c;
 }
 
 .top-left {
     display: flex;
     align-items: center;
     gap: 12px;
+}
+
+.badge-hud {
+    background: #091a0e;
+    border: 1px solid #183d20;
+    color: #ffcc00;
+    padding: 3px 10px;
+    border-radius: 4px;
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+.tempo-critico {
+    color: #ff3344 !important;
+    border-color: #ff3344 !important;
+    animation: piscar-alerta 0.8s infinite alternate;
+}
+
+@keyframes piscar-alerta {
+    0% { opacity: 1; text-shadow: 0 0 8px #ff3344; }
+    100% { opacity: 0.3; text-shadow: none; }
 }
 
 .badge-tipo {
@@ -106,12 +137,12 @@ body, html {
 }
 
 .menu-options {
-    font-size: 1.6rem;
+    font-size: 1.5rem;
     text-align: left;
 }
 
 .menu-options p {
-    margin: 12px 0;
+    margin: 10px 0;
     color: #cceedd;
 }
 
@@ -120,9 +151,29 @@ body, html {
     font-weight: bold;
 }
 
+.status-badge {
+    font-size: 1rem;
+    padding: 2px 8px;
+    border-radius: 4px;
+    margin-left: 8px;
+    font-weight: bold;
+}
+
+.status-badge.unlocked {
+    background: #0d2414;
+    color: #00ff66;
+    border: 1px solid #00ff66;
+}
+
+.status-badge.locked {
+    background: #1f0a0a;
+    color: #ff3344;
+    border: 1px solid #ff3344;
+}
+
 #screen-game {
-    gap: 12px;
-    margin-top: 10px;
+    gap: 10px;
+    margin-top: 5px;
 }
 
 .enunciado-card {
@@ -132,10 +183,10 @@ body, html {
     border-right: 1px solid #14381b;
     border-bottom: 1px solid #14381b;
     border-radius: 4px;
-    padding: 12px 16px;
+    padding: 10px 14px;
     display: flex;
     flex-direction: column;
-    gap: 6px;
+    gap: 4px;
 }
 
 .enunciado-label {
@@ -145,9 +196,9 @@ body, html {
 }
 
 .enunciado-card p {
-    font-size: 1.45rem;
+    font-size: 1.35rem;
     color: #f0f7f2;
-    line-height: 1.35;
+    line-height: 1.3;
 }
 
 .code-box-container {
@@ -155,7 +206,7 @@ body, html {
     background: #040d06;
     border: 1px solid #183d20;
     border-radius: 6px;
-    padding: 14px 18px;
+    padding: 12px 16px;
     display: flex;
     flex-direction: column;
     overflow: hidden;
@@ -167,9 +218,9 @@ body, html {
     font-size: 0.9rem;
     color: #486e52;
     letter-spacing: 1px;
-    margin-bottom: 10px;
+    margin-bottom: 8px;
     border-bottom: 1px solid #0f2b16;
-    padding-bottom: 6px;
+    padding-bottom: 4px;
 }
 
 .file-tag {
@@ -183,9 +234,9 @@ body, html {
 
 .code-box-container code {
     font-family: 'VT323', monospace;
-    font-size: 1.6rem;
+    font-size: 1.5rem;
     color: #a3f5c2;
-    line-height: 1.45;
+    line-height: 1.4;
 }
 
 .conclusion-content {
@@ -197,9 +248,38 @@ body, html {
     text-align: center;
 }
 
+.medalha-card {
+    background: #040d06;
+    border: 2px solid #ffcc00;
+    border-radius: 8px;
+    padding: 16px 24px;
+    margin: 16px 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-shadow: 0 0 15px rgba(255, 204, 0, 0.2);
+}
+
+.medalha-emoji {
+    font-size: 3rem;
+    margin-bottom: 6px;
+}
+
+.medalha-texto {
+    font-family: 'Press Start 2P', cursive;
+    font-size: 1rem;
+    color: #ffcc00;
+    margin-bottom: 6px;
+}
+
+.xp-resultado-texto {
+    font-size: 1.4rem;
+    color: #33ff77;
+}
+
 .conclusion-options {
     font-size: 1.5rem;
-    margin-top: 24px;
+    margin-top: 16px;
     color: #cceedd;
 }
 
@@ -245,10 +325,11 @@ body, html {
     background: #09140c;
     border-radius: 8px;
     padding: 26px;
-    width: 85%;
-    max-width: 580px;
+    width: 90%;
+    max-width: 620px;
     text-align: center;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.85);
+    font-size: 1.6rem; 
 }
 
 .modal-card h3 {
@@ -257,15 +338,16 @@ body, html {
     margin-bottom: 16px;
 }
 
-.modal-card p {
-    font-size: 1.4rem;
+.modal-card p, #modal-text {
+    font-size: 1.6rem !important; 
     line-height: 1.4;
-    margin-bottom: 20px;
+    margin-bottom: 16px;
 }
 
 .modal-footer {
-    font-size: 1rem;
+    font-size: 1.2rem !important;
     opacity: 0.7;
+    margin-top: 12px;
 }
 
 .modal-card.info {
@@ -291,7 +373,7 @@ body, html {
     color: #ff3344;
 }
 
-.tabela-io {
+.tabela-ranking, .tabela-io {
     width: 100%;
     border-collapse: collapse;
     margin: 10px 0 16px 0;
@@ -300,15 +382,16 @@ body, html {
     border-radius: 4px;
 }
 
+.tabela-ranking th, .tabela-ranking td,
 .tabela-io th, .tabela-io td {
-    padding: 8px 12px;
+    padding: 8px 10px;
     text-align: center;
     border: 1px solid #0f2b16;
     font-family: 'VT323', monospace;
-    font-size: 1.4rem;
+    font-size: 1.3rem;
 }
 
-.tabela-io th {
+.tabela-ranking th, .tabela-io th {
     background: #0d2414;
     color: #33ff77;
     letter-spacing: 1px;
@@ -322,23 +405,23 @@ body, html {
 .instrucao-reconstrucao {
     font-size: 1.2rem;
     color: #ffcc00;
-    margin-bottom: 12px;
+    margin-bottom: 8px;
 }
 
 .linhas-embaralhadas {
     display: flex;
     flex-direction: column;
-    gap: 8px;
-    margin-bottom: 12px;
+    gap: 6px;
+    margin-bottom: 10px;
 }
 
 .linha-code-item {
     background: #040d06;
     border: 1px solid #183d20;
-    padding: 8px 12px;
+    padding: 6px 10px;
     border-radius: 4px;
     color: #a3f5c2;
-    font-size: 1.5rem;
+    font-size: 1.4rem;
 }
 
 .nickname-box {
@@ -364,4 +447,22 @@ body, html {
 
 #nickname-input::placeholder {
     color: #1c522a;
+}
+
+.dashboard-container {
+    text-align: left;
+    padding: 10px;
+    font-family: 'VT323', monospace;
+    font-size: 1.6rem;
+    line-height: 1.8;
+}
+
+.destaque-verde {
+    color: #33ff77;
+    font-weight: bold;
+}
+
+.destaque-amarelo {
+    color: #ffcc00;
+    font-weight: bold;
 }
