@@ -10,18 +10,19 @@
 </head>
 <body>
     <div id="terminal-screen" class="terminal-container">
-        
+       
         <div id="nickname-modal" class="modal-overlay">
             <div class="modal-card info">
                 <h3>[ IDENTIFICAÇÃO ]</h3>
                 <p id="nickname-instrucao">Digite seu nickname Hacker para salvar/carregar seu progresso:</p>
                 <div class="input-container nickname-box">
                     <span class="prompt-symbol">&gt;</span>
-                    <input type="text" id="nickname-input" placeholder="Ex: CyberDev" autofocus autocomplete="off">   
+                    <input type="text" id="nickname-input" placeholder="Ex: CyberDev" autofocus autocomplete="off">  
                 </div>
                 <div class="modal-footer" style="margin-top: 15px;">Pressione ENTER para confirmar</div>
             </div>
         </div>
+
 
         <div id="modal-overlay" class="modal-overlay hidden">
             <div id="modal-card" class="modal-card info">
@@ -31,16 +32,17 @@
             </div>
         </div>
 
+
         <section id="screen-menu" class="game-screen">
             <div class="top-system-bar">
                 <span class="system-tag">SYSTEM v1.0</span>
                 <span class="progresso-tag">Hacker: <span id="menu-user-tag" style="color: #ffcc00;">--</span> | XP: <span id="menu-xp-tag">0</span></span>
             </div>
-            
+           
             <div class="menu-content">
                 <h1 class="pixel-title">CYBERQUEST</h1>
                 <p class="subtitle">(Feito em pixelart)</p>
-                
+               
                 <div class="menu-options">
                     <p><span class="option-num">[1]</span> Iniciar gameplay</p>
                     <p><span class="option-num">[2]</span> Dashboard do Jogador</p>
@@ -52,14 +54,15 @@
             </div>
         </section>
 
+
         <section id="screen-modulos" class="game-screen hidden">
             <div class="top-system-bar">
                 <span class="system-tag">SELEÇÃO DE MÓDULO</span>
             </div>
-            
+           
             <div class="menu-content">
                 <h2 class="pixel-subtitle">[ SELECIONE O MÓDULO ]</h2>
-                
+               
                 <div class="menu-options">
                     <p id="mod-option-1"><span class="option-num">[1]</span> Módulo 1: Iniciante ("Funciona na minha máquina") <span id="badge-mod-1" class="status-badge unlocked">🔓 LIBERADO</span></p>
                     <p id="mod-option-2"><span class="option-num">[2]</span> Módulo 2: Intermediário ("Gambiarra Provisória") <span id="badge-mod-2" class="status-badge locked">🔒 BLOQUEADO</span></p>
@@ -68,21 +71,23 @@
             </div>
         </section>
 
+
         <section id="screen-modos" class="game-screen hidden">
             <div class="top-system-bar">
                 <span class="system-tag">MODO DE JOGO</span>
             </div>
-            
+           
             <div class="menu-content">
                 <h2 class="pixel-subtitle">[ ESCOLHA O MODO ]</h2>
                 <p class="subtitle" id="modulo-selecionado-label">Módulo Ativo: Iniciante</p>
-                
+               
                 <div class="menu-options">
                     <p><span class="option-num">[1]</span> Modo Normal (Foco em lógica e sem pressão de tempo)</p>
                     <p><span class="option-num">[2]</span> Modo Contra o Tempo (Banco de tempo único + Bônus por velocidade)</p>
                 </div>
             </div>
         </section>
+
 
         <section id="screen-game" class="game-screen hidden">
             <div class="top-bar">
@@ -95,12 +100,15 @@
                 </div>
             </div>
 
+
             <div id="status-bar-gameplay" class="status-bar-sub"></div>
+
 
             <div class="enunciado-card">
                 <span class="enunciado-label">[ DESAFIO ]</span>
                 <p id="enunciado-text">Carregando enunciado...</p>
             </div>
+
 
             <div class="code-box-container">
                 <div class="code-header">
@@ -111,21 +119,24 @@
             </div>
         </section>
 
+
         <section id="screen-conclusion" class="game-screen hidden">
             <div class="top-system-bar">
                 <span class="system-tag">SYSTEM v1.0</span>
                 <span class="progresso-tag">Progresso: <span id="conclusion-progress">15/15</span></span>
             </div>
-            
+           
             <div class="conclusion-content">
                 <h2 id="motivation-msg" class="pixel-subtitle">Missão Cumprida!</h2>
                 <h1 id="congrats-msg" class="pixel-title-sm">Parabéns! Você passou pelo Módulo Iniciante!</h1>
+
 
                 <div id="medalha-container" class="medalha-card">
                     <span id="medalha-icone" class="medalha-emoji">🥇</span>
                     <p id="medalha-titulo" class="medalha-texto">Medalha de Ouro Conquistada!</p>
                     <p id="xp-modulo-resultado" class="xp-resultado-texto">+120 XP neste Módulo</p>
                 </div>
+
 
                 <div class="conclusion-options">
                     <p><span class="option-num">[1]</span> Digite para retornar ao menu</p>
@@ -134,12 +145,15 @@
             </div>
         </section>
 
+
         <div class="input-container">
             <span class="prompt-symbol">&gt;</span>
             <input type="text" id="terminal-input" placeholder="Digite uma opção..." autocomplete="off">
         </div>
 
+
     </div>
+
 
     <script type="module" src="db.js"></script>
     <script type="module" src="ui.js"></script>

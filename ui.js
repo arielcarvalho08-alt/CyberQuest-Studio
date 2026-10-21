@@ -22,9 +22,64 @@ const UI = {
     modalCard: document.getElementById('modal-card'),
     modalTitle: document.getElementById('modal-title'),
     modalText: document.getElementById('modal-text'),
+    timerDisplay: document.getElementById('timer-display'),
+    comboDisplay: document.getElementById('combo-display'),
 
     terminalInput: document.getElementById('terminal-input'),
 
+<<<<<<< HEAD
+=======
+    mostrarMenu() {
+      adicionar-enigmas
+        this.esconderTodas();
+        this.screenMenu.classList.remove('hidden');
+        this.terminalInput.placeholder = "Digite 1 (Jogar), 2 (Ranking), 3 (Ajuda), 4 (Sobre) ou 5 (Trocar Nick)...";
+
+    this.esconderTodas();
+    this.screenMenu.classList.remove('hidden');
+    
+    if (this.terminalInput) {
+        this.terminalInput.placeholder = "Digite 1 (Jogar), 2 (Ajuda), 3 (Sobre) ou 4 (Trocar Nick)...";
+    }
+    this.focarTerminalInput();
+ main
+    },
+
+    mostrarJogo() {
+        this.esconderTodas();
+        this.screenGame.classList.remove('hidden');
+        this.terminalInput.placeholder = "Digite sua resposta ou 'dica'...";
+        this.focarTerminalInput();
+    },
+
+    atualizarComboDisplay(segundos) {
+        if (this.comboDisplay) {
+            this.comboDisplay.textContent = `TEMPO: ${String(segundos).padStart(2, '0')}s `;
+
+            if (segundos <= 10) {
+                this.timerDisplay.classList.add('tempo-critico');
+            } else {
+                this.timerdisplay.classList.remove('tempo-critico');
+            }
+        }
+    },
+
+    adicionarComboDisplay(combo, multiplicador) {
+        if (this.comboDisplay) {
+            this.comboDisplay.textContent = `COMBO: ${combo}x (x${multiplicador.toFixed(1)})`;
+        }
+    },
+
+    mostrarConclusao(nivelNome, progressoTexto) {
+        this.esconderTodas();
+        this.screenConclusion.classList.remove('hidden');
+        document.getElementById('congrats-msg').textContent = `Parabéns! Você passou pelo nível ${nivelNome}!`;
+        document.getElementById('conclusion-progress').textContent = progressoTexto;
+        this.terminalInput.placeholder = "Digite 1 para Menu ou 2 para Próximo Nível...";
+        this.focarTerminalInput();
+    },
+
+>>>>>>> 7ea5fd2fc7aee2f15ba8ca2134ef499e5d3eef1f
     esconderTodas() {
         if (this.screenMenu) this.screenMenu.classList.add('hidden');
         if (this.screenModulos) this.screenModulos.classList.add('hidden');
@@ -32,6 +87,7 @@ const UI = {
         if (this.screenGame) this.screenGame.classList.add('hidden');
         if (this.screenConclusion) this.screenConclusion.classList.add('hidden');
     },
+
 
     focarNicknameInput() {
         setTimeout(() => {

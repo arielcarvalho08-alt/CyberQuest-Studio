@@ -1,6 +1,7 @@
 import UI from './ui.js';
 import { buscarDadosJogador, buscarOuCriarProgresso, salvarProgressoNuvem, buscarEnigmasNuvem, buscarRankingGlobal } from './db.js';
 
+
 let estadoJogo = {
     nickname: '',
     telaAtual: 'login',
@@ -11,9 +12,9 @@ let estadoJogo = {
         2: 'Intermediário: Gambiarra Provisória',
         3: 'Difícil: Reinicie o PC'
     },
-    modoJogo: 'normal', 
+    modoJogo: 'normal',
     enigmas: [],
-    
+   
     faseNormal: 1,
     xpNormal: 0,
     xpModulo: 0,
@@ -21,6 +22,7 @@ let estadoJogo = {
     xpTempoMax: 0,
     xpGlobal: 0,
     enigmasResolvidosTotal: 0,
+
 
     indiceAtual: 0,
     xpFaseAtual: 0,
@@ -33,6 +35,7 @@ let estadoJogo = {
     pendenteConfirmacaoNick: null
 };
 
+
 function normalizarResposta(str) {
     if (str === null || str === undefined) return "";
     return str
@@ -41,11 +44,12 @@ function normalizarResposta(str) {
         .replace(/["']/g, "'")          
         .replace(/\s*,\s*/g, ', ')      
         .replace(/\s*==\s*/g, ' == ')  
-        .replace(/\s*=\s*/g, ' = ')     
+        .replace(/\s*=\s*/g, ' = ')    
         .replace(/\s*\(\s*/g, '(').replace(/\s*\)\s*/g, ')')
         .replace(/\s+/g, ' ')          
         .toLowerCase();
 }
+
 
 function formatarNome(texto) {
     if (!texto) return "";
@@ -59,6 +63,7 @@ function formatarNome(texto) {
         .join(' ');
 }
 
+
 function embaralharArray(array) {
     let arr = [...array];
     for (let i = arr.length - 1; i > 0; i--) {
@@ -68,27 +73,29 @@ function embaralharArray(array) {
     return arr;
 }
 
+
 async function carregarEnigmasModulo(moduloNum) {
     const modoAtual = estadoJogo.modoJogo === 'tempo' ? 'tempo' : 'campanha';
     let dadosNuvem = await buscarEnigmasNuvem(moduloNum, modoAtual);
-    
+   
     if (dadosNuvem && dadosNuvem.length > 0) {
         estadoJogo.enigmas = dadosNuvem;
     } else {
         try {
             const resposta = await fetch('enigmas.json');
             const todos = await resposta.json();
-            
+           
             let filtrados = todos.filter(e => {
                 const modoEnigma = e.modo || 'campanha';
                 if (modoEnigma !== modoAtual) return false;
+
 
                 if (moduloNum === 1) return e.nivel === 'facil';
                 if (moduloNum === 2) return e.nivel === 'medio';
                 if (moduloNum === 3) return e.nivel === 'dificil';
                 return true;
             });
-            
+           
             estadoJogo.enigmas = filtrados;
         } catch (erro) {
             console.error("Erro ao carregar enigmas.", erro);
@@ -97,16 +104,20 @@ async function carregarEnigmasModulo(moduloNum) {
     }
 }
 
+
 function iniciarTemporizadorModulo() {
     pararTemporizador();
     if (estadoJogo.modoJogo !== 'tempo') return;
 
+
     estadoJogo.tempoRestante = 150;
     UI.atualizarTimerDisplay(estadoJogo.tempoRestante);
+
 
     estadoJogo.intervaloTimer = setInterval(() => {
         estadoJogo.tempoRestante--;
         UI.atualizarTimerDisplay(estadoJogo.tempoRestante);
+
 
         if (estadoJogo.tempoRestante <= 0) {
             pararTemporizador();
@@ -115,6 +126,7 @@ function iniciarTemporizadorModulo() {
     }, 1000);
 }
 
+
 function pararTemporizador() {
     if (estadoJogo.intervaloTimer) {
         clearInterval(estadoJogo.intervaloTimer);
@@ -122,9 +134,11 @@ function pararTemporizador() {
     }
 }
 
+
 async function gameOverTempoEsgotado() {
     estadoJogo.telaAtual = 'menu';
     const xpObtido = estadoJogo.xpSessaoTempo || 0;
+
 
     const resumoHtml = `
         <div class="dashboard-container" style="text-align: center;">
@@ -137,9 +151,11 @@ async function gameOverTempoEsgotado() {
         </div>
     `;
 
+
     UI.abrirModal("[ TEMPO ESGOTADO - DERROTA ]", resumoHtml, "erro");
     estadoJogo.modalAberto = true;
 }
+
 
 async function selecionarModulo(numModulo) {
     if (!estadoJogo.modulosDesbloqueados.includes(numModulo)) {
@@ -148,10 +164,12 @@ async function selecionarModulo(numModulo) {
         return;
     }
 
+
     estadoJogo.moduloAtual = numModulo;
     estadoJogo.telaAtual = 'modos';
     UI.mostrarModosJogo(estadoJogo.nomeModulos[numModulo]);
 }
+
 
 async function iniciarGameplayComModo(modo) {
     estadoJogo.modoJogo = modo;
@@ -161,22 +179,25 @@ async function iniciarGameplayComModo(modo) {
     estadoJogo.indiceAtual = 0;
     estadoJogo.xpModulo = 0;
 
+
     await carregarEnigmasModulo(estadoJogo.moduloAtual);
+
 
     if (!estadoJogo.enigmas || estadoJogo.enigmas.length === 0) {
         UI.abrirModal("[ AVISO ]", "Nenhum enigma encontrado para este módulo.", "erro");
         return;
     }
 
+
     if (modo === 'tempo') {
         estadoJogo.enigmas = embaralharArray(estadoJogo.enigmas);
         estadoJogo.xpSessaoTempo = 0;
-        estadoJogo.tempoRestante = 150; 
+        estadoJogo.tempoRestante = 150;
         iniciarTemporizadorModulo();
     } else {
         let inicioModulo = (estadoJogo.moduloAtual - 1) * 15;
         let progressoNoModulo = Math.max(0, estadoJogo.faseNormal - 1 - inicioModulo);
-        
+       
         if (progressoNoModulo >= 15) {
             UI.abrirModal("[ MÓDULO CONCLUÍDO ]", "Você já concluiu este módulo no Modo Normal!", "sucesso");
             return;
@@ -185,15 +206,17 @@ async function iniciarGameplayComModo(modo) {
         if (UI.timerDisplay) UI.timerDisplay.textContent = "";
     }
 
+
     estadoJogo.telaAtual = 'jogo';
     UI.mostrarJogo();
     UI.atualizarComboDisplay(estadoJogo.combo, estadoJogo.multiplicador);
     exibirEnigmaAtual();
 }
 
+
 function exibirEnigmaAtual() {
     const enigma = estadoJogo.enigmas[estadoJogo.indiceAtual];
-    
+   
     if (!enigma) {
         if (estadoJogo.indiceAtual >= estadoJogo.enigmas.length) {
             exibirConclusao();
@@ -201,10 +224,11 @@ function exibirEnigmaAtual() {
         return;
     }
 
+
     let pontosBase = estadoJogo.dicaUsadaNaFase ? 20 : 40;
     let bonusTempo = estadoJogo.modoJogo === 'tempo' ? 10 : 0;
     estadoJogo.xpFaseAtual = Math.round((pontosBase + bonusTempo) * estadoJogo.multiplicador);
-    
+   
     UI.carregarEnigma(
         enigma,
         estadoJogo.indiceAtual,
@@ -221,12 +245,13 @@ function exibirEnigmaAtual() {
     );
 }
 
+
 function exibirConclusao() {
     pararTemporizador();
     estadoJogo.telaAtual = 'conclusao';
-    
+   
     const total = estadoJogo.enigmas.length;
-    
+   
     let medalhaInfo = { emoji: "🥉", titulo: "Medalha de Bronze" };
     if (estadoJogo.xpModulo >= 450) {
         medalhaInfo = { emoji: "💎", titulo: "Medalha Hacker Suprema" };
@@ -236,11 +261,13 @@ function exibirConclusao() {
         medalhaInfo = { emoji: "🥈", titulo: "Medalha de Prata" };
     }
 
+
     if (estadoJogo.moduloAtual === 1 && !estadoJogo.modulosDesbloqueados.includes(2)) {
         estadoJogo.modulosDesbloqueados.push(2);
     } else if (estadoJogo.moduloAtual === 2 && !estadoJogo.modulosDesbloqueados.includes(3)) {
         estadoJogo.modulosDesbloqueados.push(3);
     }
+
 
     UI.mostrarConclusao(
         estadoJogo.nomeModulos[estadoJogo.moduloAtual],
@@ -250,17 +277,20 @@ function exibirConclusao() {
     );
 }
 
+
 async function processarRespostaCorreta() {
     let pontosBase = estadoJogo.dicaUsadaNaFase ? 20 : 40;
     let bonusTempo = 0;
 
+
     if (estadoJogo.modoJogo === 'tempo') {
         bonusTempo = 10;
-        estadoJogo.tempoRestante += 5; 
+        estadoJogo.tempoRestante += 5;
     }
 
+
     const pontosGanhos = Math.round((pontosBase + bonusTempo) * estadoJogo.multiplicador);
-    
+   
     if (estadoJogo.modoJogo === 'tempo') {
         estadoJogo.xpSessaoTempo += pontosGanhos;
         if (estadoJogo.xpSessaoTempo > estadoJogo.xpTempoMax) {
@@ -273,16 +303,20 @@ async function processarRespostaCorreta() {
         estadoJogo.faseNormal = Math.max(estadoJogo.faseNormal, estadoJogo.enigmasResolvidosTotal + 1);
     }
 
+
     estadoJogo.xpGlobal = estadoJogo.xpNormal + estadoJogo.xpTempoMax;
     estadoJogo.dicaUsadaNaFase = false;
+
 
     estadoJogo.combo++;
     if (estadoJogo.combo >= 5) estadoJogo.multiplicador = 2.0;
     else if (estadoJogo.combo >= 3) estadoJogo.multiplicador = 1.5;
     else estadoJogo.multiplicador = 1.0;
 
+
     UI.atualizarComboDisplay(estadoJogo.combo, estadoJogo.multiplicador);
     estadoJogo.indiceAtual++;
+
 
     await salvarProgressoNuvem({
         nickname: estadoJogo.nickname,
@@ -292,6 +326,7 @@ async function processarRespostaCorreta() {
         faseNormal: estadoJogo.faseNormal,
         modulosDesbloqueados: estadoJogo.modulosDesbloqueados
     });
+
 
     if (estadoJogo.indiceAtual < estadoJogo.enigmas.length) {
         pararTemporizador();
@@ -306,17 +341,20 @@ async function processarRespostaCorreta() {
     }
 }
 
+
 async function processarRespostaErros(respostaDigitada) {
     const entrada = respostaDigitada.trim();
 
+
     if (['voltar', 'menu', 'sair'].includes(entrada.toLowerCase())) {
         pararTemporizador();
-        
+       
         if (estadoJogo.modoJogo === 'tempo') {
             if (estadoJogo.xpSessaoTempo > estadoJogo.xpTempoMax) {
                 estadoJogo.xpTempoMax = estadoJogo.xpSessaoTempo;
             }
             estadoJogo.xpGlobal = estadoJogo.xpNormal + estadoJogo.xpTempoMax;
+
 
             await salvarProgressoNuvem({
                 nickname: estadoJogo.nickname,
@@ -329,27 +367,32 @@ async function processarRespostaErros(respostaDigitada) {
             estadoJogo.xpSessaoTempo = 0;
         }
 
+
         estadoJogo.modoJogo = null;
         estadoJogo.telaAtual = 'menu';
         UI.mostrarMenu(estadoJogo.nickname, estadoJogo.xpGlobal);
         return;
     }
 
+
     estadoJogo.combo = 0;
     estadoJogo.multiplicador = 1.0;
     UI.atualizarComboDisplay(estadoJogo.combo, estadoJogo.multiplicador);
+
 
     UI.abrirModal("[ INCORRETO ]", "Resposta incorreta! Tente novamente ou digite <b>dica</b> para receber uma ajuda.", "erro");
     estadoJogo.modalAberto = true;
 }
 
+
 async function processarResposta(respostaDigitada) {
     console.log("Processando resposta:", respostaDigitada);
-    
+   
     const enigmaAtual = estadoJogo.enigmas[estadoJogo.indiceAtual];
     console.log("Enigma atual:", enigmaAtual);
-    
+   
     const entrada = respostaDigitada.trim();
+
 
     if (['voltar', 'menu', 'sair'].includes(entrada.toLowerCase())) {
         pararTemporizador();
@@ -358,12 +401,15 @@ async function processarResposta(respostaDigitada) {
         return;
     }
 
+
     if (entrada.toLowerCase() === 'dica') {
         pedirDica();
         return;
     }
 
+
     let acertou = false;
+
 
     if (enigmaAtual.tipo === 'engenharia_reversa') {
         acertou = validarEngenhariaReversa(entrada, enigmaAtual);
@@ -372,8 +418,9 @@ async function processarResposta(respostaDigitada) {
     } else {
         const respUsuario = normalizarResposta(entrada);
         const respCorreta = normalizarResposta(enigmaAtual.resposta_correta);
-        acertou = (respUsuario === respCorreta); 
+        acertou = (respUsuario === respCorreta);
     }
+
 
     if (acertou) {
         await processarRespostaCorreta();
@@ -382,10 +429,12 @@ async function processarResposta(respostaDigitada) {
     }
 }
 
+
 function validarEngenhariaReversa(operadorDigitado, enigma) {
     const op = operadorDigitado.trim();
     if (op === enigma.resposta_correta.trim()) return true;
     if (!enigma.dados_teste || !enigma.codigo_python) return false;
+
 
     try {
         for (let teste of enigma.dados_teste) {
@@ -400,53 +449,58 @@ function validarEngenhariaReversa(operadorDigitado, enigma) {
     }
 }
 
+
 function validarReconstrucao(sequenciaDigitada, respostaCorreta) {
     if (!sequenciaDigitada) return false;
     return sequenciaDigitada.replace(/\D/g, '') === respostaCorreta.replace(/\D/g, '');
 }
 
+
 async function efetivarLogin(nick, dadosSalvos) {
     estadoJogo.nickname = nick;
-    
+   
     estadoJogo.xpNormal = dadosSalvos && (dadosSalvos.xp_normal !== undefined ? dadosSalvos.xp_normal : (dadosSalvos.xp || 0));
     estadoJogo.xpTempoMax = dadosSalvos && dadosSalvos.xp_tempo_max !== undefined ? dadosSalvos.xp_tempo_max : 0;
-    
-    estadoJogo.xpGlobal = dadosSalvos && dadosSalvos.xp_global !== undefined 
-        ? dadosSalvos.xp_global 
+   
+    estadoJogo.xpGlobal = dadosSalvos && dadosSalvos.xp_global !== undefined
+        ? dadosSalvos.xp_global
         : (estadoJogo.xpNormal + estadoJogo.xpTempoMax);
-    
+   
     const fasesFeitasBanco = dadosSalvos && (dadosSalvos.fase_atual !== undefined ? dadosSalvos.fase_atual : 1);
-    
+   
     let indiceCalculado = Math.max(0, fasesFeitasBanco - 1);
+
 
     let modulos = [1];
     if (fasesFeitasBanco >= 15) modulos.push(2);
     if (fasesFeitasBanco >= 30) modulos.push(3);
 
-    estadoJogo.modulosDesbloqueados = dadosSalvos && dadosSalvos.modulos_desbloqueados 
-        ? dadosSalvos.modulos_desbloqueados 
+
+    estadoJogo.modulosDesbloqueados = dadosSalvos && dadosSalvos.modulos_desbloqueados
+        ? dadosSalvos.modulos_desbloqueados
         : modulos;
-        
+       
     estadoJogo.enigmasResolvidosTotal = indiceCalculado;
     estadoJogo.faseNormal = fasesFeitasBanco;
-    
+   
     if (fasesFeitasBanco >= 30) {
-        estadoJogo.moduloAtual = 3; 
-        estadoJogo.indiceAtual = indiceCalculado - 30; 
+        estadoJogo.moduloAtual = 3;
+        estadoJogo.indiceAtual = indiceCalculado - 30;
     } else if (fasesFeitasBanco >= 15) {
-        estadoJogo.moduloAtual = 2; 
-        estadoJogo.indiceAtual = indiceCalculado - 15; 
+        estadoJogo.moduloAtual = 2;
+        estadoJogo.indiceAtual = indiceCalculado - 15;
     } else {
-        estadoJogo.moduloAtual = 1; 
-        estadoJogo.indiceAtual = indiceCalculado; 
+        estadoJogo.moduloAtual = 1;
+        estadoJogo.indiceAtual = indiceCalculado;
     }
-    
+   
     localStorage.setItem('cyberquest_nickname', nick);
-    
+   
     UI.fecharNicknameModal();
     estadoJogo.telaAtual = 'menu';
     UI.mostrarMenu(estadoJogo.nickname, estadoJogo.xpGlobal);
 }
+
 
 function pedirDica() {
     const enigmaAtual = estadoJogo.enigmas[estadoJogo.indiceAtual];
@@ -455,6 +509,7 @@ function pedirDica() {
         estadoJogo.modalAberto = true;
         return;  
     }
+
 
     let msgDica = enigmaAtual.dica;
     if (!estadoJogo.dicaUsadaNaFase) {
@@ -466,24 +521,29 @@ function pedirDica() {
         msgDica += `<br><br><span class="destaque-amarelo">[ PENALIDADE: -${penalidade} XP por solicitar a dica! ]</span>`;
     }
 
+
     UI.abrirModal("[ PISTA / DICA ]", msgDica, "info");
     estadoJogo.modalAberto = true;
 }
 
+
 async function finalizarPartidaTempo() {
     pararTemporizador();
+
 
     if (estadoJogo.xpSessaoTempo > estadoJogo.xpTempoMax) {
         estadoJogo.xpTempoMax = estadoJogo.xpSessaoTempo;
     }
 
+
     estadoJogo.xpGlobal = estadoJogo.xpNormal + estadoJogo.xpTempoMax;
+
 
     try {
         await salvarProgressoNuvem(
-            estadoJogo.nickname, 
-            estadoJogo.enigmasResolvidosTotal, 
-            estadoJogo.xpGlobal, 
+            estadoJogo.nickname,
+            estadoJogo.enigmasResolvidosTotal,
+            estadoJogo.xpGlobal,
             estadoJogo.modulosDesbloqueados,
             estadoJogo.xpNormal,
             estadoJogo.xpTempoMax
@@ -492,21 +552,25 @@ async function finalizarPartidaTempo() {
         console.error("Erro ao salvar recorde de tempo na nuvem:", error);
     }
 
+
     UI.abrirModal(
-        "[ FIM DE JOGO ]", 
-        `Tempo esgotado ou corrida encerrada!<br>XP obtido nesta tentativa: <strong>${estadoJogo.xpSessaoTempo} XP</strong><br>Seu Recorde no Tempo: <strong>${estadoJogo.xpTempoMax} XP</strong>`, 
+        "[ FIM DE JOGO ]",
+        `Tempo esgotado ou corrida encerrada!<br>XP obtido nesta tentativa: <strong>${estadoJogo.xpSessaoTempo} XP</strong><br>Seu Recorde no Tempo: <strong>${estadoJogo.xpTempoMax} XP</strong>`,
         "sucesso"
     );
     estadoJogo.modalAberto = true;
 }
 
+
 function retomarTemporizadorModulo() {
     if (estadoJogo.modoJogo !== 'tempo') return;
-    pararTemporizador(); 
+    pararTemporizador();
+
 
     estadoJogo.intervaloTimer = setInterval(() => {
         estadoJogo.tempoRestante--;
         UI.atualizarTimerDisplay(estadoJogo.tempoRestante);
+
 
         if (estadoJogo.tempoRestante <= 0) {
             pararTemporizador();
@@ -515,22 +579,26 @@ function retomarTemporizadorModulo() {
     }, 1000);
 }
 
+
 if (UI.nicknameInput) {
     UI.nicknameInput.addEventListener('keydown', async (e) => {
         if (e.key === 'Enter') {
-            e.preventDefault(); 
+            e.preventDefault();
             const nickDigitado = UI.nicknameInput.value.trim();
             if (!nickDigitado) return;
+
 
             if (UI.nicknameInput) {
     UI.nicknameInput.addEventListener('keydown', async (e) => {
         if (e.key === 'Enter') {
-            e.preventDefault(); 
+            e.preventDefault();
            const nickDigitado = formatarNome(UI.nicknameInput.value);
             if (!nickDigitado) return;
 
+
             if (estadoJogo.pendenteConfirmacaoNick) {
                 const { nick: nickSalvo, dados } = estadoJogo.pendenteConfirmacaoNick;
+
 
                 if (nickDigitado.toLowerCase() === nickSalvo.toLowerCase()) {
                     estadoJogo.pendenteConfirmacaoNick = null;
@@ -541,11 +609,13 @@ if (UI.nicknameInput) {
                 }
             }
 
+
             const dadosExistentes = await buscarDadosJogador(nickDigitado);
+
 
             if (dadosExistentes) {
                 estadoJogo.pendenteConfirmacaoNick = { nick: dadosExistentes.nickname, dados: dadosExistentes };
-                
+               
                 const instrucao = document.getElementById('nickname-instrucao');
                 if (instrucao) {
                     const xpExibicao = dadosExistentes.xp_global || dadosExistentes.xp || 0;
@@ -558,17 +628,20 @@ if (UI.nicknameInput) {
                 return;
             }
 
+
             const novoProgresso = await buscarOuCriarProgresso(nickDigitado);
             efetivarLogin(nickDigitado, novoProgresso);
         }
     });
 }
 
+
             const dadosExistentes = await buscarDadosJogador(nickDigitado);
+
 
             if (dadosExistentes) {
                 estadoJogo.pendenteConfirmacaoNick = { nick: dadosExistentes.nickname, dados: dadosExistentes };
-                
+               
                 const instrucao = document.getElementById('nickname-instrucao');
                 if (instrucao) {
                     const xpExibicao = dadosExistentes.xp_global || dadosExistentes.xp || 0;
@@ -581,20 +654,24 @@ if (UI.nicknameInput) {
                 return;
             }
 
+
             const novoProgresso = await buscarOuCriarProgresso(nickDigitado);
             efetivarLogin(nickDigitado, novoProgresso);
         }
     });
 }
+
 
 UI.terminalInput.addEventListener('keydown', async (e) => {
     if (e.key === 'Enter') {
         e.preventDefault();
 
+
         if (estadoJogo.modalAberto) {
             UI.fecharModal();
             estadoJogo.modalAberto = false;
             UI.limparInput();
+
 
             if (estadoJogo.telaAtual === 'menu') {
                 UI.mostrarMenu(estadoJogo.nickname, estadoJogo.xpGlobal);
@@ -607,8 +684,10 @@ UI.terminalInput.addEventListener('keydown', async (e) => {
             return;
         }
 
+
         const inputBruto = UI.terminalInput.value;
         const comando = inputBruto.trim();
+
 
         if (estadoJogo.telaAtual === 'menu') {
             if (comando === '1') {
@@ -621,7 +700,8 @@ UI.terminalInput.addEventListener('keydown', async (e) => {
                 UI.mostrarModulos(estadoJogo.modulosDesbloqueados);
            } else if (comando === '2') {
                 const totalResolvidos = estadoJogo.enigmasResolvidosTotal || 0;
-                const moduloAtualNum = estadoJogo.moduloAtual || 1; 
+                const moduloAtualNum = estadoJogo.moduloAtual || 1;
+
 
                 let resolvidosNoModuloAtual = 0;
                 if (moduloAtualNum === 1) {
@@ -631,6 +711,7 @@ UI.terminalInput.addEventListener('keydown', async (e) => {
                 } else if (moduloAtualNum === 3) {
                     resolvidosNoModuloAtual = Math.max(0, Math.min(15, totalResolvidos - 30));
                 }
+
 
                 UI.exibirDashboard({
                     nickname: estadoJogo.nickname,
@@ -662,6 +743,7 @@ UI.terminalInput.addEventListener('keydown', async (e) => {
                 estadoJogo.modalAberto = true;
             }
 
+
         } else if (estadoJogo.telaAtual === 'modulos') {
             if (['1', '2', '3'].includes(comando)) {
                 await selecionarModulo(parseInt(comando, 10));
@@ -672,6 +754,7 @@ UI.terminalInput.addEventListener('keydown', async (e) => {
                 UI.abrirModal("[ AVISO ]", "Módulo inválido. Escolha 1, 2 ou 3.", "erro");
                 estadoJogo.modalAberto = true;
             }
+
 
         } else if (estadoJogo.telaAtual === 'modos') {
             if (comando === '1') {
@@ -685,6 +768,7 @@ UI.terminalInput.addEventListener('keydown', async (e) => {
                 UI.abrirModal("[ AVISO ]", "Modo inválido. Digite 1 (Normal) ou 2 (Contra o Tempo).", "erro");
                 estadoJogo.modalAberto = true;
             }
+
 
         } else if (estadoJogo.telaAtual === 'jogo') {
             if (comando !== "") {
@@ -708,9 +792,11 @@ UI.terminalInput.addEventListener('keydown', async (e) => {
             }
         }
 
+
         UI.limparInput();
     }
 });
+
 
 window.onload = async () => {
     const nickSalvo = localStorage.getItem('cyberquest_nickname');
@@ -725,5 +811,6 @@ window.onload = async () => {
         }
     }
 };
+
 
 export default estadoJogo;
