@@ -7,6 +7,7 @@ const UI = {
     nicknameModal: document.getElementById('nickname-modal'),
     nicknameInput: document.getElementById('nickname-input'),
 
+
     tipoTag: document.getElementById('tipo-tag'),
     tituloTag: document.getElementById('titulo-tag'),
     gameProgress: document.getElementById('game-progress'),
@@ -15,8 +16,10 @@ const UI = {
     codeContent: document.getElementById('code-content'),
     moduloSelecionadoLabel: document.getElementById('modulo-selecionado-label'),
 
+
     timerDisplay: document.getElementById('timer-display'),
     comboDisplay: document.getElementById('combo-display'),
+
 
     modalOverlay: document.getElementById('modal-overlay'),
     modalCard: document.getElementById('modal-card'),
@@ -25,25 +28,19 @@ const UI = {
     timerDisplay: document.getElementById('timer-display'),
     comboDisplay: document.getElementById('combo-display'),
 
+
     terminalInput: document.getElementById('terminal-input'),
 
-<<<<<<< HEAD
-=======
+
     mostrarMenu() {
-      adicionar-enigmas
         this.esconderTodas();
         this.screenMenu.classList.remove('hidden');
-        this.terminalInput.placeholder = "Digite 1 (Jogar), 2 (Ranking), 3 (Ajuda), 4 (Sobre) ou 5 (Trocar Nick)...";
-
-    this.esconderTodas();
-    this.screenMenu.classList.remove('hidden');
-    
-    if (this.terminalInput) {
-        this.terminalInput.placeholder = "Digite 1 (Jogar), 2 (Ajuda), 3 (Sobre) ou 4 (Trocar Nick)...";
-    }
-    this.focarTerminalInput();
- main
+        if (this.terminalInput) {
+            this.terminalInput.placeholder = "Digite 1 (Jogar), 2 (Modo Tempo), 3 (Ranking), 4 (Como Jogar), 5 (Sobre) ou 6 (Sair)...";
+        }
+        this.focarTerminalInput();
     },
+
 
     mostrarJogo() {
         this.esconderTodas();
@@ -52,17 +49,25 @@ const UI = {
         this.focarTerminalInput();
     },
 
+
     atualizarComboDisplay(segundos) {
         if (this.comboDisplay) {
             this.comboDisplay.textContent = `TEMPO: ${String(segundos).padStart(2, '0')}s `;
 
+
             if (segundos <= 10) {
                 this.timerDisplay.classList.add('tempo-critico');
             } else {
-                this.timerdisplay.classList.remove('tempo-critico');
+                if (this.timerdisplay) {
+                    this.timerdisplay.classList.remove('tempo-critico');
+                }
+                if (this.timerDisplay) {
+                    this.timerDisplay.classList.remove('tempo-critico');
+                }
             }
         }
     },
+
 
     adicionarComboDisplay(combo, multiplicador) {
         if (this.comboDisplay) {
@@ -70,16 +75,17 @@ const UI = {
         }
     },
 
+
     mostrarConclusao(nivelNome, progressoTexto) {
         this.esconderTodas();
         this.screenConclusion.classList.remove('hidden');
-        document.getElementById('congrats-msg').textContent = `Parabéns! Você passou pelo nível ${nivelNome}!`;
+        document.getElementById('congrats-msg').textContent = `Parabéns! Você passou pelo módulo ${nivelNome}!`;
         document.getElementById('conclusion-progress').textContent = progressoTexto;
-        this.terminalInput.placeholder = "Digite 1 para Menu ou 2 para Próximo Nível...";
+        this.terminalInput.placeholder = "Digite 1 para Menu ou 2 para Próximo Módulo...";
         this.focarTerminalInput();
     },
 
->>>>>>> 7ea5fd2fc7aee2f15ba8ca2134ef499e5d3eef1f
+
     esconderTodas() {
         if (this.screenMenu) this.screenMenu.classList.add('hidden');
         if (this.screenModulos) this.screenModulos.classList.add('hidden');
@@ -89,11 +95,14 @@ const UI = {
     },
 
 
+
+
     focarNicknameInput() {
         setTimeout(() => {
             if (this.nicknameInput) this.nicknameInput.focus();
         }, 50);
     },
+
 
     focarTerminalInput() {
         setTimeout(() => {
@@ -103,28 +112,33 @@ const UI = {
         }, 50);
     },
 
+
     limparInput() {
         if (this.terminalInput) this.terminalInput.value = "";
     },
 
+
     mostrarMenu(nickname = "", xpGlobal = 0) {
         this.esconderTodas();
         if (this.screenMenu) this.screenMenu.classList.remove('hidden');
-        
+       
         const local = JSON.parse(localStorage.getItem('cyberquest_player_data') || '{}');
         const nickFinal = nickname || local.nickname || "Anon";
         const xpFinal = xpGlobal !== undefined ? xpGlobal : (local.xp || 0);
+
 
         const userTag = document.getElementById('menu-user-tag');
         const xpTag = document.getElementById('menu-xp-tag');
         if (userTag) userTag.textContent = nickFinal;
         if (xpTag) xpTag.textContent = xpFinal;
 
+
         if (this.terminalInput) {
             this.terminalInput.placeholder = "Digite 1 a 6 para navegar ou 'voltar'...";
         }
         this.focarTerminalInput();
     },
+
 
     mostrarModulos(modulosDesbloqueados = [1]) {
         this.esconderTodas();
@@ -149,6 +163,7 @@ const UI = {
         this.focarTerminalInput();
     },
 
+
     mostrarModosJogo(nomeModulo) {
         this.esconderTodas();
         if (this.screenModos) {
@@ -163,6 +178,7 @@ const UI = {
         this.focarTerminalInput();
     },
 
+
     mostrarJogo() {
         this.esconderTodas();
         if (this.screenGame) this.screenGame.classList.remove('hidden');
@@ -172,15 +188,17 @@ const UI = {
         this.focarTerminalInput();
     },
 
+
     mostrarConclusao(nivelNome, progressoTexto, xpModulo = 0, medalhaInfo = { emoji: "🥇", titulo: "Medalha de Ouro" }) {
         this.esconderTodas();
         if (this.screenConclusion) this.screenConclusion.classList.remove('hidden');
-        
+       
         const congratsMsg = document.getElementById('congrats-msg');
         const conclusionProgress = document.getElementById('conclusion-progress');
         const medalhaEmoji = document.getElementById('medalha-icone');
         const medalhaTexto = document.getElementById('medalha-titulo');
         const xpResultadoTexto = document.getElementById('xp-modulo-resultado');
+
 
         if (congratsMsg) congratsMsg.textContent = `Parabéns! Você concluiu o ${nivelNome}!`;
         if (conclusionProgress) conclusionProgress.textContent = progressoTexto;
@@ -188,11 +206,13 @@ const UI = {
         if (medalhaTexto) medalhaTexto.textContent = `${medalhaInfo.titulo} Conquistada!`;
         if (xpResultadoTexto) xpResultadoTexto.textContent = `+${xpModulo} XP obtidos neste Módulo`;
 
+
         if (this.terminalInput) {
             this.terminalInput.placeholder = "Digite 1 para Menu ou 2 para Próximo Módulo...";
         }
         this.focarTerminalInput();
     },
+
 
     formatarCodigoPython(codigo) {
         if (!codigo) return '<span style="color: #666;"># Nenhum código para este enigma</span>';
@@ -203,38 +223,43 @@ const UI = {
         }).join('\n');
     },
 
+
     carregarEnigma(enigma, indiceAtual, totalEnigmas, nivelNome = "Iniciante", stats = {}) {
         let nomeEnigma = enigma.titulo || "";
         if (nomeEnigma.includes('-')) {
             nomeEnigma = nomeEnigma.split('-').slice(1).join('-').trim();
         }
-        
+       
         const numFaseFormatado = String(indiceAtual + 1).padStart(2, '0');
         const tituloFormatado = nomeEnigma ? `Fase ${numFaseFormatado} - ${nomeEnigma}` : `Fase ${numFaseFormatado}`;
 
+
         if (this.tipoTag) this.tipoTag.textContent = `${enigma.tipo || "geral"} | ${nivelNome.toUpperCase()}`;
         if (this.tituloTag) this.tituloTag.textContent = tituloFormatado;
-        
+       
         const txtProgresso = `${indiceAtual + 1}/${totalEnigmas}`;
         if (this.gameProgress) this.gameProgress.textContent = txtProgresso;
         if (this.menuProgress) this.menuProgress.textContent = txtProgresso;
-        
+       
         if (this.enunciadoText) this.enunciadoText.textContent = enigma.enunciado;
-        
+       
         const statusBar = document.getElementById('status-bar-gameplay');
         if (statusBar) {
             const ehTempo = stats.modoJogo === 'tempo';
             const tempoHtml = ehTempo ? `<span class="badge-hud" id="timer-display">TEMPO: ${String(stats.tempoRestante || 150).padStart(2, '0')}s</span>` : '';
             const comboHtml = `<span class="badge-hud" id="combo-display">COMBO: ${stats.combo || 0}x (x${(stats.multiplicador || 1.0).toFixed(1)})</span>`;
             const xpHtml = `<span class="badge-hud" style="color: #33ff77; border-color: #183d20;">RECOMPENSA: +${stats.xpFase || 40} XP</span>`;
-            
+           
             statusBar.innerHTML = `${tempoHtml} ${comboHtml} ${xpHtml}`;
         }
+
 
         const codeContainer = document.querySelector('.code-box-container');
         if (!codeContainer) return;
 
+
         const placeholderDica = "Digite sua resposta, 'dica' (-15 XP) ou 'voltar'...";
+
 
         if (enigma.tipo === 'engenharia_reversa' && enigma.dados_teste) {
             codeContainer.innerHTML = `
@@ -300,8 +325,10 @@ const UI = {
             }
         }
 
+
         this.focarTerminalInput();
     },
+
 
     abrirModal(titulo, mensagem, tipo = 'info') {
         if (this.modalCard) this.modalCard.className = `modal-card ${tipo}`;
@@ -310,10 +337,12 @@ const UI = {
         if (this.modalOverlay) this.modalOverlay.classList.remove('hidden');
     },
 
+
     fecharModal() {
         if (this.modalOverlay) this.modalOverlay.classList.add('hidden');
         this.focarTerminalInput();
     },
+
 
     abrirNicknameModal() {
         if (this.nicknameModal) this.nicknameModal.classList.remove('hidden');
@@ -327,10 +356,12 @@ const UI = {
         this.focarNicknameInput();
     },
 
+
     fecharNicknameModal() {
         if (this.nicknameModal) this.nicknameModal.classList.add('hidden');
         this.focarTerminalInput();
     },
+
 
     atualizarTimerDisplay(segundos) {
         const timerEl = document.getElementById('timer-display');
@@ -344,12 +375,14 @@ const UI = {
         }
     },
 
+
     atualizarComboDisplay(combo, multiplicador) {
         const comboEl = document.getElementById('combo-display');
         if (comboEl) {
             comboEl.textContent = `COMBO: ${combo}x (x${multiplicador.toFixed(1)})`;
         }
     },
+
 
     exibirDashboard(dados) {
     let xpGlobalVal = dados.xp_global || ((dados.xp || 0) + (dados.xp_tempo_max || 0));
@@ -358,28 +391,31 @@ const UI = {
     else if (xpGlobalVal >= 800) tier = "SysAdmin 🥇";
     else if (xpGlobalVal >= 300) tier = "Dev Junior 🥈";
 
+
     const html = `
         <div class="dashboard-container">
             <p><strong>NICKNAME:</strong> <span style="color: #00ff66;">${dados.nickname}</span></p>
             <p><strong>PATAMAR / TIER:</strong> <span style="color: #ffcc00;">${tier}</span></p>
             <p><strong>XP GLOBAL (RANKING):</strong> <span class="destaque-amarelo">${xpGlobalVal} XP</span></p>
             <hr style="border-color: #00ff66; opacity: 0.2; margin: 10px 0;">
-            
+           
             <p style="color: #00ff66; font-weight: bold;">[ MODO NORMAL (CAMPANHA) ]</p>
             <p>• Fase Global Concluída: ${dados.fase_atual || 0} / 45</p>
             <p>• Módulo Atual: ${dados.nivelAtual || 'Iniciante'}</p>
             <p>• Resolvidos neste Módulo: ${dados.resolvidosModulo || 0} / 15</p>
             <p>• XP Acumulado na Campanha: ${dados.xp || 0} XP</p>
-            
+           
             <hr style="border-color: #00ff66; opacity: 0.1; margin: 5px 0;">
-            
+           
             <p style="color: #ff3377; font-weight: bold;">[ MODO CONTRA O TEMPO (ARCADE) ]</p>
             <p>• Recorde de XP: ${dados.xp_tempo_max || 0} XP</p>
         </div>
     `;
 
+
     this.abrirModal("[ DASHBOARD DO JOGADOR ]", html, "info");
     },
+
 
     exibirRanking(rankingData) {
         if (!rankingData || rankingData.length === 0) {
@@ -393,6 +429,7 @@ const UI = {
             return;
         }
 
+
         const linhasHtml = rankingData.map(j => `
             <tr>
                 <td style="text-align: center;">${j.medalha} ${j.posicao}º</td>
@@ -401,6 +438,7 @@ const UI = {
                 <td style="text-align: center;">${j.tier}</td>
             </tr>
         `).join('');
+
 
         const htmlRanking = `
             <div class="dashboard-container">
@@ -421,9 +459,11 @@ const UI = {
             </div>
         `;
 
+
         this.abrirModal("[ RANKING GLOBAL TIERLIZADO ]", htmlRanking, "sucesso");
     }
 };
+
 
 document.addEventListener('click', () => {
     if (UI.nicknameModal && !UI.nicknameModal.classList.contains('hidden')) {
@@ -432,5 +472,6 @@ document.addEventListener('click', () => {
         UI.focarTerminalInput();
     }
 });
+
 
 export default UI;
