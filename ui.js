@@ -387,9 +387,9 @@ const UI = {
     exibirDashboard(dados) {
     let xpGlobalVal = dados.xp_global || ((dados.xp || 0) + (dados.xp_tempo_max || 0));
     let tier = "Script Kiddie 🥉";
-    if (xpGlobalVal >= 1500) tier = "Senior Hacker 💎";
-    else if (xpGlobalVal >= 800) tier = "SysAdmin 🥇";
-    else if (xpGlobalVal >= 300) tier = "Dev Junior 🥈";
+    if (xpGlobalVal >= 3500) tier = "Senior Hacker 💎";
+    else if (xpGlobalVal >= 2200) tier = "SysAdmin 🥇";
+    else if (xpGlobalVal >= 1000) tier = "Dev Junior 🥈";
 
 
     const html = `

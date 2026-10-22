@@ -18,6 +18,7 @@ let estadoJogo = {
     faseNormal: 1,
     xpNormal: 0,
     xpModulo: 0,
+    xpPorModulo: {1: 0, 2: 0, 3: 0},
     xpSessaoTempo: 0,
     xpTempoMax: 0,
     xpGlobal: 0,
@@ -203,6 +204,9 @@ async function iniciarGameplayComModo(modo) {
             return;
         }
         estadoJogo.indiceAtual = progressoNoModulo;
+
+        estadoJogo.xpModulo = estadoJogo.xpPorModulo[estadoJogo.moduloAtual] || 0;
+
         if (UI.timerDisplay) UI.timerDisplay.textContent = "";
     }
 
@@ -253,11 +257,11 @@ function exibirConclusao() {
     const total = estadoJogo.enigmas.length;
    
     let medalhaInfo = { emoji: "🥉", titulo: "Medalha de Bronze" };
-    if (estadoJogo.xpModulo >= 450) {
+    if (estadoJogo.xpModulo >= 800) {
         medalhaInfo = { emoji: "💎", titulo: "Medalha Hacker Suprema" };
-    } else if (estadoJogo.xpModulo >= 300) {
+    } else if (estadoJogo.xpModulo >= 600) {
         medalhaInfo = { emoji: "🥇", titulo: "Medalha de Ouro" };
-    } else if (estadoJogo.xpModulo >= 150) {
+    } else if (estadoJogo.xpModulo >= 350) {
         medalhaInfo = { emoji: "🥈", titulo: "Medalha de Prata" };
     }
 
@@ -299,10 +303,13 @@ async function processarRespostaCorreta() {
     } else {
         estadoJogo.xpNormal += pontosGanhos;
         estadoJogo.xpModulo += pontosGanhos;
+
+        if (!estadoJogo.xpPorModulo) estadoJogo.xpPorModulo = {};
+        estadoJogo.xpPorModulo[estadoJogo.moduloAtual] = estadoJogo.xpModulo;
+
         estadoJogo.enigmasResolvidosTotal += 1;
         estadoJogo.faseNormal = Math.max(estadoJogo.faseNormal, estadoJogo.enigmasResolvidosTotal + 1);
     }
-
 
     estadoJogo.xpGlobal = estadoJogo.xpNormal + estadoJogo.xpTempoMax;
     estadoJogo.dicaUsadaNaFase = false;
@@ -324,7 +331,8 @@ async function processarRespostaCorreta() {
         xpNormal: estadoJogo.xpNormal,
         xpTempoMax: estadoJogo.xpTempoMax,
         faseNormal: estadoJogo.faseNormal,
-        modulosDesbloqueados: estadoJogo.modulosDesbloqueados
+        modulosDesbloqueados: estadoJogo.modulosDesbloqueados,
+        xpPorModulo: estadoJogo.xpPorModulo
     });
 
 
@@ -461,6 +469,8 @@ async function efetivarLogin(nick, dadosSalvos) {
    
     estadoJogo.xpNormal = dadosSalvos && (dadosSalvos.xp_normal !== undefined ? dadosSalvos.xp_normal : (dadosSalvos.xp || 0));
     estadoJogo.xpTempoMax = dadosSalvos && dadosSalvos.xp_tempo_max !== undefined ? dadosSalvos.xp_tempo_max : 0;
+
+    estadoJogo.xpPorModulo= dadosSalvos && dadosSalvos.xp_por_modulo ? dadosSalvos.xp_por_modulo : { 1: 0, 2: 0, 3: 0 };
    
     estadoJogo.xpGlobal = dadosSalvos && dadosSalvos.xp_global !== undefined
         ? dadosSalvos.xp_global
@@ -515,6 +525,10 @@ function pedirDica() {
     if (!estadoJogo.dicaUsadaNaFase) {
         const penalidade = 15;
         estadoJogo.xpModulo = Math.max(0, estadoJogo.xpModulo - penalidade);
+
+        if (!estadoJogo.xpPorModulo) estadoJogo.xpPorModulo = {};
+        estadoJogo.xpPorModulo[estadoJogo.moduloAtual] = estadoJogo.xpModulo;
+
         estadoJogo.xpNormal = Math.max(0, estadoJogo.xpNormal - penalidade);
         estadoJogo.xpGlobal = estadoJogo.xpNormal + estadoJogo.xpTempoMax;
         estadoJogo.dicaUsadaNaFase = true;

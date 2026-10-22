@@ -97,21 +97,19 @@ export async function salvarProgressoNuvem(dadosJogador) {
     try {
         console.log("[DB] Tentando salvar na nuvem:", dadosJogador);
 
-
         const payload = {
             nickname: dadosJogador.nickname,
             xp_global: Number(dadosJogador.xpGlobal) || 0,        
             xp: Number(dadosJogador.xpNormal) || 0,      
             xp_tempo_max: Number(dadosJogador.xpTempoMax) || 0,
-            fase_atual: Number(dadosJogador.faseNormal) || 0
+            fase_atual: Number(dadosJogador.faseNormal) || 0,
+            xp_por_modulo: dadosJogador.xpPorModulo || {} 
         };
-
 
         const { data, error } = await supabase
             .from('Progresso')
             .upsert(payload, { onConflict: 'nickname' })
             .select();
-
 
         if (error) {
             console.error("[DB] ERRO CRÍTICO do Supabase ao salvar:", error);
@@ -163,13 +161,13 @@ export async function buscarRankingGlobal() {
             let tier = "Script Kiddie";
             let medalha = "🥉";
 
-            if (xpVal >= 1500) {
+            if (xpVal >= 3500) {
                 tier = "Senior Hacker";
                 medalha = "💎";
-            } else if (xpVal >= 800) {
+            } else if (xpVal >= 2200) {
                 tier = "SysAdmin";
                 medalha = "🥇";
-            } else if (xpVal >= 300) {
+            } else if (xpVal >= 1000) {
                 tier = "Dev Junior";
                 medalha = "🥈";
             }
