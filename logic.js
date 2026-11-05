@@ -1,6 +1,9 @@
 import UI from './ui.js';
+adicionar-enigmas
+import { buscarOuCriarProgresso, salvarProgressoNuvem, buscarEnigmasPorNivel, buscarRanking } from './db.js';
 import { buscarDadosJogador, buscarOuCriarProgresso, salvarProgressoNuvem, buscarEnigmasNuvem, buscarRankingGlobal } from './db.js';
 
+main
 
 let estadoJogo = {
     nickname: '',
@@ -34,6 +37,74 @@ let estadoJogo = {
     dicaUsadaNaFase: false,
     modalAberto: false,
     pendenteConfirmacaoNick: null
+adicionar-enigmas
+};
+
+// ==========================================
+// Sistema de Efeitos Sonoros Retro (SFX)
+// ==========================================
+
+export const SoundFX = {
+    playBip() {
+        try {
+            const ctx = new (window.AudioContext || window.webkitAudioContext)();
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(440, ctx.currentTime);
+            gain.gain.setValueAtTime(0.08, ctx.currentTime);
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.start();
+            osc.stop(ctx.currentTime + 0.05);
+        } catch (e) {
+            // Ignora se o navegador bloquear autoplay antes de clique
+        }
+    },
+
+    playSucesso() {
+        try {
+            const ctx = new (window.AudioContext || window.webkitAudioContext)();
+            const now = ctx.currentTime;
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(300, now);
+            osc.frequency.setValueAtTime(600, now + 0.1);
+            gain.gain.setValueAtTime(0.1, now);
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.start();
+            osc.stop(now + 0.2);
+        } catch (e) {}
+    },
+
+    playErro() {
+        try {
+            const ctx = new (window.AudioContext || window.webkitAudioContext)();
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.type = 'sawtooth';
+            osc.frequency.setValueAtTime(140, ctx.currentTime);
+            gain.gain.setValueAtTime(0.12, ctx.currentTime);
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.start();
+            osc.stop(ctx.currentTime + 0.12);
+        } catch (e) {}
+    }
+};
+
+// Função para carregar os enigmas do Supabase baseados no nível selecionado
+
+async function carregarEnigmasDoNivel(nivel) {
+    estadoJogo.nivelAtual = nivel;
+    let dadosNuvem = await buscarEnigmasPorNivel(nivel);
+    
+    if (dadosNuvem && dadosNuvem.length > 0) {
+        estadoJogo.enigmas = dadosNuvem;
+    } else {
+        // Fallback local caso caia a net
 };
 
 
@@ -82,6 +153,7 @@ async function carregarEnigmasModulo(moduloNum) {
     if (dadosNuvem && dadosNuvem.length > 0) {
         estadoJogo.enigmas = dadosNuvem;
     } else {
+main
         try {
             const resposta = await fetch('enigmas.json');
             const todos = await resposta.json();
@@ -103,6 +175,18 @@ async function carregarEnigmasModulo(moduloNum) {
             estadoJogo.enigmas = [];
         }
     }
+adicionar-enigmas
+    if (UI.menuProgress) {
+        UI.menuProgress.textContent = `${estadoJogo.indiceAtual}/${estadoJogo.enigmas.length} [${nivel.toUpperCase()}]`;
+    }
+}
+
+// Função para buscar o ranking no Supabase e abrir na tela
+async function exibirRankingModal() {
+    SoundFX.playBip();
+    const ranking = await buscarRanking();
+    if (!ranking || ranking.length === 0) {
+        UI.abrirModal("[ RANKING ]", "Nenhum registro encontrado no ranking.", "info");
 }
 
 
@@ -339,6 +423,7 @@ async function processarRespostaCorreta() {
     if (estadoJogo.indiceAtual < estadoJogo.enigmas.length) {
         pararTemporizador();
         UI.abrirModal("[ CORRETO! ]", `Acesso concedido! +${pontosGanhos} XP (Combo ${estadoJogo.combo}x).<br><span style="color:#888; font-size:0.85rem;">Digite <b>voltar</b> a qualquer momento ou pressione ENTER para prosseguir.</span>`, "sucesso");
+main
         estadoJogo.modalAberto = true;
     } else {
         if (estadoJogo.modoJogo === 'tempo') {
@@ -382,6 +467,14 @@ async function processarRespostaErros(respostaDigitada) {
         return;
     }
 
+adicionar-enigmas
+    let conteudoHtml = `<table class="tabela-ranking"><thead><tr><th>#</th><th>NICKNAME</th><th>FASE</th></tr></thead><tbody>`;
+    ranking.forEach((pos, idx) => {
+        conteudoHtml += `<tr><td>${idx + 1}º</td><td>${pos.nickname}</td><td>${pos.fase_atual}</td></tr>`;
+    });
+    conteudoHtml += `</tbody></table>`;
+
+main
 
     estadoJogo.combo = 0;
     estadoJogo.multiplicador = 1.0;
@@ -392,6 +485,19 @@ async function processarRespostaErros(respostaDigitada) {
     estadoJogo.modalAberto = true;
 }
 
+adicionar-enigmas
+// Adiciona som de bipe sempre que o usuário digitar no terminal
+
+if (UI.terminalInput) {
+    UI.terminalInput.addEventListener('keydown', () => {
+        SoundFX.playBip();
+    });
+}
+
+window.onload = async () => {
+    await carregarEnigmasDoNivel('facil');
+    UI.mostrarMenu();
+};
 
 async function processarResposta(respostaDigitada) {
     console.log("Processando resposta:", respostaDigitada);
@@ -828,3 +934,4 @@ window.onload = async () => {
 
 
 export default estadoJogo;
+main

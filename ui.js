@@ -31,6 +31,24 @@ const UI = {
 
     terminalInput: document.getElementById('terminal-input'),
 
+adicionar-enigmas
+    // Efeito visual de digitação estilo terminal antigo
+
+    digitarTexto(elemento, texto, velocidade = 25) {
+        if (!elemento) return;
+        elemento.textContent = "";
+        let i = 0;
+        function escrever() {
+            if (i < texto.length) {
+                elemento.textContent += texto.charAt(i);
+                i++;
+                setTimeout(escrever, velocidade);
+            }
+        }
+        escrever();
+    },
+
+   main
 
     mostrarMenu() {
         this.esconderTodas();
@@ -238,6 +256,13 @@ const UI = {
         if (this.tituloTag) this.tituloTag.textContent = tituloFormatado;
        
         const txtProgresso = `${indiceAtual + 1}/${totalEnigmas}`;
+adicionar-enigmas
+        this.gameProgress.textContent = txtProgresso;
+        this.menuProgress.textContent = `${indiceAtual}/${totalEnigmas}`;
+        
+        // Efeito de digitação no enunciado do enigma
+        this.digitarTexto(this.enunciadoText, enigma.enunciado || "");
+        
         if (this.gameProgress) this.gameProgress.textContent = txtProgresso;
         if (this.menuProgress) this.menuProgress.textContent = txtProgresso;
        
@@ -254,6 +279,7 @@ const UI = {
         }
 
 
+main
         const codeContainer = document.querySelector('.code-box-container');
         if (!codeContainer) return;
 
