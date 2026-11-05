@@ -11,9 +11,9 @@ let estadoJogo = {
     pendenteConfirmacaoNick: null
 };
 
-// ==========================
-// Efeitos Sonoros Retro 
-// ==========================
+// ==========================================
+// Sistema de Efeitos Sonoros Retro (SFX)
+// ==========================================
 
 export const SoundFX = {
     playBip() {
@@ -67,6 +67,7 @@ export const SoundFX = {
 };
 
 // Função para carregar os enigmas do Supabase baseados no nível selecionado
+
 async function carregarEnigmasDoNivel(nivel) {
     estadoJogo.nivelAtual = nivel;
     let dadosNuvem = await buscarEnigmasPorNivel(nivel);
@@ -109,7 +110,8 @@ async function exibirRankingModal() {
     estadoJogo.modalAberto = true;
 }
 
-// Adiciona som de bipe suave sempre que o usuário digitar no terminal
+// Adiciona som de bipe sempre que o usuário digitar no terminal
+
 if (UI.terminalInput) {
     UI.terminalInput.addEventListener('keydown', () => {
         SoundFX.playBip();
