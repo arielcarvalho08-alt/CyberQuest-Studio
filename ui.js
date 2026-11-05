@@ -19,6 +19,22 @@ const UI = {
 
     terminalInput: document.getElementById('terminal-input'),
 
+    // Efeito visual de digitação estilo terminal antigo
+
+    digitarTexto(elemento, texto, velocidade = 25) {
+        if (!elemento) return;
+        elemento.textContent = "";
+        let i = 0;
+        function escrever() {
+            if (i < texto.length) {
+                elemento.textContent += texto.charAt(i);
+                i++;
+                setTimeout(escrever, velocidade);
+            }
+        }
+        escrever();
+    },
+
     mostrarMenu() {
         this.esconderTodas();
         this.screenMenu.classList.remove('hidden');
@@ -64,7 +80,9 @@ const UI = {
         this.gameProgress.textContent = txtProgresso;
         this.menuProgress.textContent = `0/${totalEnigmas}`;
         
-        this.enunciadoText.textContent = enigma.enunciado;
+        // Efeito de digitação no enunciado do enigma
+        this.digitarTexto(this.enunciadoText, enigma.enunciado || "");
+        
         const codeContainer = document.querySelector('.code-box-container');
 
         if (enigma.tipo === 'engenharia_reversa' && enigma.dados_teste) {
