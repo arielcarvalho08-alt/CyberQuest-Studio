@@ -602,15 +602,15 @@ async function finalizarPartidaTempo() {
 
     try {
         await salvarProgressoNuvem({
-        nickname: estadoJogo.nickname,
-        xpGlobal: estadoJogo.xpGlobal,
-        xpNormal: estadoJogo.xpNormal,
-        xpTempoMax: estadoJogo.xpTempoMax,
-        faseNormal: estadoJogo.faseNormal,
-        modulosDesbloqueados: estadoJogo.modulosDesbloqueados,
-        xpPorModulo: estadoJogo.xpPorModulo,
-        avatar: estadoJogo.avatar
-    });
+            nickname: estadoJogo.nickname,
+            xpGlobal: estadoJogo.xpGlobal,
+            xpNormal: estadoJogo.xpNormal,
+            xpTempoMax: estadoJogo.xpTempoMax,
+            faseNormal: estadoJogo.faseNormal,
+            modulosDesbloqueados: estadoJogo.modulosDesbloqueados,
+            xpPorModulo: estadoJogo.xpPorModulo,
+            avatar: estadoJogo.avatar
+        });
     } catch (error) {
         console.error("Erro ao salvar recorde de tempo na nuvem:", error);
     }
