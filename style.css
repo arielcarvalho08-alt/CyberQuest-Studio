@@ -527,3 +527,310 @@ body, html {
     color: #ffcc00;
     font-weight: bold;
 }
+
+.menu-reset-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    text-align: center;
+    font-family: 'VT323', monospace;
+}
+
+.menu-reset-box h2 {
+    color: #ff3344;
+    font-size: 2.2rem;
+    font-family: 'Press Start 2P', cursive;
+    margin-bottom: 20px;
+}
+
+.menu-reset-box p {
+    font-size: 1.6rem;
+    color: #cceedd;
+    margin: 8px 0;
+    text-align: left;
+}
+
+@keyframes glitchAnim {
+    0% { transform: translate(0); }
+    20% { transform: translate(-3px, 3px); }
+    40% { transform: translate(-3px, -3px); }
+    60% { transform: translate(3px, 3px); }
+    80% { transform: translate(3px, -3px); }
+    100% { transform: translate(0); }
+}
+
+.btn-sound {
+    background: #040d06;
+    border: 1px solid #183d20;
+    color: #33ff77;
+    font-family: 'VT323', monospace;
+    font-size: 1.3rem;     
+    padding: 2px 10px;     
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    line-height: 1;
+}
+
+.btn-sound:hover {
+    border-color: #33ff77;
+    background: #0d2414;
+    box-shadow: 0 0 6px rgba(51, 255, 119, 0.4);
+}
+
+.btn-sound.muted {
+    border-color: #554400;
+    color: #ffcc00;
+    background: #1a1604;
+}
+
+.btn-sound.muted:hover {
+    border-color: #ffcc00;
+    background: #2b2406;
+    box-shadow: 0 0 6px rgba(255, 204, 0, 0.4);
+}
+
+.mascote-container {
+    position: absolute;
+    right: 24px;
+    bottom: 65px;
+    display: flex;
+    align-items: flex-end;
+    gap: 12px;
+    z-index: 100;
+}
+
+
+#img-mascote {
+    width: 75px;
+    height: 75px;
+    image-rendering: pixelated;
+    border: 2px solid #00ff66;
+    background-color: #0b0f0a;
+    box-shadow: 0 0 10px rgba(0, 255, 102, 0.2);
+}
+
+.mascote-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(2, 6, 3, 0.88) !important;
+    backdrop-filter: blur(4px);                  
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 999;  
+}
+
+.mascote-container.hidden {
+    display: none !important;
+}
+
+#balao-pensamento, .balao-pensamento {
+    background: transparent !important;
+    border: none !important;
+    padding: 55px 75px !important; 
+    max-width: 650px;        
+    position: relative;
+    display: block !important;            
+    margin-bottom: 120px;
+    z-index: 1004;
+    filter: drop-shadow(0 12px 24px rgba(0, 0, 0, 0.85));
+    animation: flutuarNuvem 3.5s ease-in-out infinite;
+}
+
+.nuvem-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1003;
+    pointer-events: none;
+}
+
+#texto-dica-mascote {
+    font-family: 'VT323', monospace;
+    font-size: 1.65rem;      
+    color: #f0f7f2;
+    line-height: 1.4;
+    display: block;
+    text-align: center;
+    position: relative;
+    z-index: 1006;
+}
+
+
+#texto-dica-mascote strong {
+    font-family: 'Press Start 2P', cursive;
+    font-size: 1.0rem;        
+    color: #ffcc00;
+    margin-bottom: 16px;
+    display: block;
+    letter-spacing: 1px;
+    text-align: center;
+}
+
+.aviso-fechar-dica {
+    font-family: 'VT323', monospace;
+    font-size: 1.25rem;
+    color: #9ab5a3; 
+    display: block;
+    text-align: center;
+    margin-top: 16px;
+    letter-spacing: 0.5px;
+    position: relative;
+    z-index: 1006;
+    animation: piscarSuave 2s infinite;
+}
+
+@keyframes piscarSuave {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.45; }
+}
+
+.bolinha-pensamento {
+    position: absolute;
+    background-color: #09140c !important;
+    border: 3px solid #ffcc00 !important;
+    border-radius: 50%;
+    z-index: 1005;
+}
+
+.bolinha-pensamento.b1 {
+    width: 26px;
+    height: 26px;
+    bottom: -22px;
+    right: 15px;
+}
+
+.bolinha-pensamento.b2 {
+    width: 18px;
+    height: 18px;
+    bottom: -58px;
+    right: -45px;
+}
+
+.bolinha-pensamento.b3 {
+    width: 12px;
+    height: 12px;
+    bottom: -92px;
+    right: -100px;
+}
+
+@keyframes flutuarNuvem {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-6px); }
+}
+
+.hacker-avatar {
+    width: 32px !important;  
+    height: 32px !important;
+   
+    overflow: hidden !important;
+    background-repeat: no-repeat !important;
+    background-position: 0px 0px;
+   
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
+   
+    border: none !important;
+    box-shadow: none !important;
+    outline: none !important;
+    background-color: transparent !important;
+
+    position: absolute;
+    bottom: -42px; 
+    right: -44px;  
+    z-index: 1001;  
+
+    transform: scale(11);
+    transform-origin: bottom right;
+}
+
+.hacker-avatar.f-normal {
+    background-image: url('assets/hacker_f_normal.png') !important;
+    background-size: 64px 96px !important;
+    animation: anim-grade-6f-2col 2.2s steps(1) infinite;
+}
+.hacker-avatar.f-dica {
+    background-image: url('assets/hacker_f_dica.png') !important;
+    background-size: 64px 96px !important;
+    animation: anim-grade-5f-2col 1.8s steps(1) infinite;
+}
+.hacker-avatar.f-acerto {
+    background-image: url('assets/hacker_f_acerto.png') !important;
+    background-size: 96px 96px !important;
+    animation: anim-grade-8f-3col 2.0s steps(1) infinite;
+}
+.hacker-avatar.f-erro {
+    background-image: url('assets/hacker_f_erro.png') !important;
+    background-size: 96px 96px !important;
+    animation: anim-grade-8f-3col 2.0s steps(1) infinite;
+}
+
+.hacker-avatar.m-normal {
+    background-image: url('assets/hacker_m_normal.png') !important;
+    background-size: 64px 96px !important;
+    animation: anim-grade-6f-2col 2.2s steps(1) infinite;
+}
+.hacker-avatar.m-dica {
+    background-image: url('assets/hacker_m_dica.png') !important;
+    background-size: 64px 96px !important; 
+    animation: anim-grade-5f-2col 1.8s steps(1) infinite;
+}
+.hacker-avatar.m-acerto {
+    background-image: url('assets/hacker_m_acerto.png') !important;
+    background-size: 96px 96px !important; 
+    animation: anim-grade-8f-3col 2.0s steps(1) infinite;
+}
+.hacker-avatar.m-erro {
+    background-image: url('assets/hacker_m_erro.png') !important;
+    background-size: 96px 96px !important; 
+    animation: anim-grade-9f-3col 2.4s steps(1) infinite;
+}
+
+@keyframes anim-grade-5f-2col {
+    0%   { background-position: 0px 0px; }
+    20%  { background-position: -32px 0px; }
+    40%  { background-position: 0px -32px; }
+    60%  { background-position: -32px -32px; }
+    80%  { background-position: 0px -64px; }
+}
+
+@keyframes anim-grade-6f-2col {
+    0%   { background-position: 0px 0px; }
+    16.6%{ background-position: -32px 0px; }
+    33.3%{ background-position: 0px -32px; }
+    50%  { background-position: -32px -32px; }
+    66.6%{ background-position: 0px -64px; }
+    83.3%{ background-position: -32px -64px; }
+}
+
+@keyframes anim-grade-8f-3col {
+    0%   { background-position: 0px 0px; }
+    12.5%{ background-position: -32px 0px; }
+    25%  { background-position: -64px 0px; }
+    37.5%{ background-position: 0px -32px; }
+    50%  { background-position: -32px -32px; }
+    62.5%{ background-position: -64px -32px; }
+    75%  { background-position: 0px -64px; }
+    87.5%{ background-position: -32px -64px; }
+}
+
+@keyframes anim-grade-9f-3col {
+    0%   { background-position: 0px 0px; }
+    11.1%{ background-position: -32px 0px; }
+    22.2%{ background-position: -64px 0px; }
+    33.3%{ background-position: 0px -32px; }
+    44.4%{ background-position: -32px -32px; }
+    55.5%{ background-position: -64px -32px; }
+    66.6%{ background-position: 0px -64px; }
+    77.7%{ background-position: -32px -64px; }
+    88.8%{ background-position: -64px -64px; }
+}

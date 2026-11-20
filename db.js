@@ -52,12 +52,13 @@ export async function buscarDadosJogador(nickname) {
     }
 }
 
-export async function buscarOuCriarProgresso(nickname) {
+export async function buscarOuCriarProgresso(nickname, avatarEscolhido = 'masculino') {
     const defaultData = {
         nickname: nickname,
         fase_atual: 0,
         xp: 0,
-        modulos_desbloqueados: [1]
+        modulos_desbloqueados: [1],
+        avatar: avatarEscolhido
     };
 
     try {
@@ -66,7 +67,7 @@ export async function buscarOuCriarProgresso(nickname) {
         if (!data) {
             const { data: novoJogador, error: errCriar } = await supabase
                 .from('Progresso')
-                .insert([{ nickname: nickname, fase_atual: 0, xp: 0 }])
+                .insert([{ nickname: nickname, fase_atual: 0, xp: 0, avatar: avatarEscolhido }])
                 .select()
                 .single();
 
@@ -77,6 +78,7 @@ export async function buscarOuCriarProgresso(nickname) {
             data.modulos_desbloqueados = [1];
             if (fases >= 15) data.modulos_desbloqueados.push(2);
             if (fases >= 30) data.modulos_desbloqueados.push(3);
+            data.avatar = data.avatar || 'masculino';
         }
 
         salvarProgressoLocal(data);
@@ -103,7 +105,8 @@ export async function salvarProgressoNuvem(dadosJogador) {
             xp: Number(dadosJogador.xpNormal) || 0,      
             xp_tempo_max: Number(dadosJogador.xpTempoMax) || 0,
             fase_atual: Number(dadosJogador.faseNormal) || 0,
-            xp_por_modulo: dadosJogador.xpPorModulo || {} 
+            xp_por_modulo: dadosJogador.xpPorModulo || {},
+            avatar: dadosJogador.avatar || 'masculino'
         };
 
         const { data, error } = await supabase

@@ -1,9 +1,11 @@
 import UI from './ui.js';
+import { SFX } from './ui.js';
 import { buscarDadosJogador, buscarOuCriarProgresso, salvarProgressoNuvem, buscarEnigmasNuvem, buscarRankingGlobal } from './db.js';
 
 
 let estadoJogo = {
     nickname: '',
+    avatar: 'masculino',
     telaAtual: 'login',
     moduloAtual: 1,
     modulosDesbloqueados: [1],
@@ -33,7 +35,7 @@ let estadoJogo = {
     intervaloTimer: null,
     dicaUsadaNaFase: false,
     modalAberto: false,
-    pendenteConfirmacaoNick: null
+    pendenteConfirmacaoNick: null,
 };
 
 
@@ -283,6 +285,7 @@ function exibirConclusao() {
 
 
 async function processarRespostaCorreta() {
+    SFX.acerto();
     let pontosBase = estadoJogo.dicaUsadaNaFase ? 20 : 40;
     let bonusTempo = 0;
 
@@ -332,7 +335,8 @@ async function processarRespostaCorreta() {
         xpTempoMax: estadoJogo.xpTempoMax,
         faseNormal: estadoJogo.faseNormal,
         modulosDesbloqueados: estadoJogo.modulosDesbloqueados,
-        xpPorModulo: estadoJogo.xpPorModulo
+        xpPorModulo: estadoJogo.xpPorModulo,
+        avatar:estadoJogo.avatar
     });
 
 
@@ -340,12 +344,17 @@ async function processarRespostaCorreta() {
         pararTemporizador();
         UI.abrirModal("[ CORRETO! ]", `Acesso concedido! +${pontosGanhos} XP (Combo ${estadoJogo.combo}x).<br><span style="color:#888; font-size:0.85rem;">Digite <b>voltar</b> a qualquer momento ou pressione ENTER para prosseguir.</span>`, "sucesso");
         estadoJogo.modalAberto = true;
+        UI.atualizarExpressaoMascote('acerto', estadoJogo.avatar);
+        setTimeout(() => {
+        UI.atualizarExpressaoMascote('normal', estadoJogo.avatar);
+        }, 4200);
     } else {
         if (estadoJogo.modoJogo === 'tempo') {
             finalizarPartidaTempo();
         } else {
             exibirConclusao();
         }
+        UI.atualizarExpressaoMascote('acerto', estadoJogo.avatar);
     }
 }
 
@@ -370,7 +379,8 @@ async function processarRespostaErros(respostaDigitada) {
                 xpNormal: estadoJogo.xpNormal,
                 xpTempoMax: estadoJogo.xpTempoMax,
                 faseNormal: estadoJogo.faseNormal,
-                modulosDesbloqueados: estadoJogo.modulosDesbloqueados
+                modulosDesbloqueados: estadoJogo.modulosDesbloqueados,
+                avatar: estadoJogo.avatar
             });
             estadoJogo.xpSessaoTempo = 0;
         }
@@ -387,9 +397,13 @@ async function processarRespostaErros(respostaDigitada) {
     estadoJogo.multiplicador = 1.0;
     UI.atualizarComboDisplay(estadoJogo.combo, estadoJogo.multiplicador);
 
-
+    SFX.erro();
     UI.abrirModal("[ INCORRETO ]", "Resposta incorreta! Tente novamente ou digite <b>dica</b> para receber uma ajuda.", "erro");
     estadoJogo.modalAberto = true;
+        UI.atualizarExpressaoMascote('erro', estadoJogo.avatar);
+        setTimeout(() => {
+        UI.atualizarExpressaoMascote('normal', estadoJogo.avatar);
+    }, 4900);
 }
 
 
@@ -466,7 +480,17 @@ function validarReconstrucao(sequenciaDigitada, respostaCorreta) {
 
 async function efetivarLogin(nick, dadosSalvos) {
     estadoJogo.nickname = nick;
-   
+
+   const radioAvatar = document.querySelector('input[name="generoHacker"]:checked');
+    console.log("[DEBUG] Radio selecionado no HTML:", radioAvatar ? radioAvatar.value : "Nenhum encontrado");
+
+    console.log("[DEBUG] Dados vindos do banco (dadosSalvos):", dadosSalvos);
+
+    const generoInputHtml = radioAvatar ? radioAvatar.value : 'masculino';
+
+    estadoJogo.avatar = dadosSalvos && dadosSalvos.avatar ? dadosSalvos.avatar : generoInputHtml;
+    console.log("[DEBUG] Avatar final definido no estadoJogo:", estadoJogo.avatar);
+
     estadoJogo.xpNormal = dadosSalvos && (dadosSalvos.xp_normal !== undefined ? dadosSalvos.xp_normal : (dadosSalvos.xp || 0));
     estadoJogo.xpTempoMax = dadosSalvos && dadosSalvos.xp_tempo_max !== undefined ? dadosSalvos.xp_tempo_max : 0;
 
@@ -505,14 +529,35 @@ async function efetivarLogin(nick, dadosSalvos) {
     }
    
     localStorage.setItem('cyberquest_nickname', nick);
+
+    localStorage.setItem('cyberquest_player_data', JSON.stringify({
+        nickname: estadoJogo.nickname,
+        xp: estadoJogo.xpGlobal,
+        avatar: estadoJogo.avatar
+    }));
    
     UI.fecharNicknameModal();
     estadoJogo.telaAtual = 'menu';
-    UI.mostrarMenu(estadoJogo.nickname, estadoJogo.xpGlobal);
+    UI.mostrarMascote();
+    UI.atualizarExpressaoMascote('normal', estadoJogo.avatar);
+    UI.mostrarMenu(estadoJogo.nickname, estadoJogo.xpGlobal, estadoJogo.avatar);
+
+     await salvarProgressoNuvem({
+        nickname: estadoJogo.nickname,
+        xpGlobal: estadoJogo.xpGlobal,
+        xpNormal: estadoJogo.xpNormal,
+        xpTempoMax: estadoJogo.xpTempoMax,
+        faseNormal: estadoJogo.faseNormal,
+        modulosDesbloqueados: estadoJogo.modulosDesbloqueados,
+        xpPorModulo: estadoJogo.xpPorModulo,
+        avatar: estadoJogo.avatar
+    });
 }
 
 
 function pedirDica() {
+    SFX.dica();
+    
     const enigmaAtual = estadoJogo.enigmas[estadoJogo.indiceAtual];
     if (!enigmaAtual || !enigmaAtual.dica) {
         UI.abrirModal("[ DICA ]", "Nenhuma dica disponível para este enigma.", "info");
@@ -520,6 +565,9 @@ function pedirDica() {
         return;  
     }
 
+    if (estadoJogo.modoJogo === 'tempo') {
+        pararTemporizador();
+    }
 
     let msgDica = enigmaAtual.dica;
     if (!estadoJogo.dicaUsadaNaFase) {
@@ -535,8 +583,7 @@ function pedirDica() {
         msgDica += `<br><br><span class="destaque-amarelo">[ PENALIDADE: -${penalidade} XP por solicitar a dica! ]</span>`;
     }
 
-
-    UI.abrirModal("[ PISTA / DICA ]", msgDica, "info");
+    UI.mostrarBalaoPensamento(msgDica, estadoJogo.avatar);
     estadoJogo.modalAberto = true;
 }
 
@@ -554,14 +601,16 @@ async function finalizarPartidaTempo() {
 
 
     try {
-        await salvarProgressoNuvem(
-            estadoJogo.nickname,
-            estadoJogo.enigmasResolvidosTotal,
-            estadoJogo.xpGlobal,
-            estadoJogo.modulosDesbloqueados,
-            estadoJogo.xpNormal,
-            estadoJogo.xpTempoMax
-        );
+        await salvarProgressoNuvem({
+        nickname: estadoJogo.nickname,
+        xpGlobal: estadoJogo.xpGlobal,
+        xpNormal: estadoJogo.xpNormal,
+        xpTempoMax: estadoJogo.xpTempoMax,
+        faseNormal: estadoJogo.faseNormal,
+        modulosDesbloqueados: estadoJogo.modulosDesbloqueados,
+        xpPorModulo: estadoJogo.xpPorModulo,
+        avatar: estadoJogo.avatar
+    });
     } catch (error) {
         console.error("Erro ao salvar recorde de tempo na nuvem:", error);
     }
@@ -593,29 +642,123 @@ function retomarTemporizadorModulo() {
     }, 1000);
 }
 
+async function resetarModuloEspecifico(moduloNum) {
+    if (!estadoJogo.xpPorModulo) estadoJogo.xpPorModulo = { 1: 0, 2: 0, 3: 0 };
+    estadoJogo.xpPorModulo[moduloNum] = 0;
+
+    estadoJogo.xpNormal = Object.values(estadoJogo.xpPorModulo).reduce((a, b) => a + b, 0);
+    estadoJogo.xpGlobal = estadoJogo.xpNormal + estadoJogo.xpTempoMax;
+
+    if (moduloNum === 1) {
+        estadoJogo.faseNormal = 1;
+        estadoJogo.enigmasResolvidosTotal = 0;
+    } else if (moduloNum === 2) {
+        estadoJogo.faseNormal = Math.min(estadoJogo.faseNormal, 16);
+        estadoJogo.enigmasResolvidosTotal = 15;
+    } else if (moduloNum === 3) {
+        estadoJogo.faseNormal = Math.min(estadoJogo.faseNormal, 31);
+        estadoJogo.enigmasResolvidosTotal = 30;
+    }
+
+    await salvarProgressoNuvem({
+        nickname: estadoJogo.nickname,
+        xpGlobal: estadoJogo.xpGlobal,
+        xpNormal: estadoJogo.xpNormal,
+        xpTempoMax: estadoJogo.xpTempoMax,
+        faseNormal: estadoJogo.faseNormal,
+        modulosDesbloqueados: estadoJogo.modulosDesbloqueados,
+        xpPorModulo: estadoJogo.xpPorModulo,
+        avatar: estadoJogo.avatar
+    });
+
+    UI.abrirModal("[ MÓDULO REINICIADO ]", `O Módulo ${moduloNum} foi resetado com sucesso!<br>Pressione ENTER para continuar.`, "sucesso");
+    estadoJogo.modalAberto = true;
+    UI.mostrarMenu(estadoJogo.nickname, estadoJogo.xpGlobal);
+}
+
+async function resetarTudoCompleto() {
+    estadoJogo.faseNormal = 1;
+    estadoJogo.xpNormal = 0;
+    estadoJogo.xpModulo = 0;
+    estadoJogo.xpPorModulo = { 1: 0, 2: 0, 3: 0 };
+    estadoJogo.modulosDesbloqueados = [1];
+    estadoJogo.moduloAtual = 1;
+    estadoJogo.enigmasResolvidosTotal = 0;
+    estadoJogo.xpGlobal = estadoJogo.xpTempoMax;
+
+    await salvarProgressoNuvem({
+        nickname: estadoJogo.nickname,
+        xpGlobal: estadoJogo.xpGlobal,
+        xpNormal: 0,
+        xpTempoMax: estadoJogo.xpTempoMax,
+        faseNormal: 1,
+        modulosDesbloqueados: [1],
+        xpPorModulo: estadoJogo.xpPorModulo,
+        avatar: estadoJogo.avatar
+    });
+
+    UI.abrirModal("[ SISTEMA FORMATADO ]", "Todo o progresso da campanha foi zerado com sucesso!<br>Pressione ENTER para continuar.", "sucesso");
+    estadoJogo.modalAberto = true;
+    UI.mostrarMenu(estadoJogo.nickname, estadoJogo.xpGlobal);
+}
+
+const radiosGenero = document.querySelectorAll('input[name="generoHacker"]');
+radiosGenero.forEach(radio => {
+    radio.addEventListener('change', (evento) => {
+        UI.atualizarExpressaoMascote('normal', evento.target.value);
+    });
+});
 
 if (UI.nicknameInput) {
+    const containerGenero = document.querySelector('.avatar-selector');
+    let timerBuscaNick = null;
+
+    UI.nicknameInput.addEventListener('input', () => {
+        clearTimeout(timerBuscaNick);
+        const nickDigitado = formatarNome(UI.nicknameInput.value);
+
+
+        if (estadoJogo.pendenteConfirmacaoNick) {
+            estadoJogo.pendenteConfirmacaoNick = null;
+        }
+
+        if (!nickDigitado) {
+            if (containerGenero) containerGenero.style.display = 'flex';
+            return;
+        }
+
+        timerBuscaNick = setTimeout(async () => {
+            const dadosExistentes = await buscarDadosJogador(nickDigitado);
+
+
+            if (dadosExistentes) {
+                if (containerGenero) containerGenero.style.display = 'none';
+                if (dadosExistentes.avatar) {
+                    UI.atualizarExpressaoMascote('normal', dadosExistentes.avatar);
+                }
+            } else {
+                if (containerGenero) containerGenero.style.display = 'flex';
+                const marcado = document.querySelector('input[name="generoHacker"]:checked');
+                if (marcado) {
+                    UI.atualizarExpressaoMascote('normal', marcado.value);
+                }
+            }
+        }, 400);
+    });
+
     UI.nicknameInput.addEventListener('keydown', async (e) => {
         if (e.key === 'Enter') {
             e.preventDefault();
-            const nickDigitado = UI.nicknameInput.value.trim();
+            const nickDigitado = formatarNome(UI.nicknameInput.value);
             if (!nickDigitado) return;
-
-
-            if (UI.nicknameInput) {
-    UI.nicknameInput.addEventListener('keydown', async (e) => {
-        if (e.key === 'Enter') {
-            e.preventDefault();
-           const nickDigitado = formatarNome(UI.nicknameInput.value);
-            if (!nickDigitado) return;
-
 
             if (estadoJogo.pendenteConfirmacaoNick) {
                 const { nick: nickSalvo, dados } = estadoJogo.pendenteConfirmacaoNick;
 
-
                 if (nickDigitado.toLowerCase() === nickSalvo.toLowerCase()) {
                     estadoJogo.pendenteConfirmacaoNick = null;
+                    estadoJogo.avatar = dados.avatar || 'masculino';
+                    dados.avatar = estadoJogo.avatar;
                     efetivarLogin(nickSalvo, dados);
                     return;
                 } else {
@@ -623,13 +766,17 @@ if (UI.nicknameInput) {
                 }
             }
 
-
             const dadosExistentes = await buscarDadosJogador(nickDigitado);
-
 
             if (dadosExistentes) {
                 estadoJogo.pendenteConfirmacaoNick = { nick: dadosExistentes.nickname, dados: dadosExistentes };
-               
+                
+                if (containerGenero) containerGenero.style.display = 'none';
+
+                if (dadosExistentes.avatar) {
+                    UI.atualizarExpressaoMascote('normal', dadosExistentes.avatar);
+                }
+
                 const instrucao = document.getElementById('nickname-instrucao');
                 if (instrucao) {
                     const xpExibicao = dadosExistentes.xp_global || dadosExistentes.xp || 0;
@@ -642,50 +789,71 @@ if (UI.nicknameInput) {
                 return;
             }
 
+            if (containerGenero) containerGenero.style.display = 'flex';
 
-            const novoProgresso = await buscarOuCriarProgresso(nickDigitado);
+
+            const radioMarcado = document.querySelector('input[name="generoHacker"]:checked');
+            const generoEscolhido = radioMarcado ? radioMarcado.value : 'masculino';
+
+            const novoProgresso = await buscarOuCriarProgresso(nickDigitado, generoEscolhido);
+            estadoJogo.avatar = novoProgresso.avatar || generoEscolhido;
+            novoProgresso.avatar = estadoJogo.avatar;
             efetivarLogin(nickDigitado, novoProgresso);
         }
     });
 }
 
+document.addEventListener('keydown', (e) => {
+    if (e.key.length === 1 || e.key === 'Backspace') {
+        SFX.tecla();
+    }
 
-            const dadosExistentes = await buscarDadosJogador(nickDigitado);
-
-
-            if (dadosExistentes) {
-                estadoJogo.pendenteConfirmacaoNick = { nick: dadosExistentes.nickname, dados: dadosExistentes };
-               
-                const instrucao = document.getElementById('nickname-instrucao');
-                if (instrucao) {
-                    const xpExibicao = dadosExistentes.xp_global || dadosExistentes.xp || 0;
-                    instrucao.innerHTML = `
-                        <span style="color: #ffcc00; font-weight: bold;">[!] O nick "${dadosExistentes.nickname}" já possui um cadastro salvo (${xpExibicao} XP).</span><br>
-                        Pressione <b style="color: #00ff66;">ENTER</b> novamente para carregar este perfil ou digite outro nome:
-                    `;
-                }
-                UI.focarNicknameInput();
-                return;
-            }
-
-
-            const novoProgresso = await buscarOuCriarProgresso(nickDigitado);
-            efetivarLogin(nickDigitado, novoProgresso);
-        }
-    });
-}
-
+    if (e.key === 'Enter') {
+        SFX.enter();
+    }
+});
 
 UI.terminalInput.addEventListener('keydown', async (e) => {
     if (e.key === 'Enter') {
         e.preventDefault();
 
+        const temEfeitoAtivo = 
+            document.getElementById('fortune-cookie-overlay') || 
+            document.getElementById('matrix-rain-container') || 
+            document.getElementById('rosa-barbie-style') || 
+            document.getElementById('bat-signal-overlay') ||
+            document.getElementById('zelda-overlay') || 
+            document.getElementById('disco-party-overlay') ||
+            document.getElementById('fbi-alarm-overlay') ||
+            UI.pacmanRodando;
+
+        if (temEfeitoAtivo) {
+            const comando = UI.terminalInput.value.trim().toLowerCase();
+
+            if (comando === '/off' || comando === '/reset') {
+                UI.limparEfeitosVisuais();
+                UI.limparInput();
+                UI.terminalInput.placeholder = "Digite 1 a 7 para navegar ou 'voltar'...";
+                
+                const pacmanOverlay = document.getElementById('pacman-terminal-overlay');
+                if (pacmanOverlay) pacmanOverlay.remove();
+                if (UI.intervaloPacmanGlobal) clearInterval(UI.intervaloPacmanGlobal);
+                UI.pacmanRodando = false; 
+
+                UI.terminalInput.focus();
+                return;
+            }
+           
+            UI.limparInput();
+            return; 
+        }
 
         if (estadoJogo.modalAberto) {
             UI.fecharModal();
+            UI.esconderBalaoPensamento(estadoJogo.avatar);
             estadoJogo.modalAberto = false;
             UI.limparInput();
-
+            UI.limparEfeitosVisuais();
 
             if (estadoJogo.telaAtual === 'menu') {
                 UI.mostrarMenu(estadoJogo.nickname, estadoJogo.xpGlobal);
@@ -698,12 +866,52 @@ UI.terminalInput.addEventListener('keydown', async (e) => {
             return;
         }
 
-
         const inputBruto = UI.terminalInput.value;
         const comando = inputBruto.trim();
+        const cmdLower = comando.toLowerCase();
 
+        if (estadoJogo.telaAtual === 'clear' || estadoJogo.telaAtual === 'creditos') {
+            if (comando === '' || cmdLower === 'voltar' || !isNaN(comando)) {
+                estadoJogo.telaAtual = 'menu';
+                
+                const containerLimpeza = document.getElementById('clear-message-container');
+                const containerCreditos = document.getElementById('credits-scroll-container');
+                 
+                if (containerLimpeza) containerLimpeza.remove();
+                if (containerCreditos) containerCreditos.remove();
+                
+                if (UI.screenMenu) {
+                    Array.from(UI.screenMenu.children).forEach(filho => {
+                        filho.style.display = ''; 
+                    });
+                }
+                
+                UI.mostrarMenu(estadoJogo.nickname, estadoJogo.xpGlobal);
+                UI.limparInput();
+                return;
+            }
+        }
 
-        if (estadoJogo.telaAtual === 'menu') {
+        if (cmdLower === '/off' || cmdLower === '/reset') { 
+            UI.limparEfeitosVisuais(); 
+            UI.limparInput(); 
+            return; 
+        }
+        if (cmdLower === '/matrix') { UI.aplicarTemaMatrix(); UI.limparInput(); return; }
+        if (cmdLower === '/rosa' || cmdLower === '/pink' || cmdLower === '/barbie') { UI.aplicarTemaRosa(); UI.limparInput(); return; }
+        if (cmdLower === '/batman' || cmdLower === '/gotham') { UI.mostrarBatman(); UI.limparInput(); return; }
+        if (cmdLower === '/glitch') { UI.ativarGlitch(); UI.limparInput(); return; }
+        if (cmdLower === '/fbi' || cmdLower === '/policia') { UI.ativarAlarmePolicia(); UI.limparInput(); return; }
+        if (cmdLower === '/fortuna' || cmdLower === '/quote') { UI.mostrarBiscoitoSorte(); UI.limparInput(); return; }
+        if (cmdLower === '/disco' || cmdLower === '/party') { UI.ativarDisco(); UI.limparInput(); return; }
+        if (cmdLower === '/zelda' || cmdLower === '/triforce') { UI.mostrarZelda(); UI.limparInput(); return; }
+        
+        if (cmdLower === '/pacman') { UI.mostrarPacman(); UI.limparInput(); return; }
+
+        if (cmdLower === '/clear' || cmdLower === '/cls') { UI.falsoClear(); estadoJogo.telaAtual = 'clear'; UI.limparInput(); return; }
+        if (cmdLower === '/creditos' || cmdLower === '/devs') { UI.mostrarCreditosEquipe(); estadoJogo.telaAtual = 'creditos'; UI.limparInput(); return; }
+
+       if (estadoJogo.telaAtual === 'menu') {
             if (comando === '1') {
                 if (estadoJogo.enigmasResolvidosTotal >= 45) {
                     UI.abrirModal("[ SISTEMA CONCLUÍDO ]", "Parabéns! Você já resolveu todos os 45 enigmas do jogo.<br>Seu progresso máximo está gravado no ranking.", "info");
@@ -712,105 +920,130 @@ UI.terminalInput.addEventListener('keydown', async (e) => {
                 }
                 estadoJogo.telaAtual = 'modulos';
                 UI.mostrarModulos(estadoJogo.modulosDesbloqueados);
-           } else if (comando === '2') {
-                const totalResolvidos = estadoJogo.enigmasResolvidosTotal || 0;
-                const moduloAtualNum = estadoJogo.moduloAtual || 1;
+                } else if (comando === '2') {
+                    const totalResolvidos = estadoJogo.enigmasResolvidosTotal || 0;
+                    const moduloAtualNum = estadoJogo.moduloAtual || 1;
 
+                    let resolvidosNoModuloAtual = 0;
+                    if (moduloAtualNum === 1) {
+                        resolvidosNoModuloAtual = Math.min(15, totalResolvidos);
+                    } else if (moduloAtualNum === 2) {
+                        resolvidosNoModuloAtual = Math.max(0, Math.min(15, totalResolvidos - 15));
+                    } else if (moduloAtualNum === 3) {
+                        resolvidosNoModuloAtual = Math.max(0, Math.min(15, totalResolvidos - 30));
+                    }
 
-                let resolvidosNoModuloAtual = 0;
-                if (moduloAtualNum === 1) {
-                    resolvidosNoModuloAtual = Math.min(15, totalResolvidos);
-                } else if (moduloAtualNum === 2) {
-                    resolvidosNoModuloAtual = Math.max(0, Math.min(15, totalResolvidos - 15));
-                } else if (moduloAtualNum === 3) {
-                    resolvidosNoModuloAtual = Math.max(0, Math.min(15, totalResolvidos - 30));
-                }
-
-
-                UI.exibirDashboard({
-                    nickname: estadoJogo.nickname,
-                    xp_global: estadoJogo.xpGlobal,
-                    xp: estadoJogo.xpNormal,
-                    xp_tempo_max: estadoJogo.xpTempoMax,
-                    fase_atual: estadoJogo.enigmasResolvidosTotal,
-                    resolvidos: totalResolvidos,
-                    nivelAtual: estadoJogo.nomeModulos[moduloAtualNum],
-                    resolvidosModulo: resolvidosNoModuloAtual,
-                    modulosDesbloqueados: estadoJogo.modulosDesbloqueados
-                });
-                estadoJogo.modalAberto = true;
-            } else if (comando === '3') {
-                const ranking = await buscarRankingGlobal();
-                UI.exibirRanking(ranking);
-                estadoJogo.modalAberto = true;
-            } else if (comando === '4') {
-                UI.abrirModal("[ COMO JOGAR ]", "Resolva os 15 enigmas Python de cada módulo.<br>Use combos e o modo Contra o Tempo para maximizar seu XP e subir no Ranking!<br><br><span style='color:#888;'>Digite <b>voltar</b> a qualquer momento no terminal para retornar ao Menu.</span>", "info");
-                estadoJogo.modalAberto = true;
-            } else if (comando === '5') {
-                UI.abrirModal("[ SOBRE ]", "CyberQuest v2.0 - Trilha de Níveis, Módulos e Modos de Jogo.", "info");
-                estadoJogo.modalAberto = true;
-            } else if (comando === '6' || comando.toLowerCase() === 'sair') {
-                localStorage.clear();
-                window.location.reload();
-            } else {
-                UI.abrirModal("[ AVISO ]", "Opção inválida. Digite de 1 a 6.", "erro");
-                estadoJogo.modalAberto = true;
-            }
-
-
-        } else if (estadoJogo.telaAtual === 'modulos') {
-            if (['1', '2', '3'].includes(comando)) {
-                await selecionarModulo(parseInt(comando, 10));
-            } else if (comando.toLowerCase() === 'voltar' || comando === '0') {
-                estadoJogo.telaAtual = 'menu';
-                UI.mostrarMenu(estadoJogo.nickname, estadoJogo.xpGlobal);
-            } else {
-                UI.abrirModal("[ AVISO ]", "Módulo inválido. Escolha 1, 2 ou 3.", "erro");
-                estadoJogo.modalAberto = true;
-            }
-
-
-        } else if (estadoJogo.telaAtual === 'modos') {
-            if (comando === '1') {
-                await iniciarGameplayComModo('normal');
-            } else if (comando === '2') {
-                await iniciarGameplayComModo('tempo');
-            } else if (comando.toLowerCase() === 'voltar') {
-                estadoJogo.telaAtual = 'modulos';
-                UI.mostrarModulos(estadoJogo.modulosDesbloqueados);
-            } else {
-                UI.abrirModal("[ AVISO ]", "Modo inválido. Digite 1 (Normal) ou 2 (Contra o Tempo).", "erro");
-                estadoJogo.modalAberto = true;
-            }
-
-
-        } else if (estadoJogo.telaAtual === 'jogo') {
-            if (comando !== "") {
-                await processarResposta(comando);
-            }
-        } else if (estadoJogo.telaAtual === 'conclusao') {
-            if (comando === '1' || comando.toLowerCase() === 'voltar') {
-                estadoJogo.telaAtual = 'menu';
-                UI.mostrarMenu(estadoJogo.nickname, estadoJogo.xpGlobal);
-            } else if (comando === '2') {
-                const proximoModulo = estadoJogo.moduloAtual + 1;
-                if (proximoModulo <= 3) {
-                    await selecionarModulo(proximoModulo);
+                    UI.exibirDashboard({
+                        nickname: estadoJogo.nickname,
+                        xp_global: estadoJogo.xpGlobal,
+                        xp: estadoJogo.xpNormal,
+                        xp_tempo_max: estadoJogo.xpTempoMax,
+                        fase_atual: estadoJogo.enigmasResolvidosTotal,
+                        resolvidos: totalResolvidos,
+                        nivelAtual: estadoJogo.nomeModulos[moduloAtualNum],
+                        resolvidosModulo: resolvidosNoModuloAtual,
+                        modulosDesbloqueados: estadoJogo.modulosDesbloqueados
+                    });
+                    estadoJogo.modalAberto = true;
+                } else if (comando === '3') {
+                    const ranking = await buscarRankingGlobal();
+                    UI.exibirRanking(ranking);
+                    estadoJogo.modalAberto = true;
+                } else if (comando === '4') {
+                    UI.abrirModal("[ COMO JOGAR ]", "Resolva os 15 enigmas Python de cada módulo.<br>Use combos e o modo Contra o Tempo para maximizar seu XP e subir no Ranking!<br><br><span style='color:#888;'>Digite <b>voltar</b> a qualquer momento no terminal para retornar ao Menu.</span>", "info");
+                    estadoJogo.modalAberto = true;
+                } else if (comando === '5') {
+                    UI.abrirModal("[ SOBRE ]", "CyberQuest v2.0 - Trilha de Níveis, Módulos e Modos de Jogo.", "info");
+                    estadoJogo.modalAberto = true;
+                } else if (comando === '6' || comando.toLowerCase() === 'sair') {
+                    localStorage.clear();
+                    window.location.reload();
+                } else if (comando === '7') {
+                    estadoJogo.telaAtual = 'menu_reset';
+                    UI.fecharModal(); 
+                    estadoJogo.modalAberto = false;
+                    UI.mostrarMenuReset();
+                    UI.limparInput();
+                    return;
                 } else {
-                    UI.abrirModal("[ PARABÉNS ]", "Você concluiu todos os módulos do CyberQuest!", "sucesso");
+                    UI.abrirModal("[ AVISO ]", "Opção inválida. Digite de 1 a 7.", "erro");
                     estadoJogo.modalAberto = true;
                 }
-            } else {
-                UI.abrirModal("[ AVISO ]", "Opção inválida. Digite 1 para Menu ou 2 para Próximo Módulo.", "erro");
-                estadoJogo.modalAberto = true;
+            } 
+            else if (estadoJogo.telaAtual === 'menu_reset') {
+                if (comando === '1' || comando === '2' || comando === '3') {
+                    const modAlvo = parseInt(comando, 10);
+                    await resetarModuloEspecifico(modAlvo);
+                } else if (comando === '4') {
+                    await resetarTudoCompleto();
+                }
+                window.location.reload(); 
+                return;
             }
-        }
-
+            else if (estadoJogo.telaAtual === 'modulos') {
+                if (['1', '2', '3'].includes(comando)) {
+                    await selecionarModulo(parseInt(comando, 10));
+                } else if (comando.toLowerCase() === 'voltar' || comando === '0') {
+                    estadoJogo.telaAtual = 'menu';
+                    UI.mostrarMenu(estadoJogo.nickname, estadoJogo.xpGlobal);
+                } else {
+                    UI.abrirModal("[ AVISO ]", "Módulo inválido. Escolha 1, 2 ou 3.", "erro");
+                    estadoJogo.modalAberto = true;
+                }
+            } 
+            else if (estadoJogo.telaAtual === 'modos') {
+                if (comando === '1') {
+                    await iniciarGameplayComModo('normal');
+                } else if (comando === '2') {
+                    await iniciarGameplayComModo('tempo');
+                } else if (comando.toLowerCase() === 'voltar') {
+                    estadoJogo.telaAtual = 'modulos';
+                    UI.mostrarModulos(estadoJogo.modulosDesbloqueados);
+                } else {
+                    UI.abrirModal("[ AVISO ]", "Modo inválido. Digite 1 (Normal) ou 2 (Contra o Tempo).", "erro");
+                    estadoJogo.modalAberto = true;
+                }
+            } 
+            else if (estadoJogo.telaAtual === 'jogo') {
+                if (comando !== "") {
+                    await processarResposta(comando);
+                }
+            } 
+            else if (estadoJogo.telaAtual === 'conclusao') {
+                if (comando === '1' || comando.toLowerCase() === 'voltar') {
+                    estadoJogo.telaAtual = 'menu';
+                    UI.mostrarMenu(estadoJogo.nickname, estadoJogo.xpGlobal);
+                } else if (comando === '2') {
+                    const proximoModulo = estadoJogo.moduloAtual + 1;
+                    if (proximoModulo <= 3) {
+                        await selecionarModulo(proximoModulo);
+                    } else {
+                        UI.abrirModal("[ PARABÉNS ]", "Você concluiu todos os módulos do CyberQuest!", "sucesso");
+                        estadoJogo.modalAberto = true;
+                    }
+                } else {
+                    UI.abrirModal("[ AVISO ]", "Opção inválida. Digite 1 para Menu ou 2 para Próximo Módulo.", "erro");
+                    estadoJogo.modalAberto = true;
+                }
+            }
 
         UI.limparInput();
     }
 });
 
+const btnMute = document.getElementById('btn-mute');
+if (btnMute) {
+    btnMute.addEventListener('click', () => {
+        const estaMutado = SFX.toggleMute();
+        if (estaMutado) {
+            btnMute.textContent = '🔇';
+            btnMute.classList.add('muted');
+        } else {
+            btnMute.textContent = '🔊';
+            btnMute.classList.remove('muted');
+        }
+    });
+}
 
 window.onload = async () => {
     const nickSalvo = localStorage.getItem('cyberquest_nickname');
@@ -825,6 +1058,5 @@ window.onload = async () => {
         }
     }
 };
-
 
 export default estadoJogo;
